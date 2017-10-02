@@ -30,3 +30,7 @@
 .pages-form .form-actions {
   margin-top: 10px;
 }
+
+.page-simple-form-height {
+  height: 400px !important;
+}
