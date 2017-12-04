@@ -85,6 +85,20 @@ def get_recent_blog_posts(number=5, exclude=None):
 
     return new_list
 
+def get_recent_pages(number=10, exclude=None):
+    page_list = p.toolkit.get_action('ckanext_pages_list')(
+        None, {'order_publish_date': True, 'private': False,
+               'page_type': 'page'}
+    )
+    new_list = []
+    for page in page_list:
+        if exclude and page['name'] == exclude:
+            continue
+        new_list.append(page)
+        if len(new_list) == number:
+            break
+
+    return new_list
 
 class PagesPluginBase(p.SingletonPlugin, DefaultTranslation):
     p.implements(p.ITranslation, inherit=True)
@@ -127,6 +141,7 @@ class PagesPlugin(PagesPluginBase):
             'render_content': render_content,
             'pages_get_wysiwyg_editor': get_wysiwyg_editor,
             'get_recent_blog_posts': get_recent_blog_posts,
+            'get_recent_pages': get_recent_pages
         }
 
     def get_actions(self):
