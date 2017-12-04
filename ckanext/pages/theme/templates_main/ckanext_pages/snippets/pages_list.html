@@ -3,7 +3,7 @@
 
 {% set ckan_29_or_higher = h.ckan_version().split('.')[1] | int >= 9 %}
 
-<h1 class="page-heading page-list-header">{{ title or "Blog" if type == "blog" else "Pages" }}</h1>
+{# <h1 class="page-heading page-list-header">{{ title or "Blog" if type == "blog" else "Pages" }}</h1> #}
 
 {% if pages %}
   <div class="page-list">
@@ -38,8 +38,8 @@
   </div>
 {% else %}
     {% if type == 'blog' %}
-      <p class="empty">{{ _('There are currently no blog articles here') }}</p>
+        <p class="empty">{{ _('There are currently no blog articles here') }}</p>
     {% else %}
-      <p class="empty">{{ _('There are currently no pages here') }}</p>
+        <p class="empty">{{ _('There are currently no pages here') }}</p>
     {% endif %}
 {% endif %}
