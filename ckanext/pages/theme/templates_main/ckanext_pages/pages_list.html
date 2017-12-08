@@ -1,4 +1,7 @@
-{% extends 'ckanext_pages/edit_base.html' %} 
+{% extends 'ckanext_pages/edit_base.html' %}
+{% block breadcrumb_content %}
+  <li><a href="/pages">Pages</a></li>
+{% endblock %}
 
 {% block page_primary_action %}
   {% if h.check_access('ckanext_pages_update', {}) %}
@@ -7,7 +10,6 @@
 {% endblock %}
 
 {% block primary_content_inner %}
-  <h1 class="hide-heading">{{ _('Pages') }}</h1>
   {% snippet 'ckanext_pages/snippets/pages_list.html', pages=c.page.items %}
   {{ c.page.pager() }}
 {% endblock %}
