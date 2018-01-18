@@ -1,6 +1,11 @@
 ﻿/**
+<<<<<<< HEAD:ckanext/pages/assets/vendor/ckeditor/build-config.js
  * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/license
+=======
+ * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or http://ckeditor.com/license
+>>>>>>> 22e6dae... update ckeditor; make changes to pages edit styling:ckanext/pages/theme/public/vendor/ckeditor/build-config.js
  */
 
 /**
@@ -10,6 +15,7 @@
  * If you would like to build CKEditor online again
  * (for example to upgrade), visit one the following links:
  *
+<<<<<<< HEAD:ckanext/pages/assets/vendor/ckeditor/build-config.js
  * (1) https://ckeditor.com/cke4/builder
  *     Visit online builder to build CKEditor from scratch.
  *
@@ -17,6 +23,15 @@
  *     Visit online builder to build CKEditor, starting with the same setup as before.
  *
  * (3) https://ckeditor.com/cke4/builder/download/2956688318a2c2e4ebed7a0bfde2348b
+=======
+ * (1) http://ckeditor.com/builder
+ *     Visit online builder to build CKEditor from scratch.
+ *
+ * (2) http://ckeditor.com/builder/ff3823590e3ee36d7ca0e16e6952692c
+ *     Visit online builder to build CKEditor, starting with the same setup as before.
+ *
+ * (3) http://ckeditor.com/builder/download/ff3823590e3ee36d7ca0e16e6952692c
+>>>>>>> 22e6dae... update ckeditor; make changes to pages edit styling:ckanext/pages/theme/public/vendor/ckeditor/build-config.js
  *     Straight download link to the latest version of CKEditor (Optimized) with the same setup as before.
  *
  * NOTE:
@@ -38,8 +53,11 @@ var CKBUILDER_CONFIG = {
 		'.jshintignore',
 		'.jshintrc',
 		'.mailmap',
+<<<<<<< HEAD:ckanext/pages/assets/vendor/ckeditor/build-config.js
 		'.npm',
 		'.nvmrc',
+=======
+>>>>>>> 22e6dae... update ckeditor; make changes to pages edit styling:ckanext/pages/theme/public/vendor/ckeditor/build-config.js
 		'.travis.yml',
 		'bender-err.log',
 		'bender-out.log',
@@ -49,7 +67,10 @@ var CKBUILDER_CONFIG = {
 		'gruntfile.js',
 		'less',
 		'node_modules',
+<<<<<<< HEAD:ckanext/pages/assets/vendor/ckeditor/build-config.js
 		'package-lock.json',
+=======
+>>>>>>> 22e6dae... update ckeditor; make changes to pages edit styling:ckanext/pages/theme/public/vendor/ckeditor/build-config.js
 		'package.json',
 		'tests'
 	],
@@ -74,8 +95,11 @@ var CKBUILDER_CONFIG = {
 		'list' : 1,
 		'magicline' : 1,
 		'maximize' : 1,
+<<<<<<< HEAD:ckanext/pages/assets/vendor/ckeditor/build-config.js
 		'pastefromgdocs' : 1,
 		'pastefromlibreoffice' : 1,
+=======
+>>>>>>> 22e6dae... update ckeditor; make changes to pages edit styling:ckanext/pages/theme/public/vendor/ckeditor/build-config.js
 		'pastefromword' : 1,
 		'pastetext' : 1,
 		'removeformat' : 1,
@@ -92,6 +116,7 @@ var CKBUILDER_CONFIG = {
 		'toolbar' : 1,
 		'undo' : 1,
 		'uploadimage' : 1,
+<<<<<<< HEAD:ckanext/pages/assets/vendor/ckeditor/build-config.js
 		'wysiwygarea' : 1
 	},
 	languages : {
@@ -165,5 +190,12 @@ var CKBUILDER_CONFIG = {
 		'vi' : 1,
 		'zh' : 1,
 		'zh-cn' : 1
+=======
+		'wsc' : 1,
+		'wysiwygarea' : 1
+	},
+	languages : {
+		'en' : 1
+>>>>>>> 22e6dae... update ckeditor; make changes to pages edit styling:ckanext/pages/theme/public/vendor/ckeditor/build-config.js
 	}
 };

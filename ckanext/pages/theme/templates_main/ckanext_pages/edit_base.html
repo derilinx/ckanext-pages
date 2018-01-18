@@ -2,6 +2,10 @@
 
 {% block subtitle %}{{ _('Pages') }}{% endblock %}
 
+{% block breadcrumb_content %}
+    {{ super() }}
+{% endblock %}
+
 {%- block scripts %}
   {{ super() }}
 {% endblock -%}

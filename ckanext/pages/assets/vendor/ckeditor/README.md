@@ -1,8 +1,13 @@
 CKEditor 4
 ==========
 
+<<<<<<< HEAD:ckanext/pages/assets/vendor/ckeditor/README.md
 Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
 https://ckeditor.com - See LICENSE.md for license information.
+=======
+Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+http://ckeditor.com - See LICENSE.md for license information.
+>>>>>>> 22e6dae... update ckeditor; make changes to pages edit styling:ckanext/pages/theme/public/vendor/ckeditor/README.md
 
 CKEditor 4 is a text editor to be used inside web pages. It's not a replacement
 for desktop text editors like Word or OpenOffice, but a component to be used as

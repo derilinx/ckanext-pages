@@ -1,5 +1,9 @@
 ﻿/*
+<<<<<<< HEAD:ckanext/pages/assets/vendor/ckeditor/plugins/specialchar/dialogs/lang/sk.js
  Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+=======
+ Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+>>>>>>> 22e6dae... update ckeditor; make changes to pages edit styling:ckanext/pages/theme/public/vendor/ckeditor/plugins/specialchar/dialogs/lang/sk.js
  For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 */
 CKEDITOR.plugins.setLang("specialchar","sk",{euro:"Znak eura",lsquo:"Ľavá jednoduchá úvodzovka",rsquo:"Pravá jednoduchá úvodzovka",ldquo:"Pravá dvojitá úvodzovka",rdquo:"Pravá dvojitá úvodzovka",ndash:"En pomlčka",mdash:"Em pomlčka",iexcl:"Obrátený výkričník",cent:"Znak centu",pound:"Znak libry",curren:"Znak meny",yen:"Znak jenu",brvbar:"Prerušená zvislá čiara",sect:"Znak odseku",uml:"Prehláska",copy:"Znak copyrightu",ordf:"Ženský indikátor rodu",laquo:"Znak dvojitých lomených úvodzoviek vľavo",not:"Logistický zápor",

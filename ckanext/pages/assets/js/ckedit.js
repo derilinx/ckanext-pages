@@ -1,13 +1,13 @@
-this.ckan.module('ckedit', function (jQuery, _) {
-  return {
-    options: {
-      site_url: ""
-    },
+this.ckan.module("ckedit", function(jQuery, _) {
+    return {
+        options: {
+            site_url: ""
+        },
 
-    initialize: function () {
-      jQuery.proxyAll(this, /_on/);
-      this.el.ready(this._onReady);
-    },
+        initialize: function() {
+            jQuery.proxyAll(this, /_on/);
+            this.el.ready(this._onReady);
+        },
 
     _onReady: function() {
       var config = {};
@@ -26,9 +26,10 @@ this.ckan.module('ckedit', function (jQuery, _) {
         { name: 'styles' },
       ];
 
-      // Remove some buttons, provided by the standard plugins, which we don't
-      // need to have in the Standard(s) toolbar.
-      config.removeButtons = 'Underline,Subscript,Superscript';
+            // Remove some buttons, provided by the standard plugins, which we don't
+            // need to have in the Standard(s) toolbar.
+            config.removeButtons =
+                "Underline,Subscript,Superscript,SpecialChar,Anchor";
 
       // Set the most common block elements.
       config.format_tags = 'p;h1;h2;h3;pre';
@@ -52,7 +53,7 @@ this.ckan.module('ckedit', function (jQuery, _) {
         $.extend(config, window.ckan.pages.override_config);
       }
 
-      var editor = $(this.el).ckeditor(config);
-    },
-  }
+            var editor = $(this.el).ckeditor(config);
+        }
+    };
 });
