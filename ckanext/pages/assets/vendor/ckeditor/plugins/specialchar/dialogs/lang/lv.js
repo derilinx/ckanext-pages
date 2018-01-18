@@ -1,5 +1,9 @@
 ﻿/*
+<<<<<<< HEAD:ckanext/pages/assets/vendor/ckeditor/plugins/specialchar/dialogs/lang/lv.js
  Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+=======
+ Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+>>>>>>> 22e6dae... update ckeditor; make changes to pages edit styling:ckanext/pages/theme/public/vendor/ckeditor/plugins/specialchar/dialogs/lang/lv.js
  For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 */
 CKEDITOR.plugins.setLang("specialchar","lv",{euro:"Euro zīme",lsquo:"Kreisā  vienkārtīga pēdiņa",rsquo:"Labā  vienkārtīga pēdiņa",ldquo:"Kreisā  dubult pēdiņa",rdquo:"Labā dubult pēdiņa",ndash:"En svītra",mdash:"Em svītra",iexcl:"Apgriezta izsaukuma zīme",cent:"Centu naudas zīme",pound:"Sterliņu mārciņu naudas zīme",curren:"Valūtas zīme",yen:"Jenu naudas zīme",brvbar:"Vertikāla pārrauta līnija",sect:"Paragrāfa zīme",uml:"Diakritiska zīme",copy:"Autortiesību zīme",ordf:"Sievišķas kārtas rādītājs",

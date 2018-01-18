@@ -1,5 +1,9 @@
 ﻿/*
+<<<<<<< HEAD:ckanext/pages/assets/vendor/ckeditor/plugins/specialchar/dialogs/lang/sq.js
  Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+=======
+ Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+>>>>>>> 22e6dae... update ckeditor; make changes to pages edit styling:ckanext/pages/theme/public/vendor/ckeditor/plugins/specialchar/dialogs/lang/sq.js
  For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 */
 CKEDITOR.plugins.setLang("specialchar","sq",{euro:"Shenja e Euros",lsquo:"Thonjëza majtas me një vi",rsquo:"Thonjëza djathtas me një vi",ldquo:"Thonjëza majtas",rdquo:"Thonjëza djathtas",ndash:"En viza lidhëse",mdash:"Em viza lidhëse",iexcl:"Pikëçuditëse e përmbysur",cent:"Shenja e Centit",pound:"Shejna e Funtit",curren:"Shenja e valutës",yen:"Shenja e Jenit",brvbar:"Viza e këputur",sect:"Shenja e pjesës",uml:"Diaeresis",copy:"Shenja e të drejtave të kopjimit",ordf:"Tregues rendor femror",laquo:"Thonjëz me dy kënde e kthyer majtas",

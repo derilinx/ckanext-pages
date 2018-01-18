@@ -1,5 +1,9 @@
 ﻿/*
+<<<<<<< HEAD:ckanext/pages/assets/vendor/ckeditor/plugins/specialchar/dialogs/lang/tr.js
  Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+=======
+ Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+>>>>>>> 22e6dae... update ckeditor; make changes to pages edit styling:ckanext/pages/theme/public/vendor/ckeditor/plugins/specialchar/dialogs/lang/tr.js
  For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 */
 CKEDITOR.plugins.setLang("specialchar","tr",{euro:"Euro işareti",lsquo:"Sol tek tırnak işareti",rsquo:"Sağ tek tırnak işareti",ldquo:"Sol çift tırnak işareti",rdquo:"Sağ çift tırnak işareti",ndash:"En tire",mdash:"Em tire",iexcl:"Ters ünlem işareti",cent:"Cent işareti",pound:"Pound işareti",curren:"Para birimi işareti",yen:"Yen işareti",brvbar:"Kırık bar",sect:"Bölüm işareti",uml:"İki sesli harfin ayrılması",copy:"Telif hakkı işareti",ordf:"Dişil sıralı gösterge",laquo:"Sol-işaret çift açı tırnak işareti",

@@ -1,5 +1,9 @@
 ﻿/*
+<<<<<<< HEAD:ckanext/pages/assets/vendor/ckeditor/plugins/specialchar/dialogs/lang/fr-ca.js
  Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+=======
+ Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+>>>>>>> 22e6dae... update ckeditor; make changes to pages edit styling:ckanext/pages/theme/public/vendor/ckeditor/plugins/specialchar/dialogs/lang/fr-ca.js
  For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 */
 CKEDITOR.plugins.setLang("specialchar","fr-ca",{euro:"Symbole Euro",lsquo:"Guillemet simple ouvrant",rsquo:"Guillemet simple fermant",ldquo:"Guillemet double ouvrant",rdquo:"Guillemet double fermant",ndash:"Tiret haut",mdash:"Tiret",iexcl:"Point d'exclamation inversé",cent:"Symbole de cent",pound:"Symbole de Livre Sterling",curren:"Symbole monétaire",yen:"Symbole du Yen",brvbar:"Barre scindée",sect:"Symbole de section",uml:"Tréma",copy:"Symbole de copyright",ordf:"Indicateur ordinal féminin",laquo:"Guillemet français ouvrant",

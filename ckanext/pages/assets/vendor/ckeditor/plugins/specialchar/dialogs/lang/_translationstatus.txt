@@ -1,4 +1,8 @@
+<<<<<<< HEAD:ckanext/pages/assets/vendor/ckeditor/plugins/specialchar/dialogs/lang/_translationstatus.txt
 Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+=======
+Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+>>>>>>> 22e6dae... update ckeditor; make changes to pages edit styling:ckanext/pages/theme/public/vendor/ckeditor/plugins/specialchar/dialogs/lang/_translationstatus.txt
 For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 
 cs.js      Found: 118 Missing: 0

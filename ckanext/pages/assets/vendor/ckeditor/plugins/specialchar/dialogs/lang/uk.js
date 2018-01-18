@@ -1,5 +1,9 @@
 ﻿/*
+<<<<<<< HEAD:ckanext/pages/assets/vendor/ckeditor/plugins/specialchar/dialogs/lang/uk.js
  Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+=======
+ Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+>>>>>>> 22e6dae... update ckeditor; make changes to pages edit styling:ckanext/pages/theme/public/vendor/ckeditor/plugins/specialchar/dialogs/lang/uk.js
  For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 */
 CKEDITOR.plugins.setLang("specialchar","uk",{euro:"Знак євро",lsquo:"Ліві одинарні лапки",rsquo:"Праві одинарні лапки",ldquo:"Ліві подвійні лапки",rdquo:"Праві подвійні лапки",ndash:"Середнє тире",mdash:"Довге тире",iexcl:"Перевернутий знак оклику",cent:"Знак цента",pound:"Знак фунта",curren:"Знак валюти",yen:"Знак єни",brvbar:"Переривчаста вертикальна лінія",sect:"Знак параграфу",uml:"Умлаут",copy:"Знак авторських прав",ordf:"Жіночий порядковий вказівник",laquo:"ліві вказівні подвійні кутові дужки",

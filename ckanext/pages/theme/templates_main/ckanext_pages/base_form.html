@@ -5,6 +5,7 @@
 {% set errors = errors or {} %}
 
 {% if type == 'org' %}
+<<<<<<< HEAD
     {% set prefix = 'organization_pages_' %}
     {% set args = {'id': id} %}
 {% elif type == 'group' %}
@@ -16,6 +17,37 @@
 {% else %}
      {% set prefix = 'pages_' %}
     {% set args = {} %}
+=======
+    {% set action_url = h.url_for('organization_pages_edit', id=id, page='/' + page) %}
+    {% set cancel_url = h.url_for('organization_pages_index', id=id) %}
+    {% set slug_prefix = cancel_url ~ '/' %}
+    {% set slug_domain = h.url_for('organization_pages_index', id=id, qualified=true) %}
+    {% set hide_field_order = true %}
+{% elif type == 'group' %}
+    {% set action_url = h.url_for('group_pages_edit', id=id, page='/' + page) %}
+    {% set cancel_url = h.url_for('group_pages_index', id=id) %}
+    {% set slug_prefix = cancel_url ~ '/' %}
+    {% set slug_domain = h.url_for('group_pages_index', id=id, qualified=true) %}
+    {% set hide_field_order = true %}
+{% elif type == 'blog' %}
+    {% set action_url = h.url_for('blog_edit', page='/' + page) %}
+    {% set cancel_url = h.url_for('blog_index') %}
+    {% set slug_prefix = cancel_url ~ '/' %}
+    {% set slug_domain = h.url_for('blog_index', qualified=true) %}
+    {% if page %}
+        {% set delete_url = h.url_for('blog_delete', page='/' + data.name) %}
+    {% endif %}
+    {% set hide_field_order = true %}
+{% else %}
+    {% set action_url = h.url_for('pages_edit', page='/' + page) %}
+    {% set cancel_url = h.url_for('pages_index') %}
+    {% set slug_prefix = cancel_url ~ '/' %}
+    {% set slug_domain = h.url_for('pages_index', qualified=true) %}
+    {% if page %}
+        {% set delete_url = h.url_for('pages_delete', page='/' + data.name) %}
+    {% endif %}
+    {% set hide_field_order = true %}
+>>>>>>> 22e6dae... update ckeditor; make changes to pages edit styling
 {% endif %}
 
 {% set page_url = page %}
@@ -36,17 +68,17 @@
 
 {% if type == 'blog' %}
     {% if not page %}
-      <h1>{{ _('Add Blog Article') }}</h1>
+        <h1>{{ _('Add Blog Article') }}</h1>
     {% else %}
-      <h1>{{ _('Edit Blog Article') }}</h1>
+        <h1>{{ _('Edit Blog Article') }}</h1>
     {% endif %}
     {% set url_placeholder = 'eg. my-blog-article' %}
     {% set title_placeholder = _('eg. Blog Article Title') %}
 {% else %}
     {% if not page %}
-      <h1>{{ _('Add page') }}</h1>
+        <h1>{{ _('Add page') }}</h1>
     {% else %}
-      <h1>{{ _('Edit page') }}</h1>
+        <h1>{{ _('Edit page') }}</h1>
     {% endif %}
     {% set url_placeholder = 'eg. my-page' %}
     {% set title_placeholder = _('eg. Page Title') %}
@@ -68,8 +100,11 @@
 
   {% endblock %}
 
-  {% block extra_pages_form %}
-  {% endblock extra_pages_form %}
+    <div class="form-actions">
+        {% if not page %}
+            <a class="btn pull-left" href="{{ cancel_url }}">{{ _('Cancel') }}</a>
+            <button class="btn btn-primary" name="save" value="save" type="submit">{{ _('Add') }}</button>
+        {% else %}
 
   {% block form_visibility_fields %}
     <div class="control-group form-group">
