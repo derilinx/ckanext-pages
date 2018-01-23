@@ -17,7 +17,12 @@
           {% link_for _('Revisions'), named_route='pages.pages_revisions', page=c.page.name, class_='btn btn-primary pull-right me-2', icon='eye' %}
       {% endif %}
     {% endblock %}
-    <h1 class="page-heading">{{ c.page.title }}</h1>
+    <div class="row">
+      <div class="col-md-12">
+          <h1 ><span class="page-heading">{{ c.page.title }}</span></h1>
+      </div>
+    </div>
+    <div class="row">
       {% block ckanext_pages_content %}
         {% if c.page.content %}
           <div class="ckanext-pages-content">
@@ -36,6 +41,7 @@
         {% endif %}
 
       {% endblock %}
+    </div>
   </section>
 {% endblock %}
 
