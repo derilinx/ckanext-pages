@@ -13,10 +13,36 @@
 {% block primary_content_inner %}
         <style>
         .secondary {
-            float:right !important;
+            float: right !important;
+            padding: 10px;
         }
+
         .module {
             float: left !important;
+        }
+
+        .dataset-item {
+            border-right: none !important;
+        }
+
+        .wrapper {
+            background-color: #EEEEEE !important;
+        }
+
+        .primary {
+            background-color: #EEEEEE !important;
+        }
+
+        .module-content {
+            background-color: #EEEEEE !important;
+        }
+
+        .wrapper::before {
+            display: none;
+        }
+
+        .secondary {
+            margin-top: 15px;
         }
         </style>
   {% snippet 'ckanext_pages/snippets/pages_list.html', pages=c.page.items %}
@@ -24,7 +50,26 @@
 {% endblock %}
 
 {% block secondary_content %}
-<h1>blah</h1>
+{% set pages = c.page.items %}
+
+  <div class="module module-narrow module-shallow">
+
+    <div class="module-content">
+            <div class="panel panel-info">
+        <div class="panel-heading">Latest Pages</div>
+        <div class="panel-body">
+            {% for page in pages[:10] %}
+                <div class="row post">
+                    <div class="post-title col-md-12">
+                        <h3><a href="pages/{{ page.name }}">{{ page.title|truncate(40, end="…") }}</a></h3>
+                    </div>
+
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    </div>
+  </div>
 {% endblock %}
 
 
