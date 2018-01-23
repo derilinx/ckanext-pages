@@ -1,21 +1,92 @@
 {% extends 'ckanext_pages/blog_edit_base.html' %}
 {% block breadcrumb_content %}
-  <li><a href="/blog">Blog</a></li>
+    <li><a href="/blog">Blog</a></li>
 {% endblock %}
 
 {% block page_primary_action %}
-  {% if h.check_access('ckanext_pages_update', {}) %}
-    {% link_for _('Add Article'), controller='ckanext.pages.controller:PagesController', action='blog_edit', page='', class_='btn btn-primary', icon=h.pages_get_plus_icon() %}
-  {% endif %}
+    {% if h.check_access('ckanext_pages_update', {}) %}
+        {% link_for _('Add Article'), controller='ckanext.pages.controller:PagesController', action='blog_edit', page='', class_='btn btn-primary', icon=h.pages_get_plus_icon() %}
+    {% endif %}
 {% endblock %}
 
 {% block primary_content_inner %}
-  {% snippet 'ckanext_pages/snippets/pages_list.html', pages=c.page.items, type='blog' %}
-  {{ c.page.pager() }}
+    <style>
+        .secondary {
+            float: right !important;
+            padding: 10px;
+        }
+
+        .module {
+            float: left !important;
+        }
+
+        .dataset-item {
+            border-right: none !important;
+        }
+
+        .wrapper {
+            background-color: #EEEEEE !important;
+        }
+
+        .primary {
+            background-color: #EEEEEE !important;
+        }
+
+        .module-content {
+            background-color: #EEEEEE !important;
+        }
+
+        .wrapper::before {
+            display: none;
+        }
+
+        .secondary {
+            margin-top: 15px;
+        }
+
+    </style>
+    {% snippet 'ckanext_pages/snippets/pages_list.html', pages=c.page.items, type='blog' %}
+    {{ c.page.pager() }}
 {% endblock %}
 
-{% block main_content %}
-   <div class="wrapper no-nav">
-     {{ self.primary_content() }}
-   </div>
+{% block secondary_content %}
+    <div class="panel panel-info">
+        <div class="panel-heading">Latest News</div>
+        <div class="panel-body">
+            {% for post in h.get_recent_blog_posts(number=5) %}
+                <div class="row post">
+                    <div class="post-title col-md-12">
+                        <h3><a href="blog/{{ post.name }}">{{ post.title|truncate(40, end="…") }}</a></h3>
+                    </div>
+                    <div class="post-meta col-md-12">
+
+                        <small>Published on {{ h.render_datetime(post.publish_date) }}</small>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="panel panel-info">
+        <div class="panel-heading">Search For Datasets</div>
+        <div class="panel-body">
+            <form class="navbar-form" role="search" action="/dataset">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="E.g. Census 2016..." name="q">
+                    <div class="input-group-btn">
+                        <button class="btn btn-default btn-search" type="submit"><i class="fa fa-search"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="panel panel-info">
+        <div class="panel-heading">Follow Us</div>
+        <div class="panel-body">
+            <a href="https://twitter.com/irldeptper?lang=en" target="_blank">Twitter</a>
+            <a href="https://data.gov.ie/rss.xml" target="_blank">RSS</a>
+        </div>
+    </div>
+
 {% endblock %}
+
