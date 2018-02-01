@@ -139,7 +139,6 @@ def _pages_delete(context, data_dict):
         session.delete(out)
         session.commit()
 
-
 def _pages_update(context, data_dict):
     if db.pages_table is None:
         db.init_db(context['model'])
@@ -160,7 +159,7 @@ def _pages_update(context, data_dict):
         out.group_id = org_id
         out.name = page
     items = ['title', 'content', 'name', 'private',
-             'order', 'page_type', 'publish_date']
+             'order', 'page_type', 'publish_date', 'user_id']
     for item in items:
         setattr(out, item, data.get(item,'page' if item =='page_type' else None)) #backward compatible with older version where page_type does not exist
 
@@ -172,7 +171,10 @@ def _pages_update(context, data_dict):
     out.extras = json.dumps(extras)
 
     out.modified = datetime.datetime.utcnow()
-    out.user_id = p.toolkit.c.userobj.id
+
+    if 'user_id' not in out:
+        out.user_id = p.toolkit.c.userobj.id
+
     out.save()
     session = context['session']
     session.add(out)
