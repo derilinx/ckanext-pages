@@ -97,7 +97,6 @@ def _pages_delete(context, data_dict):
         session.delete(out)
         session.commit()
 
-
 def _pages_update(context, data_dict):
     org_id = data_dict.get('org_id')
     page = data_dict.get('page')
@@ -121,9 +120,7 @@ def _pages_update(context, data_dict):
         out.group_id = org_id
         out.name = page
     items = ['title', 'content', 'name', 'private',
-             'order', 'page_type', 'publish_date']
-
-    # backward compatible with older version where page_type does not exist
+             'order', 'page_type', 'publish_date', 'user_id']
     for item in items:
         setattr(out, item, data.get(item, 'page' if item == 'page_type' else None))
 
@@ -138,6 +135,9 @@ def _pages_update(context, data_dict):
     out.modified = datetime.datetime.now(datetime.timezone.utc)
     user = model.User.get(context['user'])
     out.user_id = user.id
+
+    if not out.user_id and p.toolkit.current_user:
+        out.user_id = p.toolkit.current_user.id
 
     revisions = out.revisions
 
