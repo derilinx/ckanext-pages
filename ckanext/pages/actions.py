@@ -172,7 +172,7 @@ def _pages_update(context, data_dict):
 
     out.modified = datetime.datetime.utcnow()
 
-    if 'user_id' not in out:
+    if not out.user_id:
         out.user_id = p.toolkit.c.userobj.id
 
     out.save()
