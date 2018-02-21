@@ -82,7 +82,7 @@ class PagesController(p.toolkit.BaseController):
 
         if p.toolkit.request.method == 'POST' and not data:
             data = p.toolkit.request.POST
-            items = ['title', 'name', 'content', 'private']
+            items = ['title', 'name', 'content', 'private', 'featured']
             # update config from form
             for item in items:
                 if item in data:
@@ -159,7 +159,7 @@ class PagesController(p.toolkit.BaseController):
 
         if p.toolkit.request.method == 'POST' and not data:
             data = p.toolkit.request.POST
-            items = ['title', 'name', 'content', 'private']
+            items = ['title', 'name', 'content', 'private', 'featured']
             # update config from form
             for item in items:
                 if item in data:

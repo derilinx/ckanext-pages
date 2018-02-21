@@ -100,6 +100,15 @@
         </div>
 
         <div class="form-group">
+            <label for="field-featured">{{ _('Featured') }}</label>
+            <select id="field-featured" class="form-control" name="featured">
+                {% for option in [(false, _('Not Featured')), (true, _('Featured'))] %}
+                    <option value="{{ option[0] }}" {% if option[0] == data.featured %}selected="selected"{% endif %}>{{ option[1] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
             <label for="field-publish-date">{{ _('Publish Date') }}</label>
             <input class="form-control" id="field-publish_date" name="publish_date" placeholder="2018-01-01" data-module="datepicker" data-date-format="yyyy-mm-dd" type="text">
         </div>

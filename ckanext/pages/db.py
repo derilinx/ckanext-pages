@@ -93,6 +93,17 @@ def init_db(model):
         pass
     model.Session.commit()
 
+    sql_upgrade_03 = ('ALTER TABLE ckanext_pages add column featured boolean;',
+                      "UPDATE ckanext_pages set extras = '{}';")
+
+    conn = model.Session.connection()
+    try:
+        for statement in sql_upgrade_03:
+            conn.execute(statement)
+    except sa.exc.ProgrammingError:
+        pass
+    model.Session.commit()
+
     types = sa.types
     global pages_table
     pages_table = sa.Table('ckanext_pages', model.meta.metadata,
@@ -110,6 +121,7 @@ def init_db(model):
         sa.Column('created', types.DateTime, default=datetime.datetime.utcnow),
         sa.Column('modified', types.DateTime, default=datetime.datetime.utcnow),
         sa.Column('extras', types.UnicodeText, default=u'{}'),
+        sa.Column('featured',types.Boolean,default=False),
         extend_existing=True
     )
 

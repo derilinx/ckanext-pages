@@ -54,6 +54,8 @@ schema = {
               unicode],
     'private': [p.toolkit.get_validator('ignore_missing'),
                 p.toolkit.get_validator('boolean_validator')],
+    'featured': [p.toolkit.get_validator('ignore_missing'),
+                p.toolkit.get_validator('boolean_validator')],
     'group_id': [p.toolkit.get_validator('ignore_missing'), unicode],
     'user_id': [p.toolkit.get_validator('ignore_missing'), unicode],
     'created': [p.toolkit.get_validator('ignore_missing'),
@@ -159,7 +161,8 @@ def _pages_update(context, data_dict):
         out.group_id = org_id
         out.name = page
     items = ['title', 'content', 'name', 'private',
-             'order', 'page_type', 'publish_date', 'user_id']
+             'order', 'page_type', 'publish_date', 'featured', 'user_id'] #XXX remove user_id asap
+    print data
     for item in items:
         setattr(out, item, data.get(item,'page' if item =='page_type' else None)) #backward compatible with older version where page_type does not exist
 

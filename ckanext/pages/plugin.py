@@ -105,6 +105,12 @@ def get_recent_pages(number=10, exclude=None):
 
     return new_list
 
+def get_featured_blogs():
+    page_list = p.toolkit.get_action('ckanext_pages_list')(
+        None, {'featured': True, 'private': False,
+               'page_type': 'blog'}
+    )
+    return page_list
 
 def get_plus_icon():
     if toolkit.check_ckan_version(min_version='2.7'):
@@ -148,7 +154,8 @@ class PagesPlugin(PagesPluginBase):
             'get_wysiwyg_editor': get_wysiwyg_editor,
             'get_recent_blog_posts': get_recent_blog_posts,
             'pages_get_plus_icon': get_plus_icon,
-            'get_recent_pages': get_recent_pages
+            'get_recent_pages': get_recent_pages,
+            'get_featured_blogs': get_featured_blogs
         }
 
     def after_map(self, map):
