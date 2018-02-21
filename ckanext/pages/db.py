@@ -55,6 +55,7 @@ class Page(DomainObject, BaseModel):
     created = Column(types.DateTime, default=datetime.datetime.utcnow)
     modified = Column(types.DateTime, default=datetime.datetime.utcnow)
     extras = Column(types.UnicodeText, default=u'{}')
+    featured = Column('featured', types.Boolean, default=False)
     revisions = Column(MutableDict.as_mutable(JSONB), default=u'{}')
 
     @classmethod
@@ -87,7 +88,6 @@ class Page(DomainObject, BaseModel):
                     datetime.datetime.fromisoformat(x[1]['created'])
                     )
         )))
-
 
 def table_dictize(obj, context, **kw):
     '''Get any model object and represent it as a dict'''

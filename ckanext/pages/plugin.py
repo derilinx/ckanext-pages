@@ -100,9 +100,15 @@ def get_recent_pages(number=10, exclude=None):
 
     return new_list
 
+def get_featured_blogs():
+    page_list = p.toolkit.get_action('ckanext_pages_list')(
+        None, {'featured': True, 'private': False,
+               'page_type': 'blog'}
+    )
+    return page_list
+
 class PagesPluginBase(p.SingletonPlugin, DefaultTranslation):
     p.implements(p.ITranslation, inherit=True)
-
 
 class PagesPlugin(PagesPluginBase):
     p.implements(p.IConfigurer, inherit=True)
@@ -137,7 +143,8 @@ class PagesPlugin(PagesPluginBase):
             'render_content': render_content,
             'pages_get_wysiwyg_editor': get_wysiwyg_editor,
             'get_recent_blog_posts': get_recent_blog_posts,
-            'get_recent_pages': get_recent_pages
+            'get_recent_pages': get_recent_pages,
+            'get_featured_blogs': get_featured_blogs
         }
 
     def get_actions(self):

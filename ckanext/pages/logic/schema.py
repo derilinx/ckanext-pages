@@ -2,7 +2,6 @@ import ckan.plugins as p
 from ckanext.pages.validators import page_name_validator, not_empty_if_blog
 from ckanext.pages.interfaces import IPagesSchema
 
-
 def default_pages_schema():
     ignore_empty = p.toolkit.get_validator('ignore_empty')
     ignore_missing = p.toolkit.get_validator('ignore_missing')
@@ -10,6 +9,7 @@ def default_pages_schema():
     isodate = p.toolkit.get_validator('isodate')
     name_validator = p.toolkit.get_validator('name_validator')
     unicode_safe = p.toolkit.get_validator('unicode_safe')
+    boolean = p.toolkit.get_validator('boolean_validator')
 
     return {
         'id': [ignore_empty, unicode_safe],
@@ -19,8 +19,8 @@ def default_pages_schema():
         'content': [ignore_missing, unicode_safe],
         'page_type': [ignore_missing, unicode_safe],
         'order': [ignore_missing, unicode_safe],
-        'private': [ignore_missing,
-                    p.toolkit.get_validator('boolean_validator')],
+        'private': [ignore_missing, boolean],
+        'featured': [ignore_missing, boolean]
         'group_id': [ignore_missing, unicode_safe],
         'user_id': [ignore_missing, unicode_safe],
         'created': [ignore_missing, isodate],
