@@ -20,6 +20,9 @@
         {% else %}
             <small>Submitted by {{ h.linked_user( page.user_id ) }}</small>
         {% endif %}
+        {% if featured or page.featured %}
+          <span class="label label-success">Featured</span>
+        {% endif %}
         {% block page_item_content %}
           {% if page.content %}
             {% if editor %}

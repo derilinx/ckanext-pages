@@ -115,7 +115,8 @@ def _pages_update(context, data_dict):
         out.group_id = org_id
         out.name = page
     items = ['title', 'content', 'name', 'private',
-             'order', 'page_type', 'publish_date', 'user_id']
+             'order', 'page_type', 'publish_date', 'featured', 'user_id'] #XXX remove user_id asap
+
     for item in items:
         setattr(out, item, data.get(item, 'page' if item == 'page_type' else None))
 
