@@ -15,7 +15,7 @@ this.ckan.module("ckedit", function(jQuery, _) {
                 { name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
                 // { name: 'editing',     groups: [ 'find', 'selection', 'spellchecker' ] },
                 { name: "links" },
-                // { name: "insert" },
+                { name: "insert" },
                 { name: "forms" },
                 { name: "tools" },
                 { name: "document", groups: ["document", "doctools"] },
