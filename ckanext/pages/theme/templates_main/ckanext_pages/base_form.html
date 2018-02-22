@@ -5,7 +5,6 @@
 {% set errors = errors or {} %}
 
 {% if type == 'org' %}
-<<<<<<< HEAD
     {% set prefix = 'organization_pages_' %}
     {% set args = {'id': id} %}
 {% elif type == 'group' %}
@@ -17,37 +16,6 @@
 {% else %}
      {% set prefix = 'pages_' %}
     {% set args = {} %}
-=======
-    {% set action_url = h.url_for('organization_pages_edit', id=id, page='/' + page) %}
-    {% set cancel_url = h.url_for('organization_pages_index', id=id) %}
-    {% set slug_prefix = cancel_url ~ '/' %}
-    {% set slug_domain = h.url_for('organization_pages_index', id=id, qualified=true) %}
-    {% set hide_field_order = true %}
-{% elif type == 'group' %}
-    {% set action_url = h.url_for('group_pages_edit', id=id, page='/' + page) %}
-    {% set cancel_url = h.url_for('group_pages_index', id=id) %}
-    {% set slug_prefix = cancel_url ~ '/' %}
-    {% set slug_domain = h.url_for('group_pages_index', id=id, qualified=true) %}
-    {% set hide_field_order = true %}
-{% elif type == 'blog' %}
-    {% set action_url = h.url_for('blog_edit', page='/' + page) %}
-    {% set cancel_url = h.url_for('blog_index') %}
-    {% set slug_prefix = cancel_url ~ '/' %}
-    {% set slug_domain = h.url_for('blog_index', qualified=true) %}
-    {% if page %}
-        {% set delete_url = h.url_for('blog_delete', page='/' + data.name) %}
-    {% endif %}
-    {% set hide_field_order = true %}
-{% else %}
-    {% set action_url = h.url_for('pages_edit', page='/' + page) %}
-    {% set cancel_url = h.url_for('pages_index') %}
-    {% set slug_prefix = cancel_url ~ '/' %}
-    {% set slug_domain = h.url_for('pages_index', qualified=true) %}
-    {% if page %}
-        {% set delete_url = h.url_for('pages_delete', page='/' + data.name) %}
-    {% endif %}
-    {% set hide_field_order = true %}
->>>>>>> 22e6dae... update ckeditor; make changes to pages edit styling
 {% endif %}
 
 {% set page_url = page %}
@@ -96,7 +64,45 @@
     {% set attrs = {'data-module': 'slug-preview-slug', 'data-module-prefix': domain~'/', 'data-module-placeholder': '<page>'} %}
     {{ form.prepend('name', id='field-name', label=_('URL'), prepend=slug_prefix, placeholder=_(url_placeholder), value=data.name, error=errors.name, attrs=attrs) }}
 
-    {{ form.input('publish_date', id='field-publish_date', label=_('Publish Date'), placeholder=_('2021-04-23'), value=data.publish_date, error=errors.publish_date, classes=[], attrs={'data-module': 'datepicker', 'data-date-format': 'yyyy-mm-dd'}) }}
+    <div class="form-inline">
+
+        {#{ form.input('publish_date', id='field-publish_date', label=_('Publish Date'), placeholder=_('2005-01-01'), value=data.publish_date, error=errors.publish_date, classes=["form-control"], attrs={'data-module': 'datepicker', 'data-date-format': 'yyyy-mm-dd'}) }#}
+        <style>
+         .form-horizontal .form-group {
+             margin-left: 0;
+             margin-right: 0;
+             margin-bottom: 2em;
+         }
+         .form-actions {
+             margin-top: 2em;
+         }
+         .cke_button__link_label, .cke_button__image_label, .cke_button__table_label, .cke_button__ckanview_label {
+             display:inline;
+         }
+         .cke_button__link_label:after {
+             content: " and upload"
+         }
+         .cke_button__image_label:after {
+             content: " upload"
+         }
+         .cke_button__ckanview_label:before{
+             content: "CKAN "
+         }
+
+         .cke_button__horizontalrule_label, .cke_button__horizontalrule_icon, .cke_button__ckanview, .cke_button__ckanview_label {
+                display: none;
+         }
+
+        </style>
+
+        <div class="form-group">
+            <label for="field-private">{{ _('Visibility') }}</label>
+            <select id="field-private" class="form-control" name="private">
+                {% for option in [(true, _('Private')), (false, _('Public'))] %}
+                    <option value="{{ option[0] }}" {% if option[0] == data.private %}selected="selected"{% endif %}>{{ option[1] }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
   {% endblock %}
 
