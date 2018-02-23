@@ -42,7 +42,7 @@ class Page(DomainObject):
 
     @classmethod
     def pages(cls, **kw):
-        '''Finds a single entity in the register.'''
+        '''Finds all the pages filtering by a data dict'''
         order = kw.pop('order', False)
         order_publish_date = kw.pop('order_publish_date', False)
 
@@ -54,12 +54,14 @@ class Page(DomainObject):
             query = query.order_by(cls.publish_date.desc()).filter(cls.publish_date != None)  # noqa: E711
         else:
             query = query.order_by(cls.created.desc())
+        query = query.order_by(cls.featured)
         return query.all()
 
 
 def define_tables():
-    sql_upgrade_03 = ('ALTER TABLE ckanext_pages add column featured boolean;',
-                      "UPDATE ckanext_pages set extras = '{}';")
+    sql_upgrade_03 = ("ALTER TABLE ckanext_pages add column featured boolean DEFAULT 'f';",
+                      "CREATE UNIQUE INDEX ckanext_pages_id_idx on ckanext_pages(id);",
+                      "CREATE UNIQUE INDEX ckanext_pages_name_idx on ckanext_pages(name);")
 
     conn = model.Session.connection()
     try:
