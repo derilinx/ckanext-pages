@@ -28,7 +28,7 @@ def init_db(model):
 
         @classmethod
         def pages(cls, **kw):
-            '''Finds a single entity in the register.'''
+            '''Finds all the pages filtering by a data dict'''
             order = kw.pop('order', False)
             order_publish_date = kw.pop('order_publish_date', False)
 
@@ -40,6 +40,7 @@ def init_db(model):
                 query = query.order_by(cls.publish_date.desc()).filter(cls.publish_date != None)
             else:
                 query = query.order_by(cls.created.desc())
+            query = query.order_by(cls.featured)
             return query.all()
 
     global Page
@@ -93,8 +94,9 @@ def init_db(model):
         pass
     model.Session.commit()
 
-    sql_upgrade_03 = ('ALTER TABLE ckanext_pages add column featured boolean;',
-                      "UPDATE ckanext_pages set extras = '{}';")
+    sql_upgrade_03 = ("ALTER TABLE ckanext_pages add column featured boolean DEFAULT 'f';",
+                      "CREATE UNIQUE INDEX ckanext_pages_id_idx on ckanext_pages(id);",
+                      "CREATE UNIQUE INDEX ckanext_pages_name_idx on ckanext_pages(name);")
 
     conn = model.Session.connection()
     try:
