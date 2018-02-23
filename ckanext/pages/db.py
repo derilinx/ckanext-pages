@@ -72,13 +72,13 @@ class Page(DomainObject, BaseModel):
 
         query = model.Session.query(cls).autoflush(False)
         query = query.filter_by(**kw)
+        query = query.order_by(cls.featured.desc())
         if order:
             query = query.order_by(sa.cast(cls.order, sa.Integer)).filter(cls.order != '')
         elif order_publish_date:
             query = query.order_by(cls.publish_date.desc()).filter(cls.publish_date != None)  # noqa: E711
         else:
             query = query.order_by(cls.created.desc())
-        query = query.order_by(cls.featured)
         return query.all()
 
     def get_ordered_revisions(self):

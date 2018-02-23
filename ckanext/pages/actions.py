@@ -40,9 +40,12 @@ def _pages_list(context, data_dict):
     search = {}
     org_id = data_dict.get('org_id')
     ordered = data_dict.get('order')
+    featured = data_dict.get('featured')
     order_publish_date = data_dict.get('order_publish_date')
     page_type = data_dict.get('page_type')
     private = data_dict.get('private', True)
+    if featured:
+        search['featured'] = True
     if ordered:
         search['order'] = True
     if page_type:
@@ -77,8 +80,9 @@ def _pages_list(context, data_dict):
                   'publish_date': pg.publish_date.isoformat() if pg.publish_date else None,
                   'group_id': pg.group_id,
                   'page_type': pg.page_type,
-                  'user_id': pg.user_id
-                  }
+                  'user_id': pg.user_id,
+                  'featured': pg.featured
+        }
         if img:
             pg_row['image'] = img
         extras = pg.extras

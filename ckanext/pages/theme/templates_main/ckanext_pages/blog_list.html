@@ -38,8 +38,6 @@
      }
 
     </style>
-    {% set featured_pages = c.page.items %}
-    {% snippet 'ckanext_pages/snippets/pages_list.html', pages=featured_pages, type='blog', title='Blog', featured=True %}
     {% snippet 'ckanext_pages/snippets/pages_list.html', pages=c.page.items, type='blog', title='Blog' %}
     {{ c.page.pager() }}
 {% endblock %}
