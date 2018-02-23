@@ -17,8 +17,7 @@ depends_on = None
 
 
 def upgrade():
-    op.add_column('ckanext_pages', sa.Column('featured', sa.Boolean))
-    op.execute("UPDATE ckanext_pages set extras = '{}';")
+    op.add_column('ckanext_pages', sa.Column('featured', sa.Boolean, default=False))
 
 
 def downgrade():

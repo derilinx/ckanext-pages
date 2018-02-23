@@ -66,7 +66,7 @@ class Page(DomainObject, BaseModel):
 
     @classmethod
     def pages(cls, **kw):
-        '''Finds a single entity in the register.'''
+        '''Finds all the pages filtering by a data dict'''
         order = kw.pop('order', False)
         order_publish_date = kw.pop('order_publish_date', False)
 
@@ -78,6 +78,7 @@ class Page(DomainObject, BaseModel):
             query = query.order_by(cls.publish_date.desc()).filter(cls.publish_date != None)  # noqa: E711
         else:
             query = query.order_by(cls.created.desc())
+        query = query.order_by(cls.featured)
         return query.all()
 
     def get_ordered_revisions(self):
