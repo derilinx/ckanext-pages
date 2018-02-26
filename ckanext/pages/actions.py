@@ -54,6 +54,8 @@ schema = {
               unicode],
     'private': [p.toolkit.get_validator('ignore_missing'),
                 p.toolkit.get_validator('boolean_validator')],
+    'featured': [p.toolkit.get_validator('ignore_missing'),
+                p.toolkit.get_validator('boolean_validator')],
     'group_id': [p.toolkit.get_validator('ignore_missing'), unicode],
     'user_id': [p.toolkit.get_validator('ignore_missing'), unicode],
     'created': [p.toolkit.get_validator('ignore_missing'),
@@ -81,9 +83,12 @@ def _pages_list(context, data_dict):
         db.init_db(context['model'])
     org_id = data_dict.get('org_id')
     ordered = data_dict.get('order')
+    featured = data_dict.get('featured')
     order_publish_date = data_dict.get('order_publish_date')
     page_type = data_dict.get('page_type')
     private = data_dict.get('private', True)
+    if featured:
+        search['featured'] = True
     if ordered:
         search['order'] = True
     if page_type:
@@ -118,7 +123,8 @@ def _pages_list(context, data_dict):
                   'publish_date': pg.publish_date.isoformat() if pg.publish_date else None,
                   'group_id': pg.group_id,
                   'page_type': pg.page_type,
-                  'user_id': pg.user_id
+                  'user_id': pg.user_id,
+                  'featured': pg.featured
                  }
         if img:
             pg_row['image'] = img
@@ -159,7 +165,8 @@ def _pages_update(context, data_dict):
         out.group_id = org_id
         out.name = page
     items = ['title', 'content', 'name', 'private',
-             'order', 'page_type', 'publish_date', 'user_id']
+             'order', 'page_type', 'publish_date', 'featured', 'user_id'] #XXX remove user_id asap
+    print data
     for item in items:
         setattr(out, item, data.get(item,'page' if item =='page_type' else None)) #backward compatible with older version where page_type does not exist
 

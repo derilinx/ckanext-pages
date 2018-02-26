@@ -1,21 +1,6 @@
 {% set pages_total = pages|length %}
 {% set action = '{0}_show'.format(type) %}
 
-{#
-{% if type == 'blog' %}
-  <h2>{{ _('1 blog article') if pages_total == 1 else _('{0} blog articles').format(pages_total) }}</h2>
-{% else %}
-  <h2>{{ _('1 page') if pages_total == 1 else _('{0} pages').format(pages_total) }}</h2>
-{% endif %}
-#}
-
-{#{% if type == 'blog' %}#}
-{#    <h2>Blog</h2>#}
-{#{% else %}#}
-{#    <h2>Pages</h2>#}
-{#{% endif %}#}
-{#<hr>#}
-
 {% if pages %}
     {% set editor = h.get_wysiwyg_editor() %}
 
@@ -41,6 +26,11 @@
                     {% else %}
                         <small>Submitted by {{ h.linked_user( page.user_id ) }}</small>
                     {% endif %}
+
+                    {% if featured or page.featured %}
+                        <span class="label label-success">Featured</span>
+                    {% endif %}
+
 
                     {% if page.content %}
                         {% if editor %}

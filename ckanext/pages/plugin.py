@@ -1,4 +1,5 @@
 import logging
+import datetime
 from pylons import config
 import ckan.plugins.toolkit as toolkit
 ignore_missing = toolkit.get_validator('ignore_missing')
@@ -105,12 +106,20 @@ def get_recent_pages(number=10, exclude=None):
 
     return new_list
 
+def get_featured_blogs():
+    page_list = p.toolkit.get_action('ckanext_pages_list')(
+        None, {'featured': True, 'private': False,
+               'page_type': 'blog'}
+    )
+    return page_list
 
 def get_plus_icon():
     if toolkit.check_ckan_version(min_version='2.7'):
         return 'plus-square'
     return 'plus-sign-alt'
 
+def get_today():
+    return datetime.datetime.now()
 
 class PagesPlugin(PagesPluginBase):
     p.implements(p.IConfigurer, inherit=True)
@@ -148,7 +157,9 @@ class PagesPlugin(PagesPluginBase):
             'get_wysiwyg_editor': get_wysiwyg_editor,
             'get_recent_blog_posts': get_recent_blog_posts,
             'pages_get_plus_icon': get_plus_icon,
-            'get_recent_pages': get_recent_pages
+            'get_recent_pages': get_recent_pages,
+            'get_featured_blogs': get_featured_blogs,
+            'get_today': get_today
         }
 
     def after_map(self, map):

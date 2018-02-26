@@ -28,12 +28,13 @@ def init_db(model):
 
         @classmethod
         def pages(cls, **kw):
-            '''Finds a single entity in the register.'''
+            '''Finds all the pages filtering by a data dict'''
             order = kw.pop('order', False)
             order_publish_date = kw.pop('order_publish_date', False)
 
             query = model.Session.query(cls).autoflush(False)
             query = query.filter_by(**kw)
+            query = query.order_by(cls.featured.desc())
             if order:
                 query = query.order_by(cls.order).filter(cls.order != '')
             elif order_publish_date:
@@ -93,6 +94,18 @@ def init_db(model):
         pass
     model.Session.commit()
 
+    sql_upgrade_03 = ("ALTER TABLE ckanext_pages add column featured boolean DEFAULT 'f';",
+                      "CREATE UNIQUE INDEX ckanext_pages_id_idx on ckanext_pages(id);",
+                      "CREATE UNIQUE INDEX ckanext_pages_name_idx on ckanext_pages(name);")
+
+    conn = model.Session.connection()
+    try:
+        for statement in sql_upgrade_03:
+            conn.execute(statement)
+    except sa.exc.ProgrammingError:
+        pass
+    model.Session.commit()
+
     types = sa.types
     global pages_table
     pages_table = sa.Table('ckanext_pages', model.meta.metadata,
@@ -110,6 +123,7 @@ def init_db(model):
         sa.Column('created', types.DateTime, default=datetime.datetime.utcnow),
         sa.Column('modified', types.DateTime, default=datetime.datetime.utcnow),
         sa.Column('extras', types.UnicodeText, default=u'{}'),
+        sa.Column('featured',types.Boolean,default=False),
         extend_existing=True
     )
 

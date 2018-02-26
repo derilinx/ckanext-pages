@@ -57,6 +57,16 @@
 
 
 <form class="form-horizontal" method="post" action="{{ action_url }}" data-module="basic-form">
+        {% if errors %}
+            <div class="alert alert-danger">
+                <h5>Errors were found when submitting the form.</h5>
+                {% for k,v in errors.items() %}
+                    <div>
+                        <strong>{{k}}</strong>: {{'. '.join(v)}}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
 
     {{ form.input('title', id='field-title', label=_('Title'), placeholder=title_placeholder, value=data.title, error=errors.title, classes=['control-full', 'control-large'], attrs={'data-module': 'slug-preview-target'}) }}
 
@@ -66,7 +76,6 @@
 
     <div class="form-inline">
 
-        {#{ form.input('publish_date', id='field-publish_date', label=_('Publish Date'), placeholder=_('2005-01-01'), value=data.publish_date, error=errors.publish_date, classes=["form-control"], attrs={'data-module': 'datepicker', 'data-date-format': 'yyyy-mm-dd'}) }#}
         <style>
          .form-horizontal .form-group {
              margin-left: 0;
@@ -95,6 +104,7 @@
 
         </style>
 
+
         <div class="form-group">
             <label for="field-private">{{ _('Visibility') }}</label>
             <select id="field-private" class="form-control" name="private">
@@ -105,14 +115,21 @@
         </div>
 
         <div class="form-group">
+            <label for="field-featured">{{ _('Featured') }}</label>
+            <select id="field-featured" class="form-control" name="featured">
+                {% for option in [(false, _('Not Featured')), (true, _('Featured'))] %}
+                    <option value="{{ option[0] }}" {% if option[0] == data.featured %}selected="selected"{% endif %}>{{ option[1] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
             <label for="field-publish-date">{{ _('Publish Date') }}</label>
-            <input class="form-control" id="field-publish_date" name="publish_date" placeholder="2018-01-01" data-module="datepicker" data-date-format="yyyy-mm-dd" type="text">
+            <input class="form-control" id="field-publish_date" name="publish_date" placeholder="2018-01-01" data-module="datepicker" data-date-format="yyyy-mm-dd" type="text" value="{{h.render_datetime(data.publish_date or h.get_today(), date_format='%Y-%m-%d')}}">
         </div>
 
         {% block extra_pages_form %}
         {% endblock extra_pages_form %}
-
-        {#{{ form.input('name', id='field-name', label=_('Name'), placeholder=_('my-name'), value=data.name, error=errors.name, classes=['control-full']) }}#}
 
         {% if not hide_field_order %}
             <div class="control-group form-group">
