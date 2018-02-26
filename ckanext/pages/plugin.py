@@ -5,6 +5,9 @@ from html import escape as html_escape
 from six.moves.urllib.parse import quote
 
 from ckan.plugins import toolkit as tk
+import datetime
+import ckan.plugins.toolkit as toolkit
+ignore_missing = toolkit.get_validator('ignore_missing')
 
 import ckan.plugins as p
 from ckan.lib.helpers import build_nav_main as core_build_nav_main
@@ -107,6 +110,9 @@ def get_featured_blogs():
     )
     return page_list
 
+def get_today():
+    return datetime.datetime.now()
+
 class PagesPluginBase(p.SingletonPlugin, DefaultTranslation):
     p.implements(p.ITranslation, inherit=True)
 
@@ -148,7 +154,8 @@ class PagesPlugin(PagesPluginBase):
             'pages_get_wysiwyg_editor': get_wysiwyg_editor,
             'get_recent_blog_posts': get_recent_blog_posts,
             'get_recent_pages': get_recent_pages,
-            'get_featured_blogs': get_featured_blogs
+            'get_featured_blogs': get_featured_blogs,
+            'get_today': get_today
         }
 
     def get_actions(self):
