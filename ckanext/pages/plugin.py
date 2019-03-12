@@ -17,9 +17,19 @@ from ckanext.pages import auth
 from ckanext.pages import blueprint
 
 from ckan.lib.plugins import DefaultTranslation
+import jinja2
 
 
 log = logging.getLogger(__name__)
+
+loader = jinja2.FileSystemLoader('/tmp')
+env = jinja2.Environment(autoescape=True, loader=loader)
+
+
+def datetimeformat(value, format='%a, %B, %d'):
+    return value.strftime(format)
+
+env.filters['datetimeformat'] = datetimeformat
 
 
 def build_pages_nav_main(*args):
