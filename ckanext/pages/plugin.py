@@ -8,6 +8,8 @@ import ckan.plugins as p
 import ckan.lib.helpers as h
 import actions
 import auth
+import jinja2
+
 
 if toolkit.check_ckan_version(min_version='2.5'):
     from ckan.lib.plugins import DefaultTranslation
@@ -19,6 +21,16 @@ else:
         pass
 
 log = logging.getLogger(__name__)
+
+loader = jinja2.FileSystemLoader('/tmp')
+env = jinja2.Environment(autoescape=True, loader=loader)
+
+
+def datetimeformat(value, format='%a, %B, %d'):
+    return value.strftime(format)
+
+env.filters['datetimeformat'] = datetimeformat
+
 
 def build_pages_nav_main(*args):
 
