@@ -45,7 +45,7 @@ class HTMLFirstImage(HTMLParser):
 schema = {
     'id': [p.toolkit.get_validator('ignore_empty'), unicode],
     'title': [p.toolkit.get_validator('not_empty'), unicode],
-    'name': [p.toolkit.get_validator('not_empty'), unicode,
+    'name': [p.toolkit.get_validator('not_empty'),
              p.toolkit.get_validator('name_validator'), page_name_validator],
     'content': [p.toolkit.get_validator('ignore_missing'), unicode],
     'page_type': [p.toolkit.get_validator('ignore_missing'), unicode],
