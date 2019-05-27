@@ -11,7 +11,7 @@ import auth
 import jinja2
 
 
-if toolkit.check_ckan_version(min_version='2.5'):
+if False and toolkit.check_ckan_version(min_version='2.5'):
     from ckan.lib.plugins import DefaultTranslation
 
     class PagesPluginBase(p.SingletonPlugin, DefaultTranslation):
