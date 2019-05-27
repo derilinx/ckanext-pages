@@ -1,11 +1,27 @@
 {% extends 'page.html' %}
 
 {% block breadcrumb_content %}
-  <li>{% link_for _('Pages'), controller='ckanext.pages.controller:PagesController', action='pages_index' %}</li>
-  <li class="active">{% link_for c.page.title|truncate(35), controller='ckanext.pages.controller:PagesController', action='pages_show', page='/' + c.page.name %}</li>
-{% endblock %}
+<li><a href="/pages">{% trans %}Pages{% endtrans %}</a></li>
+{% if page.name == "aboutdatagovie" %}
+{% set name = page.name %}
+<li class="active">{% trans %}{{name}}{% endtrans %}
 
-{% block subtitle %}{{ c.page.title }}{% endblock %}
+{% elif c.page.name == "latestnews" %}
+{% set name = c.page.name %}
+
+<li class="active">{% trans %}{{name}}{% endtrans %}
+</li>
+
+{% elif c.page.name != "home" %}
+<li class="active">{% link_for page.title|truncate(35), controller='ckanext.pages.controller:PagesController',
+    action='pages_show', page='/' + page.name %}
+</li>
+
+{% endif %}
+{% endblock %}
+{% set title = c.page.title %}
+
+{% block subtitle %}{% trans %}{{ title }}{% endtrans %}{% endblock %}
 
 {% block primary %}
   <section class="module-content">
@@ -17,9 +33,9 @@
       {% endif %}
     {% endblock %}
     <div class="row">
-      <div class="col-md-12">
-          <h1 ><span class="page-heading">{{ c.page.title }}</span></h1>
-      </div>
+        <div class="col-md-12">
+            <h1><span class="page-heading">{{title}}</span></h1>
+        </div>
     </div>
     <div class="row">
       {% block ckanext_pages_content %}

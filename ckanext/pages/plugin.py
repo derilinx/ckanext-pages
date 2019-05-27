@@ -122,8 +122,14 @@ def get_featured_blogs():
 def get_today():
     return datetime.datetime.now()
 
-class PagesPluginBase(p.SingletonPlugin, DefaultTranslation):
-    p.implements(p.ITranslation, inherit=True)
+if False and toolkit.check_ckan_version(min_version='2.5'):
+    from ckan.lib.plugins import DefaultTranslation
+
+    class PagesPluginBase(p.SingletonPlugin, DefaultTranslation):
+        p.implements(p.ITranslation, inherit=True)
+else:
+    class PagesPluginBase(p.SingletonPlugin):
+        pass
 
 class PagesPlugin(PagesPluginBase):
     p.implements(p.IConfigurer, inherit=True)
