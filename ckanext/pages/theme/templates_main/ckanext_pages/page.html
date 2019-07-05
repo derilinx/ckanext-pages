@@ -9,6 +9,11 @@ pages_name - what we call pages
 {% if c.page.name == "aboutdatagovie" %}
 {% set name = c.page.name %}
 <li class="active">{% trans %}{{name}}{% endtrans %}
+
+{% elif c.page.name == "latestnews" %}
+{% set name = c.page.name %}
+
+<li class="active">{% trans %}{{name}}{% endtrans %}
 </li>
 
 {% elif c.page.name != "home" %}
@@ -18,8 +23,9 @@ pages_name - what we call pages
 
 {% endif %}
 {% endblock %}
+            {% set title = c.page.title %}
 
-{% block subtitle %}{% trans %}{{ c.page.title }}{% endtrans %}{% endblock %}
+{% block subtitle %}{% trans %}{{title}}{% endtrans %}{% endblock %}
 
 {% block primary %}
 <section class="module-content">
@@ -29,7 +35,6 @@ pages_name - what we call pages
     {% endif %}
     <div class="row">
         <div class="col-md-12">
-            {% set title = c.page.title %}
             <h1><span class="page-heading">{{title}}</span></h1>
         </div>
     </div>
