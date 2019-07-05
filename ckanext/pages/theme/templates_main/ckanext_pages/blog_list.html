@@ -42,7 +42,7 @@
     <div class="hidden-xs">
 
         <div class="panel panel-info">
-            <div class="panel-heading">Latest News</div>
+            <div class="panel-heading">{% trans %}Latest News{% endtrans %}</div>
             <div class="panel-body">
                 {% for post in h.get_recent_blog_posts(number=5) %}
                     <div class="row post">
@@ -59,7 +59,7 @@
         </div>
 
         <div class="panel panel-info">
-            <div class="panel-heading">Search For Datasets</div>
+            <div class="panel-heading">{% trans %}Search For Datasets{% endtrans %}</div>
             <div class="panel-body">
                 <form class="navbar-form" role="search" action="/dataset">
                     <div class="input-group">
@@ -72,7 +72,7 @@
             </div>
         </div>
         <div class="panel panel-info">
-            <div class="panel-heading">Follow Us</div>
+            <div class="panel-heading">{% trans %}Follow Us{% endtrans %}</div>
             <div class="panel-body">
                 <a href="https://twitter.com/govdataie?lang=en" target="_blank">Twitter</a>
                 <!--<a href="https://data.gov.ie/rss.xml" target="_blank">RSS</a>-->

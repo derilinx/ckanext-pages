@@ -5,42 +5,52 @@ pages_name - what we call pages
 {% extends 'page.html' %}
 
 {% block breadcrumb_content %}
-  <li><a href="/pages">Pages</a></li>
-  {% if c.page.name != "home" %}
-    <li class="active">{% link_for c.page.title|truncate(35), controller='ckanext.pages.controller:PagesController', action='pages_show', page='/' + c.page.name %}</li>
-  {% endif %}
+<li><a href="/pages">{% trans %}Pages{% endtrans %}</a></li>
+{% if c.page.name == "aboutdatagovie" %}
+{% set name = c.page.name %}
+<li class="active">{% trans %}{{name}}{% endtrans %}
+</li>
+
+{% elif c.page.name != "home" %}
+<li class="active">{% link_for c.page.title|truncate(35), controller='ckanext.pages.controller:PagesController',
+    action='pages_show', page='/' + c.page.name %}
+</li>
+
+{% endif %}
 {% endblock %}
 
-{% block subtitle %}{{ c.page.title }}{% endblock %}
+{% block subtitle %}{% trans %}{{ c.page.title }}{% endtrans %}{% endblock %}
 
 {% block primary %}
-  <section class="module-content">
+<section class="module-content">
     {% if h.check_access('ckanext_pages_update') %}
-      {% link_for _('Edit'), controller='ckanext.pages.controller:PagesController', action='pages_edit', page='/' + c.page.name, class_='btn btn-primary pull-right', icon='edit' %}
+    {% link_for _('Edit'), controller='ckanext.pages.controller:PagesController', action='pages_edit', page='/' +
+    c.page.name, class_='btn btn-primary pull-right', icon='edit' %}
     {% endif %}
-  <div class="row">
-    <div class="col-md-12">
-        <h1 ><span class="page-heading">{{ c.page.title }}</span></h1>
+    <div class="row">
+        <div class="col-md-12">
+            {% set title = c.page.title %}
+            <h1><span class="page-heading">{{title}}</span></h1>
+        </div>
     </div>
-  </div>
-      <hr>
-  <div class="row">
+    <hr>
+    <div class="row">
         {% if c.page.content %}
-      <div class="ckanext-pages-content">
-        {% set editor = h.get_wysiwyg_editor() %}
-        {% if editor %}
-          <div>
-              {{c.page.content|safe}}
-          </div>
+        <div class="ckanext-pages-content">
+            {% set editor = h.get_wysiwyg_editor() %}
+            {% if editor %}
+            <div>
+                {{c.page.content|safe}}
+            </div>
+            {% else %}
+            {{ h.render_content(c.page.content) }}
+            {% endif %}
+        </div>
         {% else %}
-          {{ h.render_content(c.page.content) }}
+        <p class="empty">{{ _('This page currently has no content') }}</p>
         {% endif %}
-      </div>
-    {% else %}
-      <p class="empty">{{ _('This page currently has no content') }}</p>
-    {% endif %}
-  </div>
-  </section>
+    </div>
+</section>
 {% endblock %}
 
 {% block secondary %}
