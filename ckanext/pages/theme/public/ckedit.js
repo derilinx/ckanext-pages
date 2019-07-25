@@ -18,7 +18,7 @@ this.ckan.module("ckedit", function(jQuery, _) {
                 { name: "insert" },
                 { name: "forms" },
                 { name: "tools" },
-                { name: "document", groups: ["document", "doctools"] },
+                { name: "document", groups: ["document", "doctools", "mode"] },
                 { name: "others" },
                 // "/",
                 { name: "basicstyles", groups: ["basicstyles", "cleanup"] },
@@ -26,7 +26,7 @@ this.ckan.module("ckedit", function(jQuery, _) {
                     name: "paragraph",
                     groups: ["list", "blocks", "align", "bidi"]
                 },
-                { name: "styles" }
+                { name: "styles" },
             ];
 
             // Remove some buttons, provided by the standard plugins, which we don't
