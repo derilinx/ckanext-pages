@@ -75,7 +75,7 @@
 
     <div class="module-content">
             <div class="panel panel-info">
-        <div class="panel-heading">Latest News</div>
+        <div class="panel-heading">{% trans %}Latest News{% endtrans %}</div>
         <div class="panel-body">
             {% for post in h.get_recent_blog_posts(number=5) %}
                 <div class="row post">
@@ -84,7 +84,7 @@
                     </div>
                     <div class="post-meta col-md-12">
 
-                        <small>Published on {{ h.render_datetime(post.publish_date) }}</small>
+                        <small>{% trans %}Published on{%  endtrans %} {{ h.render_datetime(post.publish_date) }}</small>
                     </div>
                 </div>
             {% endfor %}

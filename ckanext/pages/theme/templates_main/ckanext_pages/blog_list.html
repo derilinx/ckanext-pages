@@ -51,7 +51,7 @@
                         </div>
                         <div class="post-meta col-md-12">
 
-                            <small>Published on {{ h.render_datetime(post.publish_date) }}</small>
+                            <small>{% trans %}Published on{% endtrans %} {{ h.render_datetime(post.publish_date) }}</small>
                         </div>
                     </div>
                 {% endfor %}
