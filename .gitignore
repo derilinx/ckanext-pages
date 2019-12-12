@@ -1,0 +1,12 @@
+*.egg-info
+*.pyc
+*.swp
+*.swo
+*~
+#*
+.#*
+build/
+dist/
+distribute-*
+/CHANGELOG.html
+/README.html
