@@ -106,16 +106,16 @@ class TestPages(helpers.FunctionalTestBase):
         response = self.app.post(
             url=toolkit.url_for('pages_edit', page='/test_unicode_page'),
             params={
-                'title': u'Tïtlé'.encode('utf-8'),
+                'title': 'Tïtlé'.encode('utf-8'),
                 'name': 'page_unicode',
-                'content': u'Çöñtéñt'.encode('utf-8'),
+                'content': 'Çöñtéñt'.encode('utf-8'),
                 'order': 1,
                 'private': False,
             },
             extra_environ=env,
         )
         response = response.follow(extra_environ=env)
-        assert_in(u'<title>Tïtlé - CKAN</title>', response.unicode_body)
-        assert_in(u'<a href="/pages/page_unicode">Tïtlé</a>', response.unicode_body)
-        assert_in(u'<h1 class="page-heading">Tïtlé</h1>', response.unicode_body)
-        assert_in(u'<p>Çöñtéñt</p>', response.unicode_body)
+        assert_in('<title>Tïtlé - CKAN</title>', response.unicode_body)
+        assert_in('<a href="/pages/page_unicode">Tïtlé</a>', response.unicode_body)
+        assert_in('<h1 class="page-heading">Tïtlé</h1>', response.unicode_body)
+        assert_in('<p>Çöñtéñt</p>', response.unicode_body)

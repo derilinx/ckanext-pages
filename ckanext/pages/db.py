@@ -14,7 +14,7 @@ Page = None
 
 
 def make_uuid():
-    return unicode(uuid.uuid4())
+    return str(uuid.uuid4())
 
 
 def init_db(model):
@@ -97,19 +97,19 @@ def init_db(model):
     global pages_table
     pages_table = sa.Table('ckanext_pages', model.meta.metadata,
         sa.Column('id', types.UnicodeText, primary_key=True, default=make_uuid),
-        sa.Column('title', types.UnicodeText, default=u''),
-        sa.Column('name', types.UnicodeText, default=u''),
-        sa.Column('content', types.UnicodeText, default=u''),
-        sa.Column('lang', types.UnicodeText, default=u''),
-        sa.Column('order', types.UnicodeText, default=u''),
+        sa.Column('title', types.UnicodeText, default=''),
+        sa.Column('name', types.UnicodeText, default=''),
+        sa.Column('content', types.UnicodeText, default=''),
+        sa.Column('lang', types.UnicodeText, default=''),
+        sa.Column('order', types.UnicodeText, default=''),
         sa.Column('private',types.Boolean,default=True),
         sa.Column('group_id', types.UnicodeText, default=None),
-        sa.Column('user_id', types.UnicodeText, default=u''),
+        sa.Column('user_id', types.UnicodeText, default=''),
         sa.Column('publish_date', types.DateTime),
         sa.Column('page_type', types.DateTime),
         sa.Column('created', types.DateTime, default=datetime.datetime.utcnow),
         sa.Column('modified', types.DateTime, default=datetime.datetime.utcnow),
-        sa.Column('extras', types.UnicodeText, default=u'{}'),
+        sa.Column('extras', types.UnicodeText, default='{}'),
         extend_existing=True
     )
 
@@ -124,7 +124,7 @@ def table_dictize(obj, context, **kw):
     result_dict = {}
 
     if isinstance(obj, RowProxy):
-        fields = obj.keys()
+        fields = list(obj.keys())
     else:
         ModelClass = obj.__class__
         table = class_mapper(ModelClass).mapped_table
@@ -150,7 +150,7 @@ def table_dictize(obj, context, **kw):
         elif isinstance(value, list):
             result_dict[name] = value
         else:
-            result_dict[name] = unicode(value)
+            result_dict[name] = str(value)
 
     result_dict.update(kw)
 

@@ -1,14 +1,14 @@
 import cgi
 import logging
-import urllib
+import urllib.request, urllib.parse, urllib.error
 from pylons import config
 import ckan.plugins.toolkit as toolkit
 ignore_missing = toolkit.get_validator('ignore_missing')
 
 import ckan.plugins as p
 import ckan.lib.helpers as h
-import actions
-import auth
+from . import actions
+from . import auth
 
 if toolkit.check_ckan_version(min_version='2.5'):
     from ckan.lib.plugins import DefaultTranslation
@@ -50,9 +50,9 @@ def build_pages_nav_main(*args):
 
     for page in pages_list:
         type_ = 'blog' if page['page_type'] == 'blog' else 'pages'
-        name = urllib.quote(page['name'].encode('utf-8')).decode('utf-8')
+        name = urllib.parse.quote(page['name'].encode('utf-8')).decode('utf-8')
         title = cgi.escape(page['title'])
-        link = h.literal(u'<a href="/{}/{}">{}</a>'.format(type_, name, title))
+        link = h.literal('<a href="/{}/{}">{}</a>'.format(type_, name, title))
         if page['name'] == page_name:
             li = h.literal('<li class="active">') + link + h.literal('</li>')
         else:
