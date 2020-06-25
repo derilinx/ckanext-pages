@@ -21,10 +21,7 @@
 
                     {% if page.publish_date %}
 
-                        <small>Published by {{ h.linked_user( page.user_id ) }}
-                            on {{ h.render_datetime(page.publish_date) }}</small>
-                    {% else %}
-                        <small>Submitted by {{ h.linked_user( page.user_id ) }}</small>
+                        <small>Published on {{ h.render_datetime(page.publish_date) }}</small>
                     {% endif %}
 
                     {% if featured or page.featured %}
