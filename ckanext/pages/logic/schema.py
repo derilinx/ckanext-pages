@@ -10,6 +10,7 @@ def default_pages_schema():
                 p.toolkit.get_validator('name_validator'), page_name_validator],
         'content': [p.toolkit.get_validator('ignore_missing'), unicode],
         'page_type': [p.toolkit.get_validator('ignore_missing'), unicode],
+        'lang': [p.toolkit.get_validator('not_empty'), unicode],
         'order': [p.toolkit.get_validator('ignore_missing'), unicode],
         'private': [p.toolkit.get_validator('ignore_missing'),
                     p.toolkit.get_validator('boolean_validator')],

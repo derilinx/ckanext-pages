@@ -2,14 +2,19 @@ import ckan.plugins as p
 import ckan.lib.navl.dictization_functions as df
 import db
 
+import logging
+log = logging.getLogger(__name__)
+
 def page_name_validator(key, data, errors, context):
     session = context['session']
     page = context.get('page')
     group_id = context.get('group_id')
+    lang = context.get('lang')
+    log.debug("Page Name Validator: %s %s %s", key, data, context)
     if page and page == data[key]:
         return
 
-    query = session.query(db.Page.name).filter_by(name=data[key], group_id=group_id)
+    query = session.query(db.Page.name).filter_by(name=data[key], group_id=group_id, lang=lang)
     result = query.first()
     if result:
         errors[key].append(

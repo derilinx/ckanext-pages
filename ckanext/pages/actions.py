@@ -34,7 +34,10 @@ def _pages_show(context, data_dict):
         db.init_db(context['model'])
     org_id = data_dict.get('org_id')
     page = data_dict.get('page')
-    out = db.Page.get(group_id=org_id, name=page)
+    lang = data_dict.get('lang', h.lang())
+    out = db.Page.get(lang=db.pages_table.c.lang.in_((lang, None)),
+                      group_id=org_id, name=page)
+
     if out:
         out = db.table_dictize(out, context)
     return out
@@ -48,6 +51,7 @@ def _pages_list(context, data_dict):
     ordered = data_dict.get('order')
     order_publish_date = data_dict.get('order_publish_date')
     page_type = data_dict.get('page_type')
+    lang = data_dict.get('lang')
     private = data_dict.get('private', True)
     if ordered:
         search['order'] = True
@@ -55,6 +59,8 @@ def _pages_list(context, data_dict):
         search['page_type'] = page_type
     if order_publish_date:
         search['order_publish_date'] = True
+    if lang:
+        search['lang'] = lang
     if not org_id:
         search['group_id'] = None
         try:
@@ -80,6 +86,7 @@ def _pages_list(context, data_dict):
         pg_row = {'title': pg.title,
                   'content': pg.content,
                   'name': pg.name,
+                  'lang': pg.lang,
                   'publish_date': pg.publish_date.isoformat() if pg.publish_date else None,
                   'group_id': pg.group_id,
                   'page_type': pg.page_type,
@@ -97,7 +104,10 @@ def _pages_delete(context, data_dict):
         db.init_db(context['model'])
     org_id = data_dict.get('org_id')
     page = data_dict.get('page')
-    out = db.Page.get(group_id=org_id, name=page)
+    lang = data_dict.get('lang', h.lang())
+    out = db.Page.get(lang=db.pages_table.c.lang.in_((lang, None)),
+                      group_id=org_id,
+                      name=page)
     if out:
         session = context['session']
         session.delete(out)
@@ -109,8 +119,12 @@ def _pages_update(context, data_dict):
         db.init_db(context['model'])
     org_id = data_dict.get('org_id')
     page = data_dict.get('page')
+    lang = data_dict.get('lang', h.lang())
+    data_dict['lang'] = lang
     # we need the page in the context for name validation
     context['page'] = page
+    # and language
+    context['lang'] = lang
     context['group_id'] = org_id
     schema = update_pages_schema()
 
@@ -119,13 +133,15 @@ def _pages_update(context, data_dict):
     if errors:
         raise p.toolkit.ValidationError(errors)
 
-    out = db.Page.get(group_id=org_id, name=page)
+    out = db.Page.get(lang=db.pages_table.c.lang.in_((lang, None)),
+                      group_id=org_id,
+                      name=page)
     if not out:
         out = db.Page()
         out.group_id = org_id
         out.name = page
     items = ['title', 'content', 'name', 'private',
-             'order', 'page_type', 'publish_date']
+             'order', 'page_type', 'publish_date', 'lang']
     for item in items:
         setattr(out, item, data.get(item,'page' if item =='page_type' else None)) #backward compatible with older version where page_type does not exist
 

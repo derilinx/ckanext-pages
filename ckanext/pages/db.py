@@ -21,10 +21,13 @@ def init_db(model):
     class _Page(model.DomainObject):
 
         @classmethod
-        def get(cls, **kw):
+        def get(cls, lang=None, **kw):
             '''Finds a single entity in the register.'''
             query = model.Session.query(cls).autoflush(False)
-            return query.filter_by(**kw).first()
+            if lang is not None:
+                return query.filter(lang).filter_by(**kw).first()
+            else:
+                return query.filter_by(*args, **kw).first()
 
         @classmethod
         def pages(cls, **kw):
