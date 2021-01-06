@@ -44,6 +44,34 @@ def init_db(model):
 
     global Page
     Page = _Page
+
+    types = sa.types
+    global pages_table
+    pages_table = sa.Table('ckanext_pages', model.meta.metadata,
+        sa.Column('id', types.UnicodeText, primary_key=True, default=make_uuid),
+        sa.Column('title', types.UnicodeText, default=u''),
+        sa.Column('name', types.UnicodeText, default=u''),
+        sa.Column('content', types.UnicodeText, default=u''),
+        sa.Column('lang', types.UnicodeText, default=u''),
+        sa.Column('order', types.UnicodeText, default=u''),
+        sa.Column('private',types.Boolean,default=True),
+        sa.Column('group_id', types.UnicodeText, default=None),
+        sa.Column('user_id', types.UnicodeText, default=u''),
+        sa.Column('publish_date', types.DateTime),
+        sa.Column('page_type', types.DateTime),
+        sa.Column('created', types.DateTime, default=datetime.datetime.utcnow),
+        sa.Column('modified', types.DateTime, default=datetime.datetime.utcnow),
+        sa.Column('extras', types.UnicodeText, default=u'{}'),
+        extend_existing=True
+    )
+
+    model.meta.mapper(
+        Page,
+        pages_table,
+    )
+
+
+def create_db_tables(model):
     # We will just try to create the table.  If it already exists we get an
     # error but we can just skip it and carry on.
     sql = '''
@@ -93,30 +121,6 @@ def init_db(model):
         pass
     model.Session.commit()
 
-    types = sa.types
-    global pages_table
-    pages_table = sa.Table('ckanext_pages', model.meta.metadata,
-        sa.Column('id', types.UnicodeText, primary_key=True, default=make_uuid),
-        sa.Column('title', types.UnicodeText, default=u''),
-        sa.Column('name', types.UnicodeText, default=u''),
-        sa.Column('content', types.UnicodeText, default=u''),
-        sa.Column('lang', types.UnicodeText, default=u''),
-        sa.Column('order', types.UnicodeText, default=u''),
-        sa.Column('private',types.Boolean,default=True),
-        sa.Column('group_id', types.UnicodeText, default=None),
-        sa.Column('user_id', types.UnicodeText, default=u''),
-        sa.Column('publish_date', types.DateTime),
-        sa.Column('page_type', types.DateTime),
-        sa.Column('created', types.DateTime, default=datetime.datetime.utcnow),
-        sa.Column('modified', types.DateTime, default=datetime.datetime.utcnow),
-        sa.Column('extras', types.UnicodeText, default=u'{}'),
-        extend_existing=True
-    )
-
-    model.meta.mapper(
-        Page,
-        pages_table,
-    )
 
 
 def table_dictize(obj, context, **kw):
