@@ -51,7 +51,7 @@ def _pages_list(context, data_dict):
     ordered = data_dict.get('order')
     order_publish_date = data_dict.get('order_publish_date')
     page_type = data_dict.get('page_type')
-    lang = data_dict.get('lang')
+    lang = data_dict.get('lang', h.lang())
     private = data_dict.get('private', True)
     if ordered:
         search['order'] = True
