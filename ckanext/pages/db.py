@@ -27,7 +27,7 @@ def init_db(model):
             if lang is not None:
                 return query.filter(lang).filter_by(**kw).first()
             else:
-                return query.filter_by(*args, **kw).first()
+                return query.filter_by(**kw).first()
 
         @classmethod
         def pages(cls, **kw):
