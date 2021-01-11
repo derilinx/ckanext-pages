@@ -81,23 +81,9 @@ def get_wysiwyg_editor():
     return config.get('ckanext.pages.editor', '')
 
 
-def get_recent_blog_posts(number=5, exclude=None):
-    blog_list = toolkit.get_action('ckanext_pages_list')(
-        None, {'order_publish_date': True, 'private': False,
-               'page_type': 'blog'}
-    )
-    new_list = []
-    for blog in blog_list:
-        if exclude and blog['name'] == exclude:
-            continue
-        new_list.append(blog)
-        if len(new_list) == number:
-            break
-
-    return new_list
-
-
-def get_recent_blogs_lang(number=5, lang="en_GB", exclude=None):
+def get_recent_blog_posts(number=5, exclude=None, lang=None):
+    if not lang:
+        lang = toolkit.h.lang()
     blog_list = toolkit.get_action('ckanext_pages_list')(
         None, {'order_publish_date': True, 'private': False,
                'page_type': 'blog', 'lang': lang}
@@ -106,9 +92,7 @@ def get_recent_blogs_lang(number=5, lang="en_GB", exclude=None):
     for blog in blog_list:
         if exclude and blog['name'] == exclude:
             continue
-        # Filter by lang
-        if blog['lang'] == lang:
-            new_list.append(blog)
+        new_list.append(blog)
         if len(new_list) == number:
             break
 
@@ -157,7 +141,6 @@ class PagesPlugin(PagesPluginBase):
             'get_wysiwyg_editor': get_wysiwyg_editor,
             'get_recent_blog_posts': get_recent_blog_posts,
             'pages_get_plus_icon': get_plus_icon,
-            'get_recent_blogs_lang': get_recent_blogs_lang
         }
 
     def after_map(self, map):
