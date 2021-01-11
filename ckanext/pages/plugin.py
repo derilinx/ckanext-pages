@@ -97,6 +97,24 @@ def get_recent_blog_posts(number=5, exclude=None):
     return new_list
 
 
+def get_recent_blogs_lang(number=5, lang="en_GB", exclude=None):
+    blog_list = toolkit.get_action('ckanext_pages_list')(
+        None, {'order_publish_date': True, 'private': False,
+               'page_type': 'blog', 'lang': lang}
+    )
+    new_list = []
+    for blog in blog_list:
+        if exclude and blog['name'] == exclude:
+            continue
+        # Filter by lang
+        if blog['lang'] == lang:
+            new_list.append(blog)
+        if len(new_list) == number:
+            break
+
+    return new_list
+
+
 def get_plus_icon():
     if toolkit.check_ckan_version(min_version='2.7'):
         return 'plus-square'
@@ -138,7 +156,8 @@ class PagesPlugin(PagesPluginBase):
             'render_content': render_content,
             'get_wysiwyg_editor': get_wysiwyg_editor,
             'get_recent_blog_posts': get_recent_blog_posts,
-            'pages_get_plus_icon': get_plus_icon
+            'pages_get_plus_icon': get_plus_icon,
+            'get_recent_blogs_lang': get_recent_blogs_lang
         }
 
     def after_map(self, map):
