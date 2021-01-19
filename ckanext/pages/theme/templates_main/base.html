@@ -6,9 +6,10 @@
     <!--[if IE]>
     <script src="{{ h.url_for_static('/classList.min.js') }}"></script>
     <![endif]-->
-
-    {% resource 'pages/css/medium-editor.css' %}
-    {% resource 'pages/css/bootstrap.css' %}
-    {% resource 'pages/js/medium-editor.js' %}
-    {% resource 'pages/js/pages-editor.js' %}
+    {% if c.user and not c.is_psb_user and h.check_access('ckanext_pages_update', {'user': c.user}) %}
+       {% resource 'pages/css/medium-editor.css' %}
+       {% resource 'pages/css/bootstrap.css' %}
+       {% resource 'pages/js/medium-editor.js' %}
+       {% resource 'pages/js/pages-editor.js' %}
+    {% endif %}
 {% endblock %}
