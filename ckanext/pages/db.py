@@ -64,7 +64,7 @@ def init_db(model):
     conn = model.Session.connection()
     try:
         conn.execute(sql)
-    except sa.exc.ProgrammingError:
+    except (sa.exc.ProgrammingError, sa.exc.DBAPIError):
         pass
     model.Session.commit()
 
@@ -78,7 +78,7 @@ def init_db(model):
     try:
         for statement in sql_upgrade_01:
             conn.execute(statement)
-    except sa.exc.ProgrammingError:
+    except (sa.exc.ProgrammingError, sa.exc.DBAPIError):
         pass
     model.Session.commit()
 
@@ -89,7 +89,7 @@ def init_db(model):
     try:
         for statement in sql_upgrade_02:
             conn.execute(statement)
-    except sa.exc.ProgrammingError:
+    except (sa.exc.ProgrammingError, sa.exc.DBAPIError):
         pass
     model.Session.commit()
 
