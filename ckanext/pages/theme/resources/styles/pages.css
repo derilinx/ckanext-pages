@@ -2,18 +2,210 @@
    Edits should be made to .less files
    ====================================================== */
 .page-list-item .image {
-  width: 168px;
-  /* hack for default theme */
+    width: 168px;
+    /* hack for default theme */
 }
+
 .page-list-item .image a {
-  display: block;
-  height: 136px;
-  background-position: center center;
-  background-size: cover;
+    display: block;
+    height: 136px;
+    background-position: center center;
+    background-size: cover;
 }
+
 .page-list-item h3 a {
-  display: block;
+    display: block;
 }
+
 .page-simple-form-height {
-  height: 400px !important;
+    height: 400px !important;
+}
+
+/*Begin redesign of Pages css to be moved later?*/
+
+.bb {
+    /*border-color: #00aeef !important;*/
+}
+
+.page-thumb-img {
+    width: 100%;
+    max-height:240px;
+}
+
+.page-content {
+}
+
+.page-head {
+}
+
+.page-head-blog {
+    /*height: 6em;*/
+}
+
+.page-title {
+    /*font-size: 22px;*/
+    /*color: #fff !important;*/
+}
+
+.page-title a {
+    color: #fff !important;
+}
+
+.page-title a:hover {
+    color: #fff;
+    text-decoration: none;
+}
+
+.btn-page {
+    background-color: #00aeef;
+}
+
+.page-container {
+    display: grid;
+   grid-template-columns: 50% 50% ;
+    padding-left:100px;
+}
+
+.page-item {
+    flex: 1 0 26%;
+    margin: 2%
+}
+
+.page-panel-body {
+    padding: 12px;
+    padding-top: 0px;
+}
+
+.page-panel-content {
+}
+
+.page-img-box {
+    margin: -12px;
+    margin-top: 0;
+    margin-bottom: 0;
+    text-align: center
+}
+
+.blog-hero {
+    height: 200px;
+    background-color: #00aeef;
+    background-image: url(/img/heroimg.png);
+    background-repeat: no-repeat;
+    position: relative;
+    margin-bottom:20px;
+}
+
+.page-hero {
+    height: 200px;
+    background-image: url(/img/Blue1920x350.jpg);
+    padding-top: 5%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-color: #00aeef;
+}
+
+.index-hero {
+    background-image: url(/img/News1920x500.jpg);
+    height:300px;
+    padding-top:8%;
+}
+
+.blog-hero-title {
+    color: white;
+    font-size: 6em;
+    position: absolute;
+    top: 30%;
+    right: 10%;
+}
+
+.page-featured {
+    margin-bottom: 4px;
+}
+
+.page-pub-date {
+    padding-top: 10px;
+}
+
+.page-raw {
+    padding-top: 4px;
+}
+
+.panel-foot-pages {
+    position: absolute;
+    bottom: 0;
+    padding: 12px;
+}
+
+.page-panel {
+    position: relative;
+    height: 600px;
+}
+
+.pages-link {
+    position: absolute;
+bottom:4px;
+}
+
+.pages-action {
+    padding: 8px;
+}
+
+.pages-heading {
+    font-weight: 700;
+}
+
+.hero-heading {
+    color: white;
+    font-size: 1.25em;
+    margin-top: 50%;
+}
+
+.page-main-container {
+    margin: auto;
+    width: 67%;
+    padding-top: 4em;
+}
+
+.ckanext-pages-content h1, h2, h3, h4, h5, h6 {
+    color: #00aeef;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.blog-title {
+    color: black;
+}
+
+.blog-date {
+    color: #00aeef;
+}
+
+
+.panel-pages {
+    background-color: #00aeef;
+    color: #fff;
+}
+
+.pages-h {
+    text-transform: uppercase;
+}
+
+.pages-a {
+    color: #fff;
+}
+
+.action-btns {
+    float: right;
+}
+
+.page-section {
+    background: white;
+}
+
+.panel-red {
+    background-color: #d65047;
+}
+
+.panel-green {
+    background-color: #40C851;
 }

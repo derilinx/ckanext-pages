@@ -1,4 +1,8 @@
 {% extends 'page.html' %}
+{% block styles %}
+  {{ super() }}
+  {% resource 'pages-theme/styles/pages.css' %}
+{% endblock %}
 
 {% block breadcrumb_content %}
   <li><a href="/blog">{% trans %}Blog{% endtrans %}</a></li>
