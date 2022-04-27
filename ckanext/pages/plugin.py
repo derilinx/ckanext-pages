@@ -2,13 +2,16 @@ import logging
 import datetime
 from pylons import config
 import ckan.plugins.toolkit as toolkit
-ignore_missing = toolkit.get_validator('ignore_missing')
-
 import ckan.plugins as p
 import ckan.lib.helpers as h
 import actions
 import auth
 import jinja2
+
+import ckanext.pages.helpers as pages_helpers
+
+ignore_missing = toolkit.get_validator('ignore_missing')
+
 
 
 if False and toolkit.check_ckan_version(min_version='2.5'):
@@ -171,7 +174,12 @@ class PagesPlugin(PagesPluginBase):
             'pages_get_plus_icon': get_plus_icon,
             'get_recent_pages': get_recent_pages,
             'get_featured_blogs': get_featured_blogs,
-            'get_today': get_today
+            'get_today': get_today,
+            'get_post_image': pages_helpers.get_post_image,
+            'get_first_p': pages_helpers.get_first_p,
+            'get_soup_text': pages_helpers.get_soup_text,
+            'get_content': pages_helpers.get_content
+
         }
 
     def after_map(self, map):
