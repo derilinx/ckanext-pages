@@ -1,88 +1,124 @@
 {% extends 'ckanext_pages/blog_edit_base.html' %}
 {% block breadcrumb_content %}
-    <li><a href="/blog">Blog</a></li>
+<li><a href="/blog">Blog</a></li>
 {% endblock %}
 
 {% block page_primary_action %}
-  {% if h.check_access('ckanext_pages_update', {}) %}
-    {% if h.ckan_version().split('.')[1] | int >= 9 %}
-      {% link_for _('Add Article'), named_route='pages.blog_new', page='', class_='btn btn-primary', icon='plus-square' %}
-    {% else %}
-      {% link_for _('Add Article'), controller='ckanext.pages.controller:PagesController', action='blog_edit', page='', class_='btn btn-primary', icon='plus-square' %}
-    {% endif %}
-  {% endif %}
 {% endblock %}
 
-{% block primary_content_inner %}
-    <style>
-     .secondary {
-         float: right !important;
-         padding: 10px;
-     }
+{% block pre_primary %}
+<div class="page-hero index-hero">
+    <h1 class="text-center">
+        <span class="page-heading hero-heading">News</span>
+    </h1>
+</div>{% endblock %}
 
-     .module {
-         float: left !important;
-     }
+{% block primary %}
+<style>
+    [role=main] {
+        background-color: #f1f4f7;
+    }
 
-     .dataset-item {
-         border-right: none !important;
-     }
+    .secondary {
+        float: right !important;
+        padding: 10px;
+        margin-right:80px;
+    }
 
-     .wrapper::before {
-         display: none;
-     }
+    .module {
+        float: left !important;
+    }
 
-     .secondary {
-         margin-top: 15px;
-         border-left: 0px;
-     }
+    .module-content {
+        background-color: #f1f4f7;
+    }
 
-    </style>
+    .dataset-item {
+        border-right: none !important;
+    }
+
+    .wrapper::before {
+        display: none;
+    }
+    .wrapper {
+    background-color: #f1f4f7;
+}
+    .secondary {
+        margin-top: 15px;
+        border-left: 0px;
+    }
+    .container {
+        padding-left:0;
+        padding-right:0;
+        width:100%;
+    }
+
+</style>
+
+<div class="container">
+    <div class="pages-action">
+        {% if h.check_access('ckanext_pages_update', {}) %}
+        {% link_for _('Add Article'), named_route='pages.blog_edit',
+        page='', class_='btn btn-primary', icon=h.pages_get_plus_icon() %}
+        {% endif %}
+    </div>
+
     {% snippet 'ckanext_pages/snippets/pages_list.html', pages=c.page.items, type='blog', title='Blog' %}
+</div>
+<div class="page-pager-wrapper">
     {{ c.page.pager() }}
+</div>
+
+
 {% endblock %}
+
 
 {% block secondary_content %}
-    <div class="hidden-xs">
+{% set posts = h.get_recent_blog_posts(number=5, exclude=c.page.name) %}
 
-        <div class="panel panel-info">
-            <div class="panel-heading">{% trans %}Latest News{% endtrans %}</div>
+<div class="module module-narrow module-shallow">
+
+    <div class="module-content">
+        <div class="panel panel-pages">
+            <div class="panel-heading page-head page-title pages-h">{% trans %}Latest News{% endtrans %}</div>
             <div class="panel-body">
-                {% for post in h.get_recent_blog_posts(number=5) %}
-                    <div class="row post">
-                        <div class="post-title col-md-12">
-                            <h3><a href="{{ h.url_for('pages.blog_show', page='/' + post.name) }}">{{ post.title|truncate(40, end="…") }}</a></h3>
-                        </div>
-                        <div class="post-meta col-md-12">
-
-                            <small>{% trans %}Published on{% endtrans %} {{ h.render_datetime(post.publish_date) }}</small>
-                        </div>
+                {% for post in posts %}
+                <div class="row post">
+                    <div class="post-title col-md-12">
+                        <h3><a class="pages-a" href="{{ h.url_for('pages.blog_show', page='/' + post.name) }}">{{ post.title|truncate(40, end="…") }}</a>
+                        </h3>
                     </div>
+                    <div class="post-meta col-md-12">
+
+                        <small>{% trans %}Published on{% endtrans %} {{ h.render_datetime(post.publish_date) }}</small>
+                    </div>
+                </div>
                 {% endfor %}
             </div>
         </div>
-
-        <div class="panel panel-info">
-            <div class="panel-heading">{% trans %}Search For Datasets{% endtrans %}</div>
-            <div class="panel-body">
-                <form class="navbar-form" role="search" action="/dataset">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="E.g. Census 2016..." name="q">
-                        <div class="input-group-btn">
-                            <button class="btn btn-default btn-search" type="submit"><i class="fa fa-search"></i></button>
-                        </div>
+            <div class="panel panel-pages panel-red">
+        <div class="panel-heading">{% trans %}Search For Datasets{% endtrans %}</div>
+        <div class="panel-body">
+            <form class="navbar-form" role="search" action="/dataset">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="E.g. Census 2016..." name="q">
+                    <div class="input-group-btn">
+                        <button class="btn btn-default btn-search" type="submit"><i class="fa fa-search"></i></button>
                     </div>
-                </form>
-            </div>
-        </div>
-        <div class="panel panel-info">
-            <div class="panel-heading">{% trans %}Follow Us{% endtrans %}</div>
-            <div class="panel-body">
-                <a href="https://twitter.com/govdataie?lang=en" target="_blank">Twitter</a>
-                <!--<a href="https://data.gov.ie/rss.xml" target="_blank">RSS</a>-->
-            </div>
+                </div>
+            </form>
         </div>
     </div>
+    <div class="panel panel-pages panel-green">
+        <div class="panel-heading">{% trans %}Follow Us{% endtrans %}</div>
+        <div class="panel-body">
+            <a href="https://twitter.com/govdataie?lang=en" target="_blank"><i style="font-size:3em;" class="fa fa-xl fa-twitter"></i></a>
+            <!--<a href="https://data.gov.ie/rss.xml" target="_blank">RSS</a>-->
+        </div>
+    </div>
+    </div>
+
+
+</div>
 
 {% endblock %}
-

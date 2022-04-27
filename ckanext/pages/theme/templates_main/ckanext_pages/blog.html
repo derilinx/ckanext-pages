@@ -12,13 +12,19 @@
 {% endblock %}
 
 {% block bodytag %}{{ super() }} class="blog"{% endblock %}
-{% block subtitle %}{{ c.page.title }}{% endblock %}
+{% block subtitle %}
+
+    {{ c.page.title }}
+
+{% endblock %}
 
 {% block primary_content %}
     <style>
     .secondary {
             float: right !important;
             padding: 10px;
+            border-left: none;
+            border-bottom: none;
         }
 
         .module {
@@ -29,18 +35,6 @@
             border-right: none !important;
         }
 
-{#        .wrapper {#}
-{#            background-color: #EEEEEE !important;#}
-{#        }#}
-{##}
-{#        .primary {#}
-{#            background-color: #EEEEEE !important;#}
-{#        }#}
-{##}
-{#        .module-content {#}
-{#            background-color: #EEEEEE !important;#}
-{#        }#}
-
         .wrapper::before {
             display: none;
         }
@@ -48,13 +42,17 @@
         .secondary {
             margin-top: 15px;
         }
+        [role=main] {
+            background: white;
+             }
     </style>
   <section class="module-content ckanext-pages-content">
     {% if h.check_access('ckanext_pages_update') %}
       {% asset 'pages/main-css' %}
       {% link_for _('Edit'), named_route='pages.blog_edit', page=c.page.name, class_='btn btn-primary pull-right', icon='plus-square' %}
     {% endif %}
-    <h1 class="page-heading">{{ c.page.title }}</h1>
+
+    <h1 class="page-heading  pages-heading">{{ c.page.title }}</h1>
       {% if c.page.publish_date %}
          <span class="muted date"> {{ h.render_datetime(c.page.publish_date) }} </span>
       {% endif %}
@@ -62,7 +60,11 @@
       {% set editor = h.pages_get_wysiwyg_editor() %}
       {% if editor %}
         <div>
-            {{c.page.content|safe}}
+
+<!--            <div class="test" style="border:1px solid red">{{ h.get_first_p(c.page.content) }}</div>-->
+<!--            <div class="test" style="border:1px solid red">{{ h.get_soup_text(c.page.content) }}</div>-->
+            {% if c.page.image %}}<div><img src={{c.page.image}} alt=""></div>{% endif %}
+            <div>{{ h.render_content(c.page.content) | safe }}</div>
         </div>
       {% else %}
         {{ h.render_content(c.page.content) }}
@@ -79,13 +81,13 @@
   <div class="module module-narrow module-shallow">
 
     <div class="module-content">
-        <div class="panel panel-info">
-          <div class="panel-heading">{% trans %}Latest News{% endtrans %}</div>
+        <div class="panel panel-pages">
+          <div class="panel-heading page-head page-title pages-h">{% trans %}Latest News{% endtrans %}</div>
             <div class="panel-body">
               {% for post in posts %}
                 <div class="row post">
                     <div class="post-title col-md-12">
-                        <h3><a href="{{ h.url_for('pages.blog_show', page='/' + post.name) }}">{{ post.title|truncate(40, end="…") }}</a></h3>
+                        <h3><a class="pages-a" href="{{ h.url_for('pages.blog_show', page='/' + post.name) }}">{{ post.title|truncate(40, end="…") }}</a></h3>
                     </div>
                     <div class="post-meta col-md-12">
 
