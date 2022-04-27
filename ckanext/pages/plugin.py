@@ -7,8 +7,6 @@ from six.moves.urllib.parse import quote
 from ckan.plugins import toolkit as tk
 import datetime
 import ckan.plugins.toolkit as toolkit
-ignore_missing = toolkit.get_validator('ignore_missing')
-
 import ckan.plugins as p
 from ckan.lib.helpers import build_nav_main as core_build_nav_main
 
@@ -18,6 +16,11 @@ from ckanext.pages import blueprint
 
 from ckan.lib.plugins import DefaultTranslation
 import jinja2
+
+import ckanext.pages.helpers as pages_helpers
+
+ignore_missing = toolkit.get_validator('ignore_missing')
+
 
 
 log = logging.getLogger(__name__)
@@ -167,7 +170,12 @@ class PagesPlugin(PagesPluginBase):
             'get_recent_blog_posts': get_recent_blog_posts,
             'get_recent_pages': get_recent_pages,
             'get_featured_blogs': get_featured_blogs,
-            'get_today': get_today
+            'get_today': get_today,
+            'get_post_image': pages_helpers.get_post_image,
+            'get_first_p': pages_helpers.get_first_p,
+            'get_soup_text': pages_helpers.get_soup_text,
+            'get_content': pages_helpers.get_content
+
         }
 
     def get_actions(self):
