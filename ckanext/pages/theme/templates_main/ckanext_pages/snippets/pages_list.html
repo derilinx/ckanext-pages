@@ -2,56 +2,79 @@
 {% set action = '{0}_show'.format(type) %}
 
 {% if pages %}
-    {% set editor = h.get_wysiwyg_editor() %}
+{% set editor = h.get_wysiwyg_editor() %}
+
+<div class="page-container">
 
     {% for page in pages %}
-        {% if id %} {# this is for orgs and groups #}
-            {% set url = h.url_for(controller='ckanext.pages.controller:PagesController', action=action, id=id, page='/' + page.name) %}
-        {% elif type == 'blog' %}
-            {% set url = h.url_for(controller='ckanext.pages.controller:PagesController', action='blog_show', page='/' + page.name) %}
-        {% else %}
-            {% set url = h.url_for(controller='ckanext.pages.controller:PagesController', action='pages_show', page='/' + page.name) %}
-        {% endif %}
-        <div class="row">
+    {% if id %} {# this is for orgs and groups #}
+    {% set url = h.url_for(controller='ckanext.pages.controller:PagesController', action=action, id=id, page='/' +
+    page.name) %}
+    {% elif type == 'blog' %}
+    {% set url = h.url_for(controller='ckanext.pages.controller:PagesController', action='blog_show', page='/' +
+    page.name) %}
+    {% else %}
+    {% set url = h.url_for(controller='ckanext.pages.controller:PagesController', action='pages_show', page='/' +
+    page.name) %}
+    {% endif %}
+    <div class="page-item">
+        <div class="page-panel panel panel-default bb">
 
-            <div class="panel" style="padding:5px;">
-                <div class="panel-body">
-                    <h2 style="margin-top:-5px;">
-                        <a href="{{ url }}">{{ page.title }}</a></h2>
+                        <div class="panel-body page-panel-body">
+                {% if page.content %}
+                {% set img_url = h.get_post_image(page.content) %}
+                {% if editor %}
 
-                    {% if page.publish_date %}
-
-                        <small>Published on {{ h.render_datetime(page.publish_date) }}</small>
-                    {% endif %}
-
+                <div class="page-content">
+                    <div class="page-img-box">
+                        <img class="page-thumb-img" src="{{ img_url }}" alt=" image from a post"/>
+                    </div>
                     {% if featured or page.featured %}
-                        <span class="label label-success">Featured</span>
+                    <div class="page-featured">
+                        <span class="page-label label label-success">Featured</span>
+                    </div>
                     {% endif %}
-
-
-                    {% if page.content %}
-                        {% if editor %}
-                            <div>
-                                {{ page.content|striptags|truncate }}
-                            </div>
-                        {% else %}
-                            {{ h.markdown_extract(page.content) }}
-                        {% endif %}
+                    <div class="page-head  page-head-blog">
+                        <span class="page-title" style="text-transform: uppercase">
+                            <a href="{{ url }}"><h2 class="blog-title">{{ page.title }}</h2></a>
+                    </span>
+                    </div>
+                    <div class="page-pub-date">
+                    {% if page.publish_date %}
+                    <small class="page-date blog-date">{{ h.render_datetime(page.publish_date) }}</small>
                     {% else %}
-                        <p class="empty">{{ _('This page currently has no content') }}</p>
+                    <small class="">-</small>
                     {% endif %}
-                    <a style="margin-top:10px" class="btn btn-info" href="{{ url }}">Read more</a>
+                    </div>
+                    <div class="page-raw">
+                        {{ page.content|striptags|truncate }}
+                    </div>
+
+
+                </div>
+
+                {% else %}
+                {{ h.markdown_extract(page.content) }}
+                {% endif %}
+                {% else %}
+                <p class="empty">{{ _('This page currently has no content') }}</p>
+                {% endif %}
+
+                <div class="pages-link">
+                    <a class="read-more" href="{{ url }}">Read more  <i class="fa fa-arrow-right"></i></a>
                 </div>
             </div>
 
-
         </div>
+    </div>
     {% endfor %}
 
-{% else %}
-    {% if type == 'blog' %}
-        <p class="empty">{{ _('There are currently no blog articles here') }}</p>
     {% else %}
-        <p class="empty">{{ _('There are currently no pages here') }}</p>
+    {% if type == 'blog' %}
+    <p class="empty">{{ _('There are currently no blog articles here') }}</p>
+    {% else %}
+    <p class="empty">{{ _('There are currently no pages here') }}</p>
     {% endif %}
+
+</div>
 {% endif %}

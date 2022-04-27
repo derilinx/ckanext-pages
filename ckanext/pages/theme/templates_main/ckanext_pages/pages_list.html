@@ -4,22 +4,19 @@
 {% endblock %}
 
 {% block page_primary_action %}
-
     {% if h.check_access('ckanext_pages_update', {}) %}
         {% link_for _('Add page'), controller='ckanext.pages.controller:PagesController', action='pages_edit', page='', class_='btn btn-primary', icon=h.pages_get_plus_icon() %}
     {% endif %}
 {% endblock %}
 
-{% block primary_content_inner %}
+{% block primary %}
     <style>
      .secondary {
          float: right !important;
          padding: 10px;
      }
 
-     .module {
-         float: left !important;
-     }
+
 
      .dataset-item {
          border-right: none !important;
@@ -30,20 +27,33 @@
      }
 
      .secondary {
-         margin-top: 15px;
+         margin-top: 24px;
          border-left: 0px;
      }
     </style>
+<div class="pages-action">
+        {% if h.check_access('ckanext_pages_update', {}) %}
+        {% link_for _('Add page'), controller='ckanext.pages.controller:PagesController', action='pages_edit', page='', class_='btn btn-primary', icon=h.pages_get_plus_icon() %}
+    {% endif %}
+</div>
+<div>
     {% snippet 'ckanext_pages/snippets/pages_list.html', pages=c.page.items %}
+</div>
+<div class="page-pager-wrapper">
     {{ c.page.pager() }}
+    </div>
+
 {% endblock %}
 
+{% block secondary %}
+
 {% block secondary_content %}
+
     {% set pages = c.page.items %}
     <div class="module module-narrow module-shallow hidden-xs">
         <div class="module-content">
             <div class="panel panel-info">
-                <div class="panel-heading">Latest Pages</div>
+                <div class="panel-heading page-head page-title">Latest Pages</div>
                 <div class="panel-body">
                     {% for page in pages[:10] %}
                         <div class="row post">
@@ -57,6 +67,7 @@
             </div>
         </div>
     </div>
+
 {% endblock %}
 
-
+{% endblock %}
