@@ -28,13 +28,13 @@
       {% else %}
         {% set url = h.url_for(controller='ckanext.pages.controller:PagesController', action='pages_show', page='/' + page.name) %}
       {% endif %}
-      <div class="row page-list-item dataset-item">
+      <a href="{{ url }}">
+          <div class="page-list-item dataset-item flexy">
       {% if page.image %}
-        <div class="span3 image">
-          <a style="background-image:url({{ page.image }})" href="{{ url }}">
-          </a>
+        <div class="blog-image image" style="background-image:url({{ page.image }})">
+
         </div>
-        <div class="span8">
+        <div class="blog-text">
            <h3 class="dataset-heading">
               <a href="{{ url }}" >{{ page.title }}</a>
               {% if page.publish_date %}
@@ -53,29 +53,39 @@
               <p class="empty">{{ _('This page currently has no content') }}</p>
             {% endif %}
         </div>
+          <div class="blog-more">
+              <a href="{{ url }}"><i class="blog-chev fa fa-3x fa-chevron-right"></i></a>
+          </div>
       {% else %}
-        <div class="span11">
-          <h3 class="dataset-heading">
-            <a href="{{ url }}" >{{ page.title }}</a>
-            {% if page.publish_date %}
-               <small class="date"> {{ h.render_datetime(page.publish_date) }} </small>
-            {% endif %}
-          </h3>
-          {% if page.content %}
-            {% if editor %}
-            <div>
-              {{page.content|striptags|truncate}}
-            </div>
-            {% else %}
-              {{ h.markdown_extract(page.content) }}
-            {% endif %}
-          {% else %}
-            <p class="empty">{{ _('This page currently has no content') }}</p>
-          {% endif %}
+        <div class="blog-image image" style="background-image:url('/img/wbwd-logo.png')">
+
         </div>
+        <div class="blog-text">
+           <h3 class="dataset-heading">
+              <a href="{{ url }}" >{{ page.title }}</a>
+              {% if page.publish_date %}
+                 <small class="date"> {{ h.render_datetime(page.publish_date) }} </small>
+              {% endif %}
+            </h3>
+            {% if page.content %}
+              {% if editor %}
+              <div>
+                {{page.content|striptags|truncate}}
+              </div>
+              {% else %}
+                {{ h.markdown_extract(page.content) }}
+              {% endif %}
+            {% else %}
+              <p class="empty">{{ _('This page currently has no content') }}</p>
+            {% endif %}
+        </div>
+          <div class="blog-more">
+              <a href="{{ url }}"><i class="blog-chev fa fa-3x fa-chevron-right"></i></a>
+          </div>
       {% endif %}
-      </div>
+      </div></a>
     {% endfor %}
+    </div>
 
 {% else %}
     {% if type == 'blog' %}
