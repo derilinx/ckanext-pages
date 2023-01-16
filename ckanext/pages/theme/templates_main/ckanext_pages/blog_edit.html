@@ -3,6 +3,7 @@
 {% block subtitle %}{{ _('Edit Article')}} {% endblock %}
 
 {% block primary_content_inner %}
-  {% snippet 'ckanext_pages/base_form.html', page=page, data=data, errors=errors, type='blog'%}
+{% set hide_field_order = True %}
+  {% snippet 'ckanext_pages/base_form.html', page=page, data=data, hide_field_order=hide_field_order, errors=errors, type='blog'%}
 {% endblock %}
 
