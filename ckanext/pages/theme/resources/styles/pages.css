@@ -2,12 +2,13 @@
    Edits should be made to .less files
    ====================================================== */
 .page-list-item .image {
-  width: 168px;
+  width: 200px;
   /* hack for default theme */
 }
-.page-list-item .image a {
+.page-list-item .image {
   display: block;
   height: 136px;
+  width:200px;
   background-position: center center;
   background-size: cover;
 }
@@ -16,4 +17,50 @@
 }
 .page-simple-form-height {
   height: 400px !important;
+}
+
+.flexy {
+	display: flex;
+    align-items: center;
+}
+
+.grid-container {
+	display:flex;
+    flex-direction:row;
+    flex-wrap:wrap;
+    justify-content: flex-start;
+}
+
+.blog-text {
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+.blog-chev {
+    color:grey;
+}
+
+.blog-more {
+    display:flex;
+    align-self:flex-end;
+    padding-bottom: 1.5em;
+}
+
+.news-thumb {
+    width:200px;
+}
+
+.news-body {
+    font-size: 1em!important;
+}
+
+.news-logo {
+    width: 100%;
+}
+
+.blog-news-item {
+  display: block;
+  height: 136px;
+  background-position: center center;
+  background-size: cover;
 }
