@@ -1,15 +1,11 @@
-<div class="row page-list-item dataset-item">
+<a href="{{ url }}">
+<div class="row page-list-item dataset-item flexy">
 
 {% block page_item_image %}
-{% if page.image %}
-  <div class="span3 col-md-2 image">
-    <a style="background-image:url({{ page.image }})" href="{{ url }}"></a>
-  </div>
-{% endif %}
+    <div class="blog-image image" style="background-image:url({{ page.image or '/img/wbwd-logo.png'}})"></div>
 {% endblock %}
 
-<div class="{% if page.image %}span8 col-md-10{% else %}span11 col-md-12{% endif %}">
-
+<div class="blog-text">
      {% block page_item_heading %}
      <h3 class="dataset-heading">
         <a href="{{ url }}" >{{ page.title }}</a>
@@ -33,5 +29,7 @@
       {% endif %}
     {% endblock %}
   </div>
+  <div class="blog-more">
+    <a href="{{ url }}"><i class="blog-chev fa fa-3x fa-chevron-right"></i></a>
 </div>
-
+</div></a>
