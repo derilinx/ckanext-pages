@@ -71,7 +71,7 @@ def get_wysiwyg_editor():
     return tk.config.get('ckanext.pages.editor', '')
 
 
-def get_recent_blog_posts(number=5, exclude=None):
+def get_recent_blog_posts(number=4, exclude=None):
     blog_list = tk.get_action('ckanext_pages_list')(
         None, {'order_publish_date': True, 'private': False,
                'page_type': 'blog'}
