@@ -9,6 +9,7 @@ import ckan.plugins as p
 import ckan.lib.helpers as h
 import actions
 import auth
+import datetime
 
 if toolkit.check_ckan_version(min_version='2.5'):
     from ckan.lib.plugins import DefaultTranslation
@@ -82,6 +83,8 @@ def get_recent_blog_posts(number=5, exclude=None):
     )
     new_list = []
     for blog in blog_list:
+        datex = datetime.datetime.strptime(blog['publish_date'], '%Y-%m-%dT%H:%M:%S')
+        blog['date'] = datex
         if exclude and blog['name'] == exclude:
             continue
         new_list.append(blog)
