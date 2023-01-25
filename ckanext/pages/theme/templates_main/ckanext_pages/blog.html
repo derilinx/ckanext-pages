@@ -15,7 +15,7 @@
     {% if c.page.content %}
       {% set editor = h.pages_get_wysiwyg_editor() %}
       {% if editor %}
-        <div>
+        <div class="pages-content">
             {{c.page.content|safe}}
         </div>
       {% else %}
