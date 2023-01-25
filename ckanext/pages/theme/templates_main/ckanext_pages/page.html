@@ -23,7 +23,7 @@ pages_name - what we call pages
       <div class="ckanext-pages-content">
         {% set editor = h.get_wysiwyg_editor() %}
         {% if editor %}
-          <div>
+          <div class="pages-content">
               {{c.page.content|safe}}
           </div>
         {% else %}
