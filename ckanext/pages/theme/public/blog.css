@@ -18,3 +18,8 @@
 .secondary .blog-content .btn {
 	display:none;
 }
+
+
+.pages-content p img {
+    max-width: 100%;
+}
