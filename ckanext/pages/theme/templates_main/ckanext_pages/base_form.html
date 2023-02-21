@@ -104,6 +104,7 @@
       {% asset 'pages/medium-css' %}
       {{ wysiwyg.editor('content', id='field-content', label=_('Content'), placeholder=_('Enter content here'), value=data.content|safe, error=errors.content) }}
     {% elif editor == 'ckeditor' %}
+      <script> window.CKEDITOR_BASEPATH = '/' </script>
       {% asset 'pages/main-js' %}
       {% asset 'pages/main-css' %}
       <div class="control-group">
