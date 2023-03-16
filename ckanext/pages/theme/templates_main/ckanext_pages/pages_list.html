@@ -37,7 +37,7 @@
     </style>
 <div class="pages-action">
         {% if h.check_access('ckanext_pages_update', {}) %}
-        {% link_for _('Add page'), named_route='pages.pages_edit', page='', class_='btn btn-primary', icon='plus-square' %}
+        {% link_for _('Add page'), named_route='pages.edit', page='', class_='btn btn-primary', icon='plus-square' %}
     {% endif %}
 </div>
 <div>

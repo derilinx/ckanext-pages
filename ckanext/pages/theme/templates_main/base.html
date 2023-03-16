@@ -7,9 +7,6 @@
     <script src="{{ h.url_for_static('/classList.min.js') }}"></script>
     <![endif]-->
 
-    {% resource 'pages/css/medium-editor.css' %}
-    {% resource 'pages/css/bootstrap.css' %}
-    {% resource 'pages/js/medium-editor.js' %}
-    {% resource 'pages/js/pages-editor.js' %}
-
+    {% asset 'pages/medium-css' %}
+    {% asset 'pages/medium-js' %}
 {% endblock %}

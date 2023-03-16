@@ -174,15 +174,12 @@ def pages_show(page=None, page_type='page'):
     tk.c.page_type = page_type
     if page.startswith('/'):
         page = page[1:]
-    if not page:
-        return pages_list_pages(page_type)
     _page = tk.get_action('ckanext_pages_show')(
         context={},
-        data_dict={
-            'org_id': None, 'page': page}
+        data_dict={'org_id': None, 'page': page}
     )
-    if _page is None:
-        return pages_list_pages(page_type)
+    if not _page:
+        tk.abort(404, _('Page Not Found'))
     tk.c.page = _page
     _inject_views_into_page(_page)
 

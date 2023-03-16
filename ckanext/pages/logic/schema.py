@@ -19,7 +19,7 @@ def default_pages_schema():
         'page_type': [ignore_missing, unicode_safe],
         'order': [ignore_missing, unicode_safe],
         'private': [ignore_missing, boolean],
-        'featured': [ignore_missing, boolean]
+        'featured': [ignore_missing, boolean],
         'group_id': [ignore_missing, unicode_safe],
         'user_id': [ignore_missing, unicode_safe],
         'created': [ignore_missing, isodate],

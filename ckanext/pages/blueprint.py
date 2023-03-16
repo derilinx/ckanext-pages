@@ -8,7 +8,6 @@ pages = Blueprint('pages', __name__)
 def index():
     return utils.pages_list_pages('page')
 
-
 def show(page):
     return utils.pages_show(page, page_type='page')
 
