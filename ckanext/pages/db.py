@@ -88,7 +88,7 @@ def define_tables():
                            sa.Column('created', types.DateTime, default=datetime.datetime.utcnow),
                            sa.Column('modified', types.DateTime, default=datetime.datetime.utcnow),
                            sa.Column('extras', types.UnicodeText, default=u'{}'),
-                           sa.Column('features', types.Boolean, default=False)
+                           sa.Column('featured', types.Boolean, default=False),
                            extend_existing=True
                            )
 

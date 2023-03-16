@@ -19,9 +19,8 @@ def get_post_image(content):
 def get_first_p(content):
     soup = BeautifulSoup(content, 'html.parser')
     if soup:
-        print soup
         if soup.find_all('p'):
-            return soup.find_all('p')[1]
+            return soup.find_all('p')[0]
         else:
             return ''
 

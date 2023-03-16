@@ -21,7 +21,7 @@
       <div class="action-btns">
         {% block ckanext_pages_actions %}
           {% if h.check_access('ckanext_pages_update') %}
-            {% link_for _('Edit'), named_route='pages.pages_edit', page='/' +c.page.name, class_='btn btn-primary', icon='edit' %}
+            {% link_for _('Edit'), named_route='pages.edit', page='/' +c.page.name, class_='btn btn-primary', icon='edit' %}
           {% endif %}
         {% endblock %}
       </div>
@@ -40,8 +40,6 @@
       {% else %}
         <p class="empty">{{ _('This page currently has no content') }}</p>
       {% endif %}
-
-      {% endblock %}
     </div>
   </section>
 {% endblock %}
