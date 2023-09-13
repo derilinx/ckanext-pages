@@ -1,7 +1,60 @@
 # Change log for ckanext-pages
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
-and this project adheres to [Semantic Versioning](http://semver.org/).
+
+## 0.4.0 (2023-02-14)
+* Drop support for CKAN 2.7 and 2.8
+* Drop support for PY2
+* Removes get_plus_icon() helper
+* Adds support for CSRF token
+* Rename helper `get_wysiwyg_editor` to `pages_get_wysiwyg_editor` to avoid name clash with other extensions (like `ckanext-showcase`)
+
+
+## 0.3.3 (2021-07-20)
+
+## Fixed
+
+- Fix content styles ([1d96e35](https://github.com/ckan/ckanext-pages/commit/1d96e35))
+
+
+## 0.3.2 (2021-07-19)
+
+## Fixed
+
+- Fix predefined styles in CKeditor ([#113](https://github.com/ckan/ckanext-pages/pull/113))
+
+## Added
+
+- Move DB tables initialization to CLI commands ([#112](https://github.com/ckan/ckanext-pages/pull/112))
+- Allow other plugins to customize CKEditor ([#113](https://github.com/ckan/ckanext-pages/pull/113))
+- Add font plugin to CKEditor ([#113](https://github.com/ckan/ckanext-pages/pull/113))
+
+## 0.3.1 (2021-04-07)
+
+## Fixed
+
+- Fix links in blog page ([#111](https://github.com/ckan/ckanext-pages/pull/111))
+
+## Added
+
+- Wrap form fields in blocks for easier extending ([3618dd7](https://github.com/ckan/ckanext-pages/commit/3618dd7))
+
+
+
+## 0.3.0 (2021-03-05)
+
+## Added
+
+- CKAN 2.9 and Python 3 support ([#109](https://github.com/ckan/ckanext-pages/pull/109))
+- Upgrade CKEditor version ([97a3ecc](ehttps://github.com/ckan/ckanext-pages/commit/97a3ecce))
+
+## 0.2.4 (2021-02-17)
+
+
+### Fixed
+
+- Do not prefix absolute HTTP URLs of uploaded image
+  ([#107](https://github.com/ckan/ckanext-pages/pull/107))
 
 
 ## 0.2.3 (2020-09-24)

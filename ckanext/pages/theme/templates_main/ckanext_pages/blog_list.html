@@ -1,14 +1,17 @@
-{% extends 'ckanext_pages/blog_edit_base.html' %} 
+{% extends 'ckanext_pages/blog_edit_base.html' %}
 
 {% block page_primary_action %}
   {% if h.check_access('ckanext_pages_update', {}) %}
-    {% link_for _('Add Article'), controller='ckanext.pages.controller:PagesController', action='blog_edit', page='', class_='btn btn-primary', icon=h.pages_get_plus_icon() %}
+    {% if h.ckan_version().split('.')[1] | int >= 9 %}
+      {% link_for _('Add Article'), named_route='pages.blog_new', page='', class_='btn btn-primary', icon='plus-square' %}
+    {% else %}
+      {% link_for _('Add Article'), controller='ckanext.pages.controller:PagesController', action='blog_edit', page='', class_='btn btn-primary', icon='plus-square' %}
+    {% endif %}
   {% endif %}
 {% endblock %}
 
 {% block primary_content_inner %}
-  <h1 class="hide-heading">{{ _('Blog') }}</h1>
-  {% snippet 'ckanext_pages/snippets/pages_list.html', pages=c.page.items, type='blog' %}
+  {% snippet 'ckanext_pages/snippets/pages_list.html', pages=c.page.items, type='blog', title='Blog' %}
   {{ c.page.pager() }}
 {% endblock %}
 

@@ -1,5 +1,6 @@
-[![Build Status](https://travis-ci.org/ckan/ckanext-pages.svg?branch=master)](https://travis-ci.org/ckan/ckanext-pages)
-[![Coverage Status](https://coveralls.io/repos/ckan/ckanext-pages/badge.svg?branch=master&service=github)](https://coveralls.io/github/ckan/ckanext-pages?branch=master)
+
+[![Tests](https://github.com/ckan/ckanext-pages/workflows/Tests/badge.svg?branch=master)](https://github.com/ckan/ckanext-pages/actions)
+
 ckanext-pages
 =============
 
@@ -7,7 +8,9 @@ This extension gives you an easy way to add simple pages to CKAN.
 
 By default you can add pages to the main CKAN menu.
 
-Works for ckan>=2.3
+Tested on CKAN 2.9 and 2.10.
+
+Note: For CKAN 2.7 and 2.8 use v0.3.7 or older versions.
 
 ## Installation
 
@@ -24,6 +27,16 @@ Make sure to add `pages` to `ckan.plugins` in your config file:
 ckan.plugins = pages
 ```
 
+## Database initialization
+
+You need to initialize database from command line with the following commands:
+
+ON CKAN >= 2.9:
+```
+(pyenv) $ ckan --config=/etc/ckan/default/ckan.ini pages initdb
+```
+
+
 ## Configuration
 
 
@@ -36,7 +49,7 @@ ckanext.pages.organization = True
 ckanext.pages.group = True
 ```
 
-These options are False by default and this feature is experimental.
+These options are False by default.
 
 
 This module also gives you a quick way to remove default elements from the CKAN menu and you may need todo this
@@ -106,9 +119,40 @@ and also extends `ckanext_pages/base_form.html` and override the `extra_pages_fo
 
 If you want to override, make sure your extension is added before `pages` in the `ckan.plugins` config.
 
+## Extending the default CKEditor configuration
+
+The default configuration used by the CKEditor widget is defined in the [`ckanext/pages/assets/js/ckedit.js`](https://github.com/ckan/ckanext-pages/blob/master/ckanext/pages/assets/js/ckedit.js) file. This configuration can be overriden from your own plugin setting the `window.ckan.pages.override_config` variable. For example, create the following script in your extension:
+
+    ```js
+    this.ckan = this.ckan || {};
+    this.ckan.pages = this.ckan.pages || {};
+
+    $(document).ready(function() {
+
+      window.ckan.pages.override_config = {
+          toolbarGroups: [
+            //... your custom toolbar
+          ],
+          extraPlugins: '', // Add extra plugins here (make sure to also load their js/css assets from your plugin)
+          // ...
+
+      }
+
+    });
+    ```
+
+Configure your [plugin assets](https://docs.ckan.org/en/2.9/theming/webassets.html) to serve the script above, and extend the `ckanext_pages/base_form.html` template to add the asset to the ckanext-pages form page:
+
+    ```
+    {% ckan_extends %}
+
+    {% asset 'my-plugin/pages-extra-config.js' %}
+
+    ```
+
 ## Dependencies
 
-* lxml
+* lxml (optional, only used for injecting resource views into pages)
 
 
 ## License

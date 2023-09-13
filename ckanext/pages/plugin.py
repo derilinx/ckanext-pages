@@ -1,84 +1,73 @@
-import cgi
+
 import logging
-import urllib
-from pylons import config
-import ckan.plugins.toolkit as toolkit
-ignore_missing = toolkit.get_validator('ignore_missing')
+from html import escape as html_escape
+
+from six.moves.urllib.parse import quote
+
+from ckan.plugins import toolkit as tk
 
 import ckan.plugins as p
-import ckan.lib.helpers as h
-import actions
-import auth
+from ckan.lib.helpers import build_nav_main as core_build_nav_main
 
-if toolkit.check_ckan_version(min_version='2.5'):
-    from ckan.lib.plugins import DefaultTranslation
+from ckanext.pages import actions, db
+from ckanext.pages import auth
+from ckanext.pages import blueprint
+from ckanext.pages import cli
 
-    class PagesPluginBase(p.SingletonPlugin, DefaultTranslation):
-        p.implements(p.ITranslation, inherit=True)
-else:
-    class PagesPluginBase(p.SingletonPlugin):
-        pass
+from ckan.lib.plugins import DefaultTranslation
+
 
 log = logging.getLogger(__name__)
 
 
 def build_pages_nav_main(*args):
 
-    about_menu = toolkit.asbool(config.get('ckanext.pages.about_menu', True))
-    group_menu = toolkit.asbool(config.get('ckanext.pages.group_menu', True))
-    org_menu = toolkit.asbool(config.get('ckanext.pages.organization_menu', True))
-
-    # Different CKAN versions use different route names - gotta catch em all!
-    about_menu_routes = ['about', 'home.about']
-    group_menu_routes = ['group_index', 'home.group_index']
-    org_menu_routes = ['organizations_index', 'home.organizations_index']
+    about_menu = tk.asbool(tk.config.get('ckanext.pages.about_menu', True))
+    group_menu = tk.asbool(tk.config.get('ckanext.pages.group_menu', True))
+    org_menu = tk.asbool(tk.config.get('ckanext.pages.organization_menu', True))
 
     new_args = []
     for arg in args:
-        if arg[0] in about_menu_routes and not about_menu:
+        if arg[0] in 'home.about' and not about_menu:
             continue
-        if arg[0] in org_menu_routes and not org_menu:
+        if arg[0] in 'home.group_index' and not org_menu:
             continue
-        if arg[0] in group_menu_routes and not group_menu:
+        if arg[0] in 'home.organizations_index' and not group_menu:
             continue
         new_args.append(arg)
 
-    output = h.build_nav_main(*new_args)
+    output = core_build_nav_main(*new_args)
 
-    # do not display any private datasets in menu even for sysadmins
-    pages_list = toolkit.get_action('ckanext_pages_list')(None, {'order': True, 'private': False})
+    # do not display any private pages in menu even for sysadmins
+    pages_list = tk.get_action('ckanext_pages_list')(None, {'order': True, 'private': False})
 
     page_name = ''
+    is_current_page = tk.get_endpoint() in (('pages', 'show'), ('pages', 'blog_show'))
 
-    if (hasattr(toolkit.c, 'action') and toolkit.c.action in ('pages_show', 'blog_show')
-       and toolkit.c.controller == 'ckanext.pages.controller:PagesController'):
-        page_name = toolkit.c.environ['routes.url'].current().split('/')[-1]
+    if is_current_page:
+        page_name = tk.request.path.split('/')[-1]
 
     for page in pages_list:
         type_ = 'blog' if page['page_type'] == 'blog' else 'pages'
-        name = urllib.quote(page['name'].encode('utf-8')).decode('utf-8')
-        title = cgi.escape(page['title'])
-        link = h.literal(u'<a href="/{}/{}">{}</a>'.format(type_, name, title))
+        name = quote(page['name'])
+        title = html_escape(page['title'])
+        link = tk.h.literal(u'<a href="/{}/{}">{}</a>'.format(type_, name, title))
         if page['name'] == page_name:
-            li = h.literal('<li class="active">') + link + h.literal('</li>')
+            li = tk.literal('<li class="active">') + link + tk.literal('</li>')
         else:
-            li = h.literal('<li>') + link + h.literal('</li>')
+            li = tk.literal('<li>') + link + tk.literal('</li>')
         output = output + li
 
     return output
 
 
 def render_content(content):
-    allow_html = toolkit.asbool(config.get('ckanext.pages.allow_html', False))
-    try:
-        return h.render_markdown(content, allow_html=allow_html)
-    except TypeError:
-        # allow_html is only available in CKAN >= 2.3
-        return h.render_markdown(content)
+    allow_html = tk.asbool(tk.config.get('ckanext.pages.allow_html', False))
+    return tk.h.render_markdown(content, allow_html=allow_html)
 
 
 def get_wysiwyg_editor():
-    return config.get('ckanext.pages.editor', '')
+    return tk.config.get('ckanext.pages.editor', '')
 
 
 def get_recent_blog_posts(number=5, exclude=None, lang=None):
@@ -99,96 +88,48 @@ def get_recent_blog_posts(number=5, exclude=None, lang=None):
     return new_list
 
 
-def get_plus_icon():
-    if toolkit.check_ckan_version(min_version='2.7'):
-        return 'plus-square'
-    return 'plus-sign-alt'
+class PagesPluginBase(p.SingletonPlugin, DefaultTranslation):
+    p.implements(p.ITranslation, inherit=True)
 
 
 class PagesPlugin(PagesPluginBase):
     p.implements(p.IConfigurer, inherit=True)
     p.implements(p.ITemplateHelpers, inherit=True)
-    p.implements(p.IConfigurable, inherit=True)
-    p.implements(p.IRoutes, inherit=True)
     p.implements(p.IActions, inherit=True)
     p.implements(p.IAuthFunctions, inherit=True)
+    p.implements(p.IConfigurable, inherit=True)
+    p.implements(p.IBlueprint)
+    p.implements(p.IClick)
 
+    def get_blueprint(self):
+        return [blueprint.pages]
+
+    def get_commands(self):
+        return cli.get_commands()
 
     def update_config(self, config):
-        self.organization_pages = toolkit.asbool(config.get('ckanext.pages.organization', False))
-        self.group_pages = toolkit.asbool(config.get('ckanext.pages.group', False))
+        self.organization_pages = tk.asbool(config.get('ckanext.pages.organization', False))
+        self.group_pages = tk.asbool(config.get('ckanext.pages.group', False))
 
-        toolkit.add_template_directory(config, 'theme/templates_main')
+        tk.add_template_directory(config, 'theme/templates_main')
         if self.group_pages:
-            toolkit.add_template_directory(config, 'theme/templates_group')
+            tk.add_template_directory(config, 'theme/templates_group')
         if self.organization_pages:
-            toolkit.add_template_directory(config, 'theme/templates_organization')
+            tk.add_template_directory(config, 'theme/templates_organization')
 
-        toolkit.add_resource('fanstatic', 'pages')
-        toolkit.add_public_directory(config, 'public')
+        tk.add_resource('assets', 'pages')
 
-        toolkit.add_resource('theme/public', 'ckanext-pages')
-        toolkit.add_resource('theme/resources', 'pages-theme')
-        toolkit.add_public_directory(config, 'theme/public')
-
-    def configure(self, config):
-        return
+        tk.add_public_directory(config, 'assets/')
+        tk.add_public_directory(config, 'assets/vendor/ckeditor/')
+        tk.add_public_directory(config, 'assets/vendor/ckeditor/skins/moono-lisa')
 
     def get_helpers(self):
         return {
             'build_nav_main': build_pages_nav_main,
             'render_content': render_content,
-            'get_wysiwyg_editor': get_wysiwyg_editor,
+            'pages_get_wysiwyg_editor': get_wysiwyg_editor,
             'get_recent_blog_posts': get_recent_blog_posts,
-            'pages_get_plus_icon': get_plus_icon,
         }
-
-    def after_map(self, map):
-        pages_name = config.get('ckanext.pages.alternative_name', 'pages')
-        controller = 'ckanext.pages.controller:PagesController'
-
-        if self.organization_pages:
-            map.connect('organization_pages_delete', '/organization/pages_delete/{id}{page:/.*|}',
-                        action='org_delete', ckan_icon='delete', controller=controller)
-            map.connect('organization_pages_edit', '/organization/pages_edit/{id}{page:/.*|}',
-                        action='org_edit', ckan_icon='edit', controller=controller)
-            map.connect('organization_pages_index', '/organization/pages/{id}',
-                        action='org_show', ckan_icon='file', controller=controller, highlight_actions='org_edit org_show', page='')
-            map.connect('organization_pages', '/organization/pages/{id}{page:/.*|}',
-                        action='org_show', ckan_icon='file', controller=controller, highlight_actions='org_edit org_show')
-
-        if self.group_pages:
-            map.connect('group_pages_delete', '/group/pages_delete/{id}{page:/.*|}',
-                        action='group_delete', ckan_icon='delete', controller=controller)
-            map.connect('group_pages_edit', '/group/pages_edit/{id}{page:/.*|}',
-                        action='group_edit', ckan_icon='edit', controller=controller)
-            map.connect('group_pages_index', '/group/pages/{id}',
-                        action='group_show', ckan_icon='file', controller=controller, highlight_actions='group_edit group_show', page='')
-            map.connect('group_pages', '/group/pages/{id}{page:/.*|}',
-                        action='group_show', ckan_icon='file', controller=controller, highlight_actions='group_edit group_show')
-
-
-        map.connect('pages_delete', '/pages_delete{page:/.*|}',
-                    action='pages_delete', ckan_icon='delete', controller=controller)
-        map.connect('pages_edit', '/pages_edit{page:/.*|}',
-                    action='pages_edit', ckan_icon='edit', controller=controller)
-        map.connect('pages_index', '/%s' % pages_name,
-                    action='pages_index', ckan_icon='file', controller=controller, highlight_actions='pages_edit pages_index pages_show')
-        map.connect('pages_show', '/%s{page:/.*|}' % pages_name,
-                    action='pages_show', ckan_icon='file', controller=controller, highlight_actions='pages_edit pages_index pages_show')
-        map.connect('pages_upload', '/pages_upload',
-                    action='pages_upload', controller=controller)
-
-        map.connect('blog_delete', '/blog_delete{page:/.*|}',
-                    action='blog_delete', ckan_icon='delete', controller=controller)
-        map.connect('blog_edit', '/blog_edit{page:/.*|}',
-                    action='blog_edit', ckan_icon='edit', controller=controller)
-        map.connect('blog_index', '/blog',
-                    action='blog_index', ckan_icon='file', controller=controller, highlight_actions='blog_edit blog_index blog_show')
-        map.connect('blog_show', '/blog{page:/.*|}',
-                    action='blog_show', ckan_icon='file', controller=controller, highlight_actions='blog_edit blog_index blog_show')
-        return map
-
 
     def get_actions(self):
         actions_dict = {
@@ -199,7 +140,7 @@ class PagesPlugin(PagesPluginBase):
             'ckanext_pages_upload': actions.pages_upload,
         }
         if self.organization_pages:
-            org_actions={
+            org_actions = {
                 'ckanext_org_pages_show': actions.org_pages_show,
                 'ckanext_org_pages_update': actions.org_pages_update,
                 'ckanext_org_pages_delete': actions.org_pages_delete,
@@ -207,7 +148,7 @@ class PagesPlugin(PagesPluginBase):
             }
             actions_dict.update(org_actions)
         if self.group_pages:
-            group_actions={
+            group_actions = {
                 'ckanext_group_pages_show': actions.group_pages_show,
                 'ckanext_group_pages_update': actions.group_pages_update,
                 'ckanext_group_pages_delete': actions.group_pages_delete,
@@ -231,7 +172,11 @@ class PagesPlugin(PagesPluginBase):
             'ckanext_group_pages_update': auth.group_pages_update,
             'ckanext_group_pages_delete': auth.group_pages_delete,
             'ckanext_group_pages_list': auth.group_pages_list,
-       }
+        }
+
+    def configure(self, config):
+        db.init_db()
+
 
 class TextBoxView(p.SingletonPlugin):
 
@@ -239,10 +184,11 @@ class TextBoxView(p.SingletonPlugin):
     p.implements(p.IResourceView, inherit=True)
 
     def update_config(self, config):
-        toolkit.add_resource('textbox/theme', 'textbox')
-        toolkit.add_template_directory(config, 'textbox/templates')
+        tk.add_resource('textbox/theme', 'textbox')
+        tk.add_template_directory(config, 'textbox/templates')
 
     def info(self):
+        ignore_missing = tk.get_validator('ignore_missing')
         schema = {
             'content': [ignore_missing],
         }
