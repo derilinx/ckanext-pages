@@ -30,7 +30,7 @@ def _pages_show(context, data_dict):
     org_id = data_dict.get('org_id')
     page = data_dict.get('page')
     lang = data_dict.get('lang', h.lang())
-    out = db.Page.get(lang=db.pages_table.c.lang.in_((lang, None)),
+    out = db.Page.get(lang=lang,
                       group_id=org_id, name=page)
 
     if out:
@@ -97,7 +97,7 @@ def _pages_delete(context, data_dict):
     org_id = data_dict.get('org_id')
     page = data_dict.get('page')
     lang = data_dict.get('lang', h.lang())
-    out = db.Page.get(lang=db.pages_table.c.lang.in_((lang, None)),
+    out = db.Page.get(lang=lang,
                       group_id=org_id,
                       name=page)
     if out:
@@ -123,7 +123,7 @@ def _pages_update(context, data_dict):
     if errors:
         raise p.toolkit.ValidationError(errors)
 
-    out = db.Page.get(lang=db.pages_table.c.lang.in_((lang, None)),
+    out = db.Page.get(lang=lang,
                       group_id=org_id,
                       name=page)
     if not out:
