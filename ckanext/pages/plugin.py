@@ -72,8 +72,8 @@ def get_wysiwyg_editor():
 
 def get_recent_blog_posts(number=5, exclude=None, lang=None):
     if not lang:
-        lang = toolkit.h.lang()
-    blog_list = toolkit.get_action('ckanext_pages_list')(
+        lang = tk.h.lang()
+    blog_list = tk.get_action('ckanext_pages_list')(
         None, {'order_publish_date': True, 'private': False,
                'page_type': 'blog', 'lang': lang}
     )
