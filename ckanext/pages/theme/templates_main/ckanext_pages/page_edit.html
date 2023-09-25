@@ -2,15 +2,6 @@
 
 {% block subtitle %}{{ _('Edit Page')}} {% endblock %}
 
-{% block breadcrumb_content %}
-<li>{% link_for _('Pages'), named_route='pages.pages_index' %}</li>
-  {% if page %}
-  <li>{% link_for page.title(), named_route='pages.show', page_id=page  %}</li>
-  <li class="active">{% link_for _('Edit'), named_route='pages.edit', page='/' + page %}</li>
-  {% else %}
-  <li class="active">{% link_for _('Add page'), named_route='pages.edit', page='' %}</li>
-  {% endif %}
-{% endblock %}
 
 {% block primary_content_inner %}
   {% snippet form_snippet, page=page, data=data, errors=errors %}
@@ -18,6 +9,8 @@
 
 {% block main_content %}
    {{ self.flash() }}
+   {{ self.toolbar() }}
+
    <div class="wrapper no-nav">
      {{ self.primary_content() }}
    </div>
