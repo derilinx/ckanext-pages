@@ -111,7 +111,7 @@
 .page-hero {
     height: 200px;
     background-image: url(/img/Blue1920x350.jpg);
-    padding-top: 5%;
+    padding-top:20px;
     background-size: cover;
     background-repeat: no-repeat;
     background-color: #00aeef;
