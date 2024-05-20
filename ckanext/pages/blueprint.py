@@ -1,6 +1,11 @@
-from flask import Blueprint
+from flask import Blueprint, Response, stream_with_context, jsonify
 
 import ckanext.pages.utils as utils
+import logging
+import ckan.plugins.toolkit as tk
+from ckan import model
+
+log = logging.getLogger(__name__)
 
 pages = Blueprint('pages', __name__)
 
@@ -64,6 +69,58 @@ def group_edit(id, page=None, data=None, errors=None, error_summary=None):
     return utils.group_edit(id, 'group', page, data, errors, error_summary)
 
 
+
+def sitesearch():
+    request = tk.request
+    config = tk.config
+    get_action = tk.get_action
+    errors = {}
+    data = {}
+    if request.method == "POST":
+        return tk.render('site_search/site_search.html', extra_vars={
+            'data': {},
+            'errors': {},
+        })
+
+    else:
+        if request.args.get('q', None):
+            data['q'] = request.args.get('q', None)
+            data['q'] = data['q'].replace(',', ' ')
+
+            log.info("Found query: {}".format(data['q']))
+    # Hit database with query here:
+            query = """select id, name, title, page_type, publish_date, private, content from ckanext_pages where private = 'False' and (content @@ '{q}' or title @@ '{q}') order by title @@ '{q}' desc;"""
+
+            try:
+                q = model.Session.execute(query.format(q=data['q'])).fetchall()
+                # log.info(q.keys())
+                results = [list(row) for row in q]
+                results_dict = {'results': results}
+                log.info("qResults= ".format(results))
+                return tk.render('site_search/site_search.html', extra_vars={
+                    'data': q,
+                    'errors': {},
+                    'q': data['q']
+                })
+            except Exception as e:
+                log.info(e)
+                return tk.render('site_search/site_search.html', extra_vars={
+                    'data': {e},
+                    'errors': {e},
+            })
+        return tk.render('site_search/site_search.html', extra_vars={
+            'data': {},
+            'errors': {},
+        })
+
+
+
+
+
+
+
+
+pages.add_url_rule("/site_search/", view_func=sitesearch, methods=["GET", "POST"])
 pages.add_url_rule("/pages", view_func=index, endpoint="pages_index")
 pages.add_url_rule("/pages/<page>", view_func=show)
 pages.add_url_rule("/pages_edit", view_func=pages_edit, endpoint='new', methods=['GET', 'POST'])
