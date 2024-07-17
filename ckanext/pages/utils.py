@@ -59,7 +59,31 @@ def pages_edit(page=None, data=None, errors=None, error_summary=None, page_type=
     if tk.request.method == 'POST' and not data:
         data = _parse_form_data(tk.request)
 
-        page_dict.update(data)
+        # Extract default language content
+        default_language = tk.h.lang()
+        title_data = {default_language: data.pop('title')}
+        content_data = {default_language: data.pop('content')}
+
+        # Extract additional languages
+        for key, value in data.items():
+            if key.startswith('language_'):
+                lang_count = key.split('_')[1]
+                lang_code = value
+                title_data[lang_code] = data.get(f'title_{lang_count}')
+                content_data[lang_code] = data.get(f'content_{lang_count}')
+
+        # Create the final post_data dictionary
+        formatted_data = {
+            'title': title_data,
+            'content': content_data
+        }
+
+        # Add remaining fields to post_data
+        for key, value in data.items():
+            if not key.startswith(('title_', 'content_', 'language_')):
+                formatted_data[key] = value
+
+        page_dict.update(formatted_data)
 
         page_dict['org_id'] = None
         page_dict['page'] = page
