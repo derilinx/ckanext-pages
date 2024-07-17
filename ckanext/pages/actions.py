@@ -16,6 +16,13 @@ import ckan.authz as authz
 
 from ckanext.pages import db
 
+# Function to parse JSON if possible, otherwise return original value
+def parse_json_or_return_original(value):
+    try:
+        return json.loads(value)
+    except (json.JSONDecodeError, TypeError):
+        return value
+
 
 class HTMLFirstImage(HTMLParser):
     def __init__(self):
@@ -74,8 +81,23 @@ def _pages_list(context, data_dict):
         parser = HTMLFirstImage()
         parser.feed(pg.content)
         img = parser.first_image
-        pg_row = {'title': pg.title,
-                  'content': pg.content,
+
+        title_data = parse_json_or_return_original(pg.title)
+        content_data = parse_json_or_return_original(pg.content)
+        current_language = tk.h.lang()
+
+        if isinstance(title_data, dict):
+            title = title_data.get(current_language, title_data.get('en_GB', ''))
+        else:
+            title = title_data
+
+        if isinstance(content_data, dict):
+            content = content_data.get(current_language, content_data.get('en_GB', ''))
+        else:
+            content = content_data
+
+        pg_row = {'title': title,
+                  'content': content,
                   'name': pg.name,
                   'publish_date': pg.publish_date.isoformat() if pg.publish_date else None,
                   'group_id': pg.group_id,
