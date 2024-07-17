@@ -177,12 +177,11 @@
             <div class="">
                 {% if h.get_available_locales() %}
                 <div id="languageVariationsSection" class="new-page-lang-div">
-            <h3>Additional Languages</h3>
             <!-- Language variation forms will be appended here -->
             </div>
 
-                <button type="button" class="btn btn-red" id="add-language-btn" onclick="addLanguageVariation()">{{
-                    _('Add Content in Another Language') }}
+                <button type="button" class="" id="add-language-btn" onclick="addLanguageVariation()">
+                    {{ _('Add Content in Another Language') }}
                 </button>
                 {% endif %}
             </div>
@@ -246,16 +245,16 @@
             });
 
             section.innerHTML = `
-                <h4>Language Variation ${languageCount}</h4>
+                <h3 class="title-heading">Language Variation ${languageCount}</h3>
                 <label for="language_${languageCount}">Language:</label>
                 <select id="language_${languageCount}" name="language_${languageCount}" class="form-control" onchange="updateSelectedLanguages(${languageCount})" required>
                     ${options}
                 </select>
-                <label for="title_${languageCount}">Title:</label>
+                <label for="title_${languageCount}" class="multilingual-page-input">Title:</label>
                 <input type="text" id="title_${languageCount}" name="title_${languageCount}" class="form-control" required>
-                <label for="content_${languageCount}">Content:</label>
-                <textarea id="content_${languageCount}" name="content_${languageCount}" class="form-control" style="height:400px" required></textarea>
-                <button type="button" class="btn btn-danger" onclick="removeLanguageVariation(${languageCount})">Remove</button>
+                <label for="content_${languageCount}" class="multilingual-page-input">Content:</label>
+                <textarea id="content_${languageCount}" name="content_${languageCount}" class="form-control" data-module="ckedit" style="height:400px" required></textarea>
+                <button type="button" class="btn btn-danger new-page-lang-div" onclick="removeLanguageVariation(${languageCount})">Remove</button>
             `;
             document.getElementById('languageVariationsSection').appendChild(section);
         }
