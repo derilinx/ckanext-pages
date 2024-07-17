@@ -1,4 +1,5 @@
 import six
+import json
 
 import ckan.lib.navl.dictization_functions as dict_fns
 import ckan.plugins as p
@@ -10,6 +11,16 @@ from ckanext.pages.db import Page
 
 config = tk.config
 _ = tk._
+
+
+def parse_json_or_return_original(value):
+    if value is None or value == "":
+        return value  # Return None or empty string as-is
+
+    try:
+        return json.loads(value)
+    except (json.JSONDecodeError, TypeError):
+        return value  # Return original value if parsing fails or value is not JSON
 
 
 def _parse_form_data(request):
@@ -130,6 +141,28 @@ def _inject_views_into_page(_page):
         import lxml.html
     except ImportError:
         return
+
+    # Parse title and content into dictionaries if possible
+    title_data = parse_json_or_return_original(_page['title'])
+    content_data = parse_json_or_return_original(_page['content'])
+
+    # Get the current language from the request context
+    current_language = tk.h.lang()
+
+    # Retrieve title and content for the current language, defaulting to 'en_GB' if not available
+    if isinstance(title_data, dict):
+        title = title_data.get(current_language, title_data.get('en_GB', ''))
+    else:
+        title = title_data
+
+    if isinstance(content_data, dict):
+        content = content_data.get(current_language, content_data.get('en_GB', ''))
+    else:
+        content = content_data
+
+    # Update _page with processed title and content
+    _page['title'] = title
+    _page['content'] = content
 
     try:
         root = lxml.html.fromstring(_page['content'])

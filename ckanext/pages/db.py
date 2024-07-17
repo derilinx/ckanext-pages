@@ -30,6 +30,8 @@ except ImportError:
 
     BaseModel = declarative_base(metadata=metadata)
 
+from ckanext.pages.utils import parse_json_or_return_original
+
 pages_table = None
 
 
@@ -141,7 +143,7 @@ def table_dictize(obj, context, **kw):
         elif isinstance(value, list):
             result_dict[name] = value
         elif name in ('title', 'content'):
-            result_dict[name] = json.loads(value) if value else {}
+            result_dict[name] = parse_json_or_return_original(value) if value else {}
         else:
             result_dict[name] = text_type(value)
 
