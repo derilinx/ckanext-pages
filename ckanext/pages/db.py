@@ -42,9 +42,9 @@ class Page(DomainObject, BaseModel):
     __tablename__ = "ckanext_pages"
 
     id = Column(types.UnicodeText, primary_key=True, default=make_uuid)
-    title = Column(types.UnicodeText, default=u'')
+    title = Column(types.JSON, default=lambda: {})
     name = Column(types.UnicodeText, default=u'')
-    content = Column(types.UnicodeText, default=u'')
+    content = Column(types.JSON, default=lambda: {})
     lang = Column(types.UnicodeText, default=u'')
     order = Column(types.UnicodeText, default=u'')
     private = Column(types.Boolean, default=True)
@@ -140,6 +140,8 @@ def table_dictize(obj, context, **kw):
             result_dict[name] = value.isoformat()
         elif isinstance(value, list):
             result_dict[name] = value
+        elif name in ('title', 'content'):
+            result_dict[name] = json.loads(value) if value else {}
         else:
             result_dict[name] = text_type(value)
 
