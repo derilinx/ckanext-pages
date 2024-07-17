@@ -15,12 +15,7 @@ import ckan.authz as authz
 
 from ckanext.pages import db
 
-# Function to parse JSON if possible, otherwise return original value
-def parse_json_or_return_original(value):
-    try:
-        return json.loads(value)
-    except (json.JSONDecodeError, TypeError):
-        return value
+from ckanext.pages.utils import parse_json_or_return_original
 
 
 class HTMLFirstImage(HTMLParser):
