@@ -174,7 +174,8 @@ class PagesPlugin(PagesPluginBase):
             'get_post_image': pages_helpers.get_post_image,
             'get_first_p': pages_helpers.get_first_p,
             'get_soup_text': pages_helpers.get_soup_text,
-            'get_content': pages_helpers.get_content
+            'get_content': pages_helpers.get_content,
+            'get_lang_to_json': pages_helpers.get_lang_to_json
 
         }
 

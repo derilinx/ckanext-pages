@@ -1,5 +1,8 @@
 from bs4 import BeautifulSoup
 from unicodedata import normalize
+from ckan.plugins import toolkit as tk
+import ckan.plugins.toolkit as toolkit
+import ckan.plugins as p
 
 PLACEHOLDER_IMG = '/img/dgilogows.png'
 
@@ -45,3 +48,9 @@ def get_content(content):
             return output
         else:
             return soup
+
+
+def get_lang_to_json():
+    locales = tk.h.get_available_locales()
+    languages_arr = [{'short_name': f"{locale.language}_{locale.territory}" if locale.territory else locale.language, 'display_name': f"{locale.get_display_name()}"} for locale in locales]
+    return languages_arr

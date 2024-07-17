@@ -90,6 +90,26 @@ class Page(DomainObject, BaseModel):
                     )
         )))
 
+    def set_title(self, title, lang='default'):
+        '''Sets the title for the specified language.'''
+        if not self.title:
+            self.title = {}
+        self.title[lang] = title
+
+    def get_title(self, lang='default'):
+        '''Gets the title for the specified language.'''
+        return self.title.get(lang, self.title.get('default', ''))
+
+    def set_content(self, content, lang='default'):
+        '''Sets the content for the specified language.'''
+        if not self.content:
+            self.content = {}
+        self.content[lang] = content
+
+    def get_content(self, lang='default'):
+        '''Gets the content for the specified language.'''
+        return self.content.get(lang, self.content.get('default', ''))
+
 def table_dictize(obj, context, **kw):
     '''Get any model object and represent it as a dict'''
     result_dict = {}
