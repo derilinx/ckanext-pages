@@ -95,9 +95,9 @@ def define_tables():
     global pages_table
     pages_table = sa.Table('ckanext_pages', model.meta.metadata,
                            sa.Column('id', types.UnicodeText, primary_key=True, default=make_uuid),
-                           sa.Column('title', types.UnicodeText, default=u''),
+                           sa.Column('title', types.JSON, default=lambda: {}),
                            sa.Column('name', types.UnicodeText, default=u''),
-                           sa.Column('content', types.UnicodeText, default=u''),
+                           sa.Column('content', types.JSON, default=lambda: {}),
                            sa.Column('lang', types.UnicodeText, default=u''),
                            sa.Column('order', types.UnicodeText, default=u''),
                            sa.Column('private', types.Boolean, default=True),
@@ -148,6 +148,8 @@ def table_dictize(obj, context, **kw):
             result_dict[name] = value.isoformat()
         elif isinstance(value, list):
             result_dict[name] = value
+        elif name in ('title', 'content'):
+            result_dict[name] = json.loads(value) if value else {}
         else:
             result_dict[name] = text_type(value)
 
