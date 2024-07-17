@@ -3,19 +3,21 @@
 
 {% set data = data or {} %}
 {% set errors = errors or {} %}
+{% set current_lang = request.environ.CKAN_LANG %}
+{% set available_languages = h.get_available_locales() %}
 
 {% if type == 'org' %}
-    {% set prefix = 'organization_pages_' %}
-    {% set args = {'id': id} %}
+{% set prefix = 'organization_pages_' %}
+{% set args = {'id': id} %}
 {% elif type == 'group' %}
-    {% set prefix = 'group_pages_' %}
-    {% set args = {'id': id} %}
+{% set prefix = 'group_pages_' %}
+{% set args = {'id': id} %}
 {% elif type == 'blog' %}
-    {% set prefix = 'blog_' %}
-    {% set args = {} %}
+{% set prefix = 'blog_' %}
+{% set args = {} %}
 {% else %}
-     {% set prefix = 'pages_' %}
-    {% set args = {} %}
+{% set prefix = 'pages_' %}
+{% set args = {} %}
 {% endif %}
 
 {% set page_url = page %}
@@ -25,148 +27,271 @@
 {% set slug_prefix = cancel_url ~ '/' %}
 {% set slug_domain = h.url_for(prefix + 'index', qualified=true, **args) %}
 {% if page %}
-    {% if type == 'org' %}
-      {% set delete_url = h.url_for('pages.organization_pages_delete', page=page_url, **args) %}
-    {% elif type == 'group' %}
-      {% set delete_url = h.url_for('pages.group_pages_delete', page=page_url, **args) %}
-    {% else %}
-      {% set delete_url = h.url_for('pages.blog_delete' if type == 'blog' else 'pages.delete', page=page_url, **args) %}
-    {% endif %}
+{% if type == 'org' %}
+{% set delete_url = h.url_for('pages.organization_pages_delete', page=page_url, **args) %}
+{% elif type == 'group' %}
+{% set delete_url = h.url_for('pages.group_pages_delete', page=page_url, **args) %}
+{% else %}
+{% set delete_url = h.url_for('pages.blog_delete' if type == 'blog' else 'pages.delete', page=page_url, **args) %}
+{% endif %}
 {% endif %}
 
 {% if type == 'blog' %}
-    {% if not page %}
-        <h1>{{ _('Add Blog Article') }}</h1>
-    {% else %}
-        <h1>{{ _('Edit Blog Article') }}</h1>
-    {% endif %}
-    {% set url_placeholder = 'eg. my-blog-article' %}
-    {% set title_placeholder = _('eg. Blog Article Title') %}
+{% if not page %}
+<h1>{{ _('Add Blog Article') }}</h1>
 {% else %}
-    {% if not page %}
-        <h1>{{ _('Add page') }}</h1>
-    {% else %}
-        <h1>{{ _('Edit page') }}</h1>
-    {% endif %}
-    {% set url_placeholder = 'eg. my-page' %}
-    {% set title_placeholder = _('eg. Page Title') %}
+<h1>{{ _('Edit Blog Article') }}</h1>
+{% endif %}
+{% set url_placeholder = 'eg. my-blog-article' %}
+{% set title_placeholder = _('eg. Blog Article Title') %}
+{% else %}
+{% if not page %}
+<h1>{{ _('Add page') }}</h1>
+{% else %}
+<h1>{{ _('Edit page') }}</h1>
+{% endif %}
+{% set url_placeholder = 'eg. my-page' %}
+{% set title_placeholder = _('eg. Page Title') %}
 {% endif %}
 
 
 <form class="dataset-form pages-form" method="post" action="{{ action_url }}" data-module="basic-form">
-  {{ h.csrf_input() if 'csrf_input' in h }}
-  {% block errors %}{{ form.errors(error_summary) }}{% endblock %}
+    {{ h.csrf_input() if 'csrf_input' in h }}
+    {% block errors %}{{ form.errors(error_summary) }}{% endblock %}
 
-  {% block form_basic_fields %}
-    {{ form.input('title', id='field-title', label=_('Title'), placeholder=title_placeholder, value=data.title, error=errors.title, classes=['control-full', 'control-large'], attrs={'data-module': 'slug-preview-target', 'class': 'form-control'}) }}
+    {% block form_basic_fields %}
+    {{ form.input('title', id='field-title', label=_('Title'), placeholder=title_placeholder, value=data.title,
+    error=errors.title, classes=['control-full', 'control-large'], attrs={'data-module': 'slug-preview-target', 'class':
+    'form-control'}) }}
 
     {% set domain = slug_domain|replace("http://", "")|replace("https://", "") %}
-    {% set attrs = {'data-module': 'slug-preview-slug', 'data-module-prefix': domain~'/', 'data-module-placeholder': '<page>'} %}
-    {{ form.prepend('name', id='field-name', label=_('URL'), prepend=slug_prefix, placeholder=_(url_placeholder), value=data.name, error=errors.name, attrs=attrs) }}
+    {% set attrs = {'data-module': 'slug-preview-slug', 'data-module-prefix': domain~'/', 'data-module-placeholder': '
+    <page>'} %}
+        {{ form.prepend('name', id='field-name', label=_('URL'), prepend=slug_prefix, placeholder=_(url_placeholder),
+        value=data.name, error=errors.name, attrs=attrs) }}
 
-    <div class="form-group">
-      <label for="field-featured">{{ _('Featured') }}</label>
-      <select id="field-featured" class="form-control" name="featured">
-          {% for option in [(false, _('Not Featured')), (true, _('Featured'))] %}
-              <option value="{{ option[0] }}" {% if option[0] == data.featured %}selected="selected"{% endif %}>{{ option[1] }}</option>
-          {% endfor %}
-      </select>
-    </div>
-  {% endblock %}
-
-  {% block form_visibility_fields %}
-  <style>
-    .form-horizontal .form-group {
-        margin-left: 0;
-        margin-right: 0;
-        margin-bottom: 2em;
-    }
-    .form-actions {
-        margin-top: 2em;
-    }
-    .cke_button__link_label, .cke_button__image_label, .cke_button__table_label, .cke_button__ckanview_label {
-        display:inline;
-    }
-    .cke_button__link_label:after {
-        content: " and upload"
-    }
-    .cke_button__image_label:after {
-        content: " upload"
-    }
-    .cke_button__ckanview_label:before{
-        content: "CKAN "
-    }
-
-    .cke_button__horizontalrule, .cke_button__horizontalrule_label, .cke_button__horizontalrule_icon, .cke_button__ckanview, .cke_button__ckanview_label, .cke_button__ckanview_icon {
-           display: none;
-    }
-
-   </style>
-    <div class="control-group form-group">
-      <label for="field-private" class="control-label">{{ _('Visibility') }}</label>
-      <div class="controls">
-        <select id="field-private" class="form-control" name="private">
-          {% for option in [(true, _('Private')), (false, _('Public'))] %}
-          <option value="{{ option[0] }}" {% if option[0] == data.private %}selected="selected"{% endif %}>{{ option[1] }}</option>
-          {% endfor %}
-        </select>
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="field-publish-date">{{ _('Publish Date') }}</label>
-      <input class="form-control" id="field-publish_date" name="publish_date" placeholder="2018-01-01" data-module="datepicker" data-date-format="yyyy-mm-dd" type="text" value="{{h.render_datetime(data.publish_date or h.get_today(), date_format='%Y-%m-%d')}}">
-    </div>
-    {% if not hide_field_order %}
-      <div class="control-group form-group">
-        <label for="field-order" class="control-label">{{ _('Header Order') }}</label>
-        <div class="controls">
-          <select id="field-order" class="form-control" name="order">
-              {% for option in [('', _('Not in Menu')), ('1','1'), ('2', '2'), ('3', '3') , ('4', '4')] %}
-            <option value="{{ option[0] }}" {% if option[0] == data.order %}selected="selected"{% endif %}>{{ option[1] }}</option>
-            {% endfor %}
-          </select>    
-      </div>
-    {% endif %}
-
-  {% endblock %}
-
-  {% block form_content %}
-    {% set editor = h.pages_get_wysiwyg_editor() %}
-    {% if editor == 'medium' %}
-      {% asset 'pages/medium-js' %}
-      {% asset 'pages/medium-css' %}
-      {{ wysiwyg.editor('content', id='field-content', label=_('Content'), placeholder=_('Enter content here'), value=data.content|safe, error=errors.content) }}
-    {% elif editor == 'ckeditor' %}
-      <script> window.CKEDITOR_BASEPATH = '/' </script>
-      {% asset 'pages/main-js' %}
-      {% asset 'pages/main-css' %}
-      <div class="control-group">
-        <label for="field-content-ck" class="control-label">{{ _('Content') }}</label>
-      </div>
-      <textarea id="field-content-ck" name="content" placeholder="{{_('My content')}}" data-module="ckedit" style="height:400px" data-module-site_url="{{ h.dump_json(h.url_for('/', locale='default', qualified=true)) }}"> {{ data.content }}</textarea>
-    {% else %}
-      {{ form.markdown('content', id='field-content', attrs={'class': 'form-control page-simple-form-height'}, label=_('Content'), placeholder=_('Enter content here'), value=data.content, error=errors.content) }}
-    {% endif %}
-
-  {% endblock %}
-
-  {% block form_actions %}
-    <div class="form-actions">
-      {% if not page %}
-        <a class="btn btn-default pull-left" href="{{ cancel_url }}">{{ _('Cancel') }}</a>
-        <button class="btn btn-primary" name="save" value="save" type="submit">{{ _('Add') }}</button>
-      {% else %}
-
-        {% block delete_button %}
-          {% if h.check_access('ckanext_%spages_delete'|format(type ~ '_' if type in ('group', 'org') else ''), {'id': data.id})  %}
-            {% set locale = h.dump_json({'content': _('Are you sure you want to delete this Page?')}) %}
-            <a class="btn btn-danger pull-left" href="{{ delete_url }}" data-module="confirm-action" data-module-i18n="{{ locale }}">{% block delete_button_text %}{{ _('Delete') }}{% endblock %}</a>
-          {% endif %}
+        <div class="form-group">
+            <label for="field-featured">{{ _('Featured') }}</label>
+            <select id="field-featured" class="form-control" name="featured">
+                {% for option in [(false, _('Not Featured')), (true, _('Featured'))] %}
+                <option value="{{ option[0] }}" {% if option[0]== data.featured %}selected="selected" {% endif %}>{{
+                    option[1] }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
         {% endblock %}
 
-        <button class="btn btn-primary" name="save" value="save" type="submit">{{ _('Save') }}</button>
-      {% endif %}
-    </div>
+        {% block form_visibility_fields %}
+        <style>
+            .form-horizontal .form-group {
+                margin-left: 0;
+                margin-right: 0;
+                margin-bottom: 2em;
+            }
 
-  {% endblock %}
+            .form-actions {
+                margin-top: 2em;
+            }
+
+            .cke_button__link_label, .cke_button__image_label, .cke_button__table_label, .cke_button__ckanview_label {
+                display: inline;
+            }
+
+            .cke_button__link_label:after {
+                content: " and upload"
+            }
+
+            .cke_button__image_label:after {
+                content: " upload"
+            }
+
+            .cke_button__ckanview_label:before {
+                content: "CKAN "
+            }
+
+            .cke_button__horizontalrule, .cke_button__horizontalrule_label, .cke_button__horizontalrule_icon, .cke_button__ckanview, .cke_button__ckanview_label, .cke_button__ckanview_icon {
+                display: none;
+            }
+
+        </style>
+        <div class="control-group form-group">
+            <label for="field-private" class="control-label">{{ _('Visibility') }}</label>
+            <div class="controls">
+                <select id="field-private" class="form-control" name="private">
+                    {% for option in [(true, _('Private')), (false, _('Public'))] %}
+                    <option value="{{ option[0] }}" {% if option[0]== data.private %}selected="selected" {% endif %}>{{
+                        option[1] }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="field-publish-date">{{ _('Publish Date') }}</label>
+            <input class="form-control" id="field-publish_date" name="publish_date" placeholder="2018-01-01"
+                   data-module="datepicker" data-date-format="yyyy-mm-dd" type="text"
+                   value="{{h.render_datetime(data.publish_date or h.get_today(), date_format='%Y-%m-%d')}}">
+        </div>
+        {% if not hide_field_order %}
+        <div class="control-group form-group">
+            <label for="field-order" class="control-label">{{ _('Header Order') }}</label>
+            <div class="controls">
+                <select id="field-order" class="form-control" name="order">
+                    {% for option in [('', _('Not in Menu')), ('1','1'), ('2', '2'), ('3', '3') , ('4', '4')] %}
+                    <option value="{{ option[0] }}" {% if option[0]== data.order %}selected="selected" {% endif %}>{{
+                        option[1] }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endif %}
+
+            {% endblock %}
+
+            {% block form_content %}
+            {% set editor = h.pages_get_wysiwyg_editor() %}
+            {% if editor == 'medium' %}
+            {% asset 'pages/medium-js' %}
+            {% asset 'pages/medium-css' %}
+            {{ wysiwyg.editor('content', id='field-content', label=_('Content'), placeholder=_('Enter content here'),
+            value=data.content|safe, error=errors.content) }}
+            {% elif editor == 'ckeditor' %}
+            <script> window.CKEDITOR_BASEPATH = '/' </script>
+            {% asset 'pages/main-js' %}
+            {% asset 'pages/main-css' %}
+            <div class="control-group">
+                <label for="field-content-ck" class="control-label">{{ _('Content') }}</label>
+            </div>
+            <textarea id="field-content-ck" name="content" placeholder="{{_('My content')}}" data-module="ckedit"
+                      style="height:400px"
+                      data-module-site_url="{{ h.dump_json(h.url_for('/', locale='default', qualified=true)) }}"> {{ data.content }}</textarea>
+            {% else %}
+            {{ form.markdown('content', id='field-content', attrs={'class': 'form-control page-simple-form-height'},
+            label=_('Content'), placeholder=_('Enter content here'), value=data.content, error=errors.content) }}
+            {% endif %}
+
+
+
+
+            <div class="">
+                {% if h.get_available_locales() %}
+                <div id="languageVariationsSection" class="new-page-lang-div">
+            <h3>Additional Languages</h3>
+            <!-- Language variation forms will be appended here -->
+            </div>
+
+                <button type="button" class="btn btn-red" id="add-language-btn" onclick="addLanguageVariation()">{{
+                    _('Add Content in Another Language') }}
+                </button>
+                {% endif %}
+            </div>
+
+            {% endblock %}
+
+            {% block form_actions %}
+            <div class="form-actions">
+                {% if not page %}
+                <a class="btn btn-default pull-left" href="{{ cancel_url }}">{{ _('Cancel') }}</a>
+                <button class="btn btn-primary" name="save" value="save" type="submit">{{ _('Add') }}</button>
+                {% else %}
+
+                {% block delete_button %}
+                {% if h.check_access('ckanext_%spages_delete'|format(type ~ '_' if type in ('group', 'org') else ''),
+                {'id': data.id}) %}
+                {% set locale = h.dump_json({'content': _('Are you sure you want to delete this Page?')}) %}
+                <a class="btn btn-danger pull-left" href="{{ delete_url }}" data-module="confirm-action"
+                   data-module-i18n="{{ locale }}">{% block delete_button_text %}{{ _('Delete') }}{% endblock %}</a>
+                {% endif %}
+                {% endblock %}
+
+                <button class="btn btn-primary" name="save" value="save" type="submit">{{ _('Save') }}</button>
+                {% endif %}
+            </div>
+
+            {% endblock %}
 </form>
+
+<script>
+        let languageCount = 0;
+        const languages = {{ h.get_lang_to_json()|tojson }};
+        const defaultLanguage = "{{ h.lang() }}";
+        const selectedLanguages = new Set();
+
+        function addLanguageVariation() {
+            if (languageCount >= languages.length - 1) {
+                alert("You have added all available language variations.");
+                return;
+            }
+
+            languageCount++;
+            const section = document.createElement('div');
+            section.setAttribute('id', `languageVariation_${languageCount}`);
+            section.setAttribute('class', 'language-variation');
+
+            let options = '<option value="">Select language</option>';
+            languages.forEach(lang => {
+                const langCode = lang.short_name;
+                if (langCode !== defaultLanguage && !selectedLanguages.has(langCode)) {
+                    const displayName = langCode === "en_GB" ? "English" : (lang.display_name || lang.english_name);
+                    options += `<option value="${langCode}">${displayName}</option>`;
+                }
+            });
+
+            section.innerHTML = `
+                <h4>Language Variation ${languageCount}</h4>
+                <label for="language_${languageCount}">Language:</label>
+                <select id="language_${languageCount}" name="language_${languageCount}" class="form-control" onchange="updateSelectedLanguages(${languageCount})" required>
+                    ${options}
+                </select>
+                <label for="title_${languageCount}">Title:</label>
+                <input type="text" id="title_${languageCount}" name="title_${languageCount}" class="form-control" required>
+                <label for="content_${languageCount}">Content:</label>
+                <textarea id="content_${languageCount}" name="content_${languageCount}" class="form-control" style="height:400px" required></textarea>
+                <button type="button" class="btn btn-danger" onclick="removeLanguageVariation(${languageCount})">Remove</button>
+            `;
+            document.getElementById('languageVariationsSection').appendChild(section);
+        }
+
+        function updateSelectedLanguages(count) {
+            const select = document.getElementById(`language_${count}`);
+            const selectedLanguage = select.value;
+
+            if (selectedLanguage) {
+                selectedLanguages.add(selectedLanguage);
+            }
+            updateOptions();
+        }
+
+        function updateOptions() {
+            for (let i = 1; i <= languageCount; i++) {
+                const select = document.getElementById(`language_${i}`);
+                if (select) {
+                    const currentValue = select.value;
+                    let options = '<option value="">Select language</option>';
+                    languages.forEach(lang => {
+                        const langCode = lang.short_name;
+                        if (langCode !== defaultLanguage && (!selectedLanguages.has(langCode) || langCode === currentValue)) {
+                            const displayName = langCode === "en_GB" ? "English" : (lang.display_name || lang.english_name);
+                            options += `<option value="${langCode}" ${langCode === currentValue ? 'selected' : ''}>${displayName}</option>`;
+                        }
+                    });
+                    select.innerHTML = options;
+                }
+            }
+        }
+
+        function removeLanguageVariation(count) {
+            const section = document.getElementById(`languageVariation_${count}`);
+            const select = document.getElementById(`language_${count}`);
+            if (section && select) {
+                const selectedLanguage = select.value;
+                if (selectedLanguages.has(selectedLanguage)) {
+                    selectedLanguages.delete(selectedLanguage);
+                }
+                section.remove();
+                languageCount--;
+                updateOptions();
+            }
+        }
+    </script>
