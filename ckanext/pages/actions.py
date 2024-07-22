@@ -34,6 +34,33 @@ def _pages_show(context, data_dict):
     out = db.Page.get(group_id=org_id, name=page)
     if out:
         out = db.table_dictize(out, context)
+
+        # Initialize variables for initial title and content
+        if isinstance(out['title'], dict):
+            initial_language = list(out['title'].keys())[0]
+            initial_title = out['title'][initial_language]
+        else:
+            initial_language = tk.h.lang()
+            initial_title = out['title']
+
+        if isinstance(out['content'], dict):
+            initial_content = out['content'][initial_language]
+        else:
+            initial_content = out['content']
+
+        existing_languages = {}
+        if isinstance(out['title'], dict):
+            for lang in out['title'].keys():
+                if lang != initial_language:
+                    existing_languages[lang] = {
+                        'title': out['title'][lang],
+                        'content': out['content'][lang]
+                    }
+        out["title"] = initial_title
+        out["content"] = initial_content
+        out["existing_languages"] = existing_languages
+        out["initial_language"] = initial_language
+
     return out
 
 

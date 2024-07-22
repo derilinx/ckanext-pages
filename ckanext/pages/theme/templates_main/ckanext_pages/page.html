@@ -9,6 +9,7 @@
 
 {% endblock %}
 {% set title = c.page.title %}
+{% set current_lang = request.environ.CKAN_LANG %}
 
 {% block subtitle %}{% trans %}{{ title }}{% endtrans %}{% endblock %}
 
@@ -31,10 +32,16 @@
           <!-- editor set to "{{ editor }}"-->
           {% if editor %}
             <div>
-                {{c.page.content|safe}}
+              {% if current_lang == c.page.initial_language %}
+                  {{ c.page.content|safe }}
+              {% elif current_lang in c.page.existing_languages %}
+                  {{ c.page.existing_languages[current_lang]['content']|safe }}
+              {% else %}
+                {{ c.page.content|safe }}
+               {% endif %}
             </div>
           {% else %}
-            {{ h.render_content(c.page.content) }}
+          {{ h.render_content(c.page.content) }}
           {% endif %}
         </div>
       {% else %}
