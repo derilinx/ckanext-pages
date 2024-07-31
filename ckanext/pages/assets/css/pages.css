@@ -152,6 +152,7 @@
 .page-panel {
     position: relative;
     height: 600px;
+    overflow:scroll;
 }
 
 .pages-link {
