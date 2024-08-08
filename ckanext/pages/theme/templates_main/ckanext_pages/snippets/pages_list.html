@@ -4,7 +4,7 @@
 {% set ckan_29_or_higher = h.ckan_version().split('.')[1] | int >= 9 %}
 
 {% if pages %}
-  <div class="page-list page-container">
+  <div class="page-list ">
     {% set editor = h.pages_get_wysiwyg_editor() %}
 
     {% for page in pages %}

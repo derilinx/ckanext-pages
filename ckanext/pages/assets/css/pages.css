@@ -1,13 +1,13 @@
 .page-list {
-  margin-top: 2.5em;
+    margin-top: 2.5em;
 }
 
 .page-list-header {
-  margin-left: 10px;
+    margin-left: 10px;
 }
 
 .page-list-item {
-  margin: 1.5em 0;
+    margin: 1.5em 0;
 }
 
 .page-list-item .image {
@@ -27,7 +27,7 @@
 }
 
 .pages-form .form-actions {
-  margin-top: 10px;
+    margin-top: 10px;
 }
 
 .page-simple-form-height {
@@ -46,6 +46,7 @@
 }
 
 .page-content {
+    flex:1;
 }
 
 .page-head {
@@ -75,7 +76,7 @@
 
 .page-container {
     display: grid;
-   grid-template-columns: 50% 50% ;
+    grid-template-columns: 50% 50% ;
     padding-left:100px;
 }
 
@@ -87,6 +88,9 @@
 .page-panel-body {
     padding: 12px;
     padding-top: 0px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .page-panel-content {
@@ -156,8 +160,7 @@
 }
 
 .pages-link {
-    position: absolute;
-bottom:4px;
+
 }
 
 .pages-action {
@@ -222,4 +225,10 @@ bottom:4px;
 
 .panel-green {
     background-color: #40C851;
+}
+
+.pages-item {
+    height: 600px;
+    background-color:white;
+    margin-bottom:60px;
 }
