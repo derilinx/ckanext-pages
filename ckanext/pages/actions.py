@@ -17,6 +17,8 @@ from ckanext.pages import db
 
 from ckanext.pages.utils import parse_json_or_return_original
 
+from collections import OrderedDict
+
 
 class HTMLFirstImage(HTMLParser):
     def __init__(self):
@@ -35,10 +37,15 @@ def _pages_show(context, data_dict):
     if out:
         out = db.table_dictize(out, context)
 
+        print("Everything from DB")
+        print(out)
+
         # Initialize variables for initial title and content
         if isinstance(out['title'], dict):
-            initial_language = list(out['title'].keys())[0]
-            initial_title = out['title'][initial_language]
+            # Preserve the insertion order of the keys
+            ordered_title = OrderedDict(out['title'])
+            initial_language = next(iter(ordered_title))
+            initial_title = ordered_title[initial_language]
         else:
             initial_language = tk.h.lang()
             initial_title = out['title']
@@ -158,6 +165,7 @@ def _pages_update(context, data_dict):
         raise p.toolkit.ValidationError(errors)
 
     out = db.Page.get(group_id=org_id, name=page)
+
     if not out:
         out = db.Page()
         out.group_id = org_id
@@ -180,6 +188,9 @@ def _pages_update(context, data_dict):
 
     if not out.user_id:
         out.user_id = p.toolkit.c.userobj.id
+
+    print("Edited to be saved")
+    print(out)
 
     out.save()
     session = context['session']

@@ -4,7 +4,7 @@ from ckan.plugins import toolkit as tk
 import ckan.plugins.toolkit as toolkit
 import ckan.plugins as p
 
-PLACEHOLDER_IMG = '/img/dgilogows.png'
+PLACEHOLDER_IMG = tk.config.get('ckanext.pages.placeholder_img', None)
 
 
 def get_post_image(content):

@@ -16,13 +16,21 @@
 {% block content %}
   <section class="page-section">
     <div class="blog-hero page-hero">
-      <h1 class="text-center"><span class="page-heading hero-heading">{{title}}</span></h1>
+      <h1 class="text-center">
+        <span class="page-heading hero-heading">
+          {% if current_lang in c.page.existing_languages %}
+            {{ c.page.existing_languages[current_lang]['title'] }}
+          {% else %}
+          {{title}}
+          {% endif %}
+        </span>
+      </h1>
     </div>
     <div class="container page-main-container">
       <div class="action-btns">
         {% block ckanext_pages_actions %}
           {% if h.check_access('ckanext_pages_update') %}
-            {% link_for _('Edit'), named_route='pages.edit', page='/' +c.page.name, class_='btn btn-primary', icon='edit' %}
+            {% link_for _('Edit'), named_route='pages.edit', page=c.page.name, class_='btn btn-primary', icon='edit' %}
           {% endif %}
         {% endblock %}
       </div>
