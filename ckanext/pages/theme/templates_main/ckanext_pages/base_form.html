@@ -157,6 +157,7 @@
             {{ wysiwyg.editor('content', id='field-content', label=_('Content'), placeholder=_('Enter content here'),
             value=data.content|safe, error=errors.content) }}
             {% elif editor == 'ckeditor' %}
+            <p>Editor 1</p>
             <script> window.CKEDITOR_BASEPATH = '/' </script>
             {% asset 'pages/main-js' %}
             {% asset 'pages/main-css' %}
@@ -279,7 +280,7 @@
             <label for="title_${languageCount}" class="multilingual-page-input">Title:</label>
             <input type="text" id="title_${languageCount}" name="title_${languageCount}" class="form-control" required>
             <label for="content_${languageCount}" class="multilingual-page-input">Content:</label>
-            <textarea id="content_${languageCount}" name="content_${languageCount}" class="form-control" data-module="ckedit" style="height:400px" required></textarea>
+            <textarea id="content_${languageCount}" name="content_${languageCount}" class="form-control" data-module="ckedit" style="height:400px" data-module-site_url={{ h.dump_json(h.url_for('/', locale='default', qualified=true)) }} required ></textarea>
             <button type="button" class="btn btn-danger multilingual-page-input" onclick="removeLanguageVariation(${languageCount})">Remove</button>
         `;
         document.getElementById('languageVariationsSection').appendChild(section);
