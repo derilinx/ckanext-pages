@@ -1,7 +1,8 @@
 this.ckan.module("ckedit", function(jQuery, _) {
     return {
         options: {
-            site_url: ""
+            site_url: "",
+            superset_dashboards: "[]",
         },
 
         initialize: function() {
@@ -49,6 +50,57 @@ this.ckan.module("ckedit", function(jQuery, _) {
       };
       config.filebrowserUploadUrl = this.options.site_url + 'pages_upload';
 
+      var supersetDashboards = this.options.superset_dashboards;
+      if (supersetDashboards.length > 0) {
+        CKEDITOR.dialog.add('embedDashboard', function (editor) {
+          return {
+            title: 'Embed Superset Dashboard',
+            contents: [{
+              id: 'dashboard-tab',
+              elements: [
+                {
+                  type: 'select',
+                  id: 'dashboard',
+                  label: 'The dashboard to embed',
+                  items: supersetDashboards.map(function (dashboard) {
+                    return [dashboard.title, dashboard.url];
+                  }),
+                },
+                {
+                  type: 'text',
+                  id: 'dashboard-width',
+                  label: 'Embed width',
+                  default: '100%',
+                },
+                {
+                  type: 'text',
+                  id: 'dashboard-height',
+                  label: 'Embed height',
+                  default: '65vh',
+                },
+              ],
+            }],
+            onOk: function() {
+              var el = editor.document.createElement('iframe');
+              el.setAttribute('src', this.getValueOf('dashboard-tab', 'dashboard'));
+              el.setAttribute('style', "width: " + this.getValueOf('dashboard-tab', 'dashboard-width') + '; height: ' + this.getValueOf('dashboard-tab', 'dashboard-height') + ';');
+              editor.insertElement(el);
+            },
+          };
+        });
+        CKEDITOR.plugins.add('supersetdashboards', {
+          init: function (editor) {
+            editor.addCommand('embedDashboard', new CKEDITOR.dialogCommand('embedDashboard', {allowedContent: 'iframe[src,style]'}));
+            editor.ui.addButton('Dashboard', {
+              label: 'Embed Superset Dashboard',
+              command: 'embedDashboard',
+              toolbar: 'insert',
+              icon: 'source',
+            });
+          },
+        });
+        config.extraPlugins += ',supersetdashboards';
+      }
       // Override default config options with ones provided by plugins
       if (window.ckan.pages && window.ckan.pages.override_config) {
         $.extend(config, window.ckan.pages.override_config);
