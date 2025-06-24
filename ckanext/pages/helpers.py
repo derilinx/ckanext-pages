@@ -54,3 +54,11 @@ def get_lang_to_json():
     locales = tk.h.get_available_locales()
     languages_arr = [{'short_name': f"{locale.language}_{locale.territory}" if locale.territory else locale.language, 'display_name': f"{locale.get_display_name()}"} for locale in locales]
     return languages_arr
+
+def superset_dashboards():
+    if 'superset' in tk.aslist(tk.config.get('ckan.plugins')):
+        return [
+            { 'title': dashboard['title'], 'url': dashboard['url'] + '?standalone=2' }
+            for dashboard in tk.h.superset_dashboard_list()['public']
+        ]
+    return []
