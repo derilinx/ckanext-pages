@@ -17,8 +17,8 @@ depends_on = None
 
 
 def upgrade():
-    op.create_index("ckanext_pages_id_idx", "ckanext_pages", ["id"])
-    op.create_index("ckanext_pages_name_idx", "ckanext_pages", ["name"])
+    op.create_index("ckanext_pages_id_idx", "ckanext_pages", ["id"], unique=True)
+    op.create_index("ckanext_pages_name_idx", "ckanext_pages", ["name"], unique=True)
 
 
 def downgrade():
