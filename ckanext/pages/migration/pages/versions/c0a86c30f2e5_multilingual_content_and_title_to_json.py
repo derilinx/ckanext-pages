@@ -17,8 +17,8 @@ depends_on = None
 
 
 def upgrade():
-    op.alter_column('ckanext_pages', 'title', type_=sa.JSON, postgresql_using='json_object(lang VALUE title)')
-    op.alter_column('ckanext_pages', 'content', type_=sa.JSON, postgresql_using='json_object(lang VALUE content)')
+    op.alter_column('ckanext_pages', 'title', type_=sa.JSON, postgresql_using="json_build_object(lang, title)")
+    op.alter_column('ckanext_pages', 'content', type_=sa.JSON, postgresql_using='json_build_object(lang, content)')
 
 
 def downgrade():
