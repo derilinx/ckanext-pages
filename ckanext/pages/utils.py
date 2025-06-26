@@ -7,7 +7,7 @@ import ckan.plugins.toolkit as tk
 import ckan.logic as logic
 import ckan.lib.helpers as helpers
 
-from ckanext.pages.db import Page
+import ckanext.pages.db as db
 
 config = tk.config
 _ = tk._
@@ -249,7 +249,7 @@ def pages_revisions(page, page_type='page'):
     except tk.NotAuthorized:
         return tk.abort(401, _('Unauthorized to view this page'))
 
-    _page = Page.get(name=page)
+    _page = db.Page.get(name=page)
 
     if not _page:
         return tk.abort(404, _('Page Not Found'))
@@ -264,7 +264,7 @@ def pages_revisions_preview(page, revision, page_type='page'):
     except tk.NotAuthorized:
         return tk.abort(401, _('Unauthorized to view this page'))
 
-    _page = Page.get(name=page)
+    _page = db.Page.get(name=page)
     tk.c.page_type = page_type
     tk.c.page = _page
     try:
@@ -285,7 +285,7 @@ def pages_revision_restore(page, revision, page_type='page'):
         tk.get_action('ckanext_pages_revision_restore')(
             context={}, data_dict={"page": page, "revision": revision}
         )
-        _page = Page.get(name=page)
+        _page = db.Page.get(name=page)
         timestamp = helpers.render_datetime(_page.revisions[revision]["created"], with_hours=True)
         tk.h.flash_success(f"Content from revision created on {timestamp} set.")
     except TypeError:
