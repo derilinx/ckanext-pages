@@ -164,7 +164,7 @@ this.ckan.module("ckedit", function(jQuery, _) {
       CKEDITOR.plugins.add('resourceviewembed', {
         init: function (editor) {
           editor.addCommand('embedResourceView', new CKEDITOR.dialogCommand('embedResourceView', {allowedContent: 'iframe[src,style]'}));
-          editor.ui.addButton('Resource View', {
+          editor.ui.addButton('resourceview', {
             label: 'Embed Resource View',
             command: 'embedResourceView',
             toolbar: 'insert',
