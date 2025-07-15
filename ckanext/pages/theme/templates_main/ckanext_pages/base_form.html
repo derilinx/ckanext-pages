@@ -60,9 +60,7 @@
     {% block errors %}{{ form.errors(error_summary) }}{% endblock %}
 
     {% block form_basic_fields %}
-    {{ form.input('title', id='field-title', label=_('Title'), placeholder=title_placeholder, value=data.title,
-    error=errors.title, classes=['control-full', 'control-large'], attrs={'data-module': 'slug-preview-target', 'class':
-    'form-control'}) }}
+    <input type="hidden" name="initial_language" value="{{data.initial_language}}" />
 
     {% set domain = slug_domain|replace("http://", "")|replace("https://", "") %}
     {% set attrs = {'data-module': 'slug-preview-slug', 'data-module-prefix': domain~'/', 'data-module-placeholder': '
@@ -149,6 +147,11 @@
 
             {% endblock %}
 
+            {% set default_lang = h.get_available_locales() | selectattr("short_name", "eq", data.initial_language) | first  %}
+       	    <h3 class="title-heading">Language: {{ default_lang.display_name }}</h3>
+            {{ form.input('title', id='field-title', label=_('Title'), placeholder=title_placeholder, value=data.title,
+            error=errors.title, classes=['control-full', 'control-large'], attrs={'data-module': 'slug-preview-target', 'class':
+            'form-control'}) }}
             {% block form_content %}
             {% set editor = h.pages_get_wysiwyg_editor() %}
             {% if editor == 'medium' %}
@@ -174,40 +177,26 @@
             {{ form.markdown('content', id='field-content', attrs={'class': 'form-control page-simple-form-height'},
             label=_('Content'), placeholder=_('Enter content here'), value=data.content, error=errors.content) }}
             {% endif %}
-
-
             <div class="">
                 {% if h.get_available_locales() %}
                 <div id="languageVariationsSection" class="new-page-lang-div">
-            <!-- Language variation forms will be appended here -->
-                    {% if data.existing_languages %}
-                    {% for lang, content in data.existing_languages.items() %}
+                    {% for lang in h.get_lang_to_json() %}
+		    {% if lang.short_name != data.initial_language %} 
+		    {% set content = data.existing_languages[lang.short_name] or {} %}
             <div id="languageVariation_{{ loop.index }}" class="language-variation">
-                <h3 class="title-heading">Language Variation {{ loop.index }}</h3>
-                <label for="language_{{ loop.index }}">Language:</label>
-                <select id="language_{{ loop.index }}" name="language_{{ loop.index }}" class="form-control" onchange="updateSelectedLanguages({{ loop.index }})" required>
-                    {% for language in h.get_available_locales() %}
-                    {% if language.short_name != data.initial_language %}
-                    <option value="{{ language.short_name }}" {% if language.short_name == lang %}selected{% endif %}>
-                        {{ language.display_name or language.english_name }}
-                    </option>
-                    {% endif %}
-                    {% endfor %}
-                </select>
-                <label for="title_{{ loop.index }}" class="multilingual-page-input">Title:</label>
+    	    <h3 class="title-heading">Language: {{ lang.display_name }}</h3>
+	    <input type=hidden value="{{lang.short_name}}" name="language_{{loop.index}}" >
+		<label for="title_{{ loop.index }}" class="multilingual-page-input">Title</label>
                 <input type="text" id="title_{{ loop.index }}" name="title_{{ loop.index }}" class="form-control" value="{{ content.title }}" required>
-                <label for="content_{{ loop.index }}" class="multilingual-page-input">Content:</label>
-                <textarea id="content_{{ loop.index }}" name="content_{{ loop.index }}" class="form-control" data-module="ckedit" style="height:400px" required>{{ content.content }}</textarea>
-                <button type="button" class="btn btn-danger multilingual-page-input" onclick="removeLanguageVariation({{ loop.index }})">Remove</button>
+                <label for="content_{{ loop.index }}" class="multilingual-page-input">Content</label>
+                <textarea id="content_{{ loop.index }}" name="content_{{ loop.index }}" class="form-control" data-module="ckedit" style="height:400px" required
+		      data-module-site_url="{{ h.dump_json(h.url_for('/', locale='default', qualified=true)) }}"
+                      data-module-superset_dashboards="{{ h.dump_json(h.pages_superset_dashboards()) }}">{{ content.content }}</textarea>
             </div>
+		    {%endif%}
             {% endfor %}
                     {% endif %}
             </div>
-
-                <button type="button" class="" id="add-language-btn" onclick="addLanguageVariation()">
-                    {{ _('Add Content in Another Language') }}
-                </button>
-                {% endif %}
             </div>
 
             {% endblock %}
@@ -242,92 +231,3 @@
   -->
   <script src="/vendor/ckeditor/ckeditor.js"></script>
 {% endblock %}
-<script>
-    {% if data.existing_languages %}
-    let languageCount = {{ data.existing_languages|length }};
-    const selectedLanguages = new Set({% for lang in data.existing_languages.keys() %}"{{ lang }}", {% endfor %});
-    {% else %}
-    let languageCount = 0;
-            const selectedLanguages = new Set();
-    {% endif %}
-    const languages = {{ h.get_lang_to_json()|tojson }};
-    const defaultLanguage = "{{ h.lang() }}";
-
-
-    function addLanguageVariation() {
-        if (languageCount >= languages.length - 1) {
-            alert("You have added all available language variations.");
-            return;
-        }
-
-        languageCount++;
-        const section = document.createElement('div');
-        section.setAttribute('id', `languageVariation_${languageCount}`);
-        section.setAttribute('class', 'language-variation');
-
-        let options = '<option value="">Select language</option>';
-        languages.forEach(lang => {
-            const langCode = lang.short_name;
-            if (langCode !== defaultLanguage && !selectedLanguages.has(langCode)) {
-                const displayName = langCode === "en_GB" ? "English" : (lang.display_name || lang.english_name);
-                options += `<option value="${langCode}">${displayName}</option>`;
-            }
-        });
-
-        section.innerHTML = `
-            <h3 class="title-heading">Language Variation ${languageCount}</h3>
-            <label for="language_${languageCount}">Language:</label>
-            <select id="language_${languageCount}" name="language_${languageCount}" class="form-control" onchange="updateSelectedLanguages(${languageCount})" required>
-                ${options}
-            </select>
-            <label for="title_${languageCount}" class="multilingual-page-input">Title:</label>
-            <input type="text" id="title_${languageCount}" name="title_${languageCount}" class="form-control" required>
-            <label for="content_${languageCount}" class="multilingual-page-input">Content:</label>
-            <textarea id="content_${languageCount}" name="content_${languageCount}" class="form-control" data-module="ckedit" style="height:400px" data-module-site_url={{ h.dump_json(h.url_for('/', locale='default', qualified=true)) }} required ></textarea>
-            <button type="button" class="btn btn-danger multilingual-page-input" onclick="removeLanguageVariation(${languageCount})">Remove</button>
-        `;
-        document.getElementById('languageVariationsSection').appendChild(section);
-    }
-
-    function updateSelectedLanguages(count) {
-        const select = document.getElementById(`language_${count}`);
-        const selectedLanguage = select.value;
-
-        if (selectedLanguage) {
-            selectedLanguages.add(selectedLanguage);
-        }
-        updateOptions();
-    }
-
-    function updateOptions() {
-        for (let i = 1; i <= languageCount; i++) {
-            const select = document.getElementById(`language_${i}`);
-            if (select) {
-                const currentValue = select.value;
-                let options = '<option value="">Select language</option>';
-                languages.forEach(lang => {
-                    const langCode = lang.short_name;
-                    if (langCode !== defaultLanguage && (!selectedLanguages.has(langCode) || langCode === currentValue)) {
-                        const displayName = langCode === "en_GB" ? "English" : (lang.display_name || lang.english_name);
-                        options += `<option value="${langCode}" ${langCode === currentValue ? 'selected' : ''}>${displayName}</option>`;
-                    }
-                });
-                select.innerHTML = options;
-            }
-        }
-    }
-
-    function removeLanguageVariation(count) {
-        const section = document.getElementById(`languageVariation_${count}`);
-        const select = document.getElementById(`language_${count}`);
-        if (section && select) {
-            const selectedLanguage = select.value;
-            if (selectedLanguages.has(selectedLanguage)) {
-                selectedLanguages.delete(selectedLanguage);
-            }
-            section.remove();
-            languageCount--;
-            updateOptions();
-        }
-    }
-</script>

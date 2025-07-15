@@ -2,14 +2,17 @@
   <div class="page-panel panel panel-default bb">
 
                   <div class="panel-body page-panel-body">
-          {% if page.content %}
-          {% set img_url = h.get_post_image(page.content) %}
           {% if editor %}
 
           <div class="page-content">
+              {% if page.content %}
+              {% set img_url = h.get_post_image(page.content) %}
+	      {% if img_url %}
               <div class="page-img-box">
                   <img class="page-thumb-img" src="{{ img_url }}" alt=" image from a post"/>
               </div>
+	      {% endif %}
+	      {% endif %}
               {% if featured or page.featured %}
               <div class="page-featured">
                   <span class="page-label label label-success">Featured</span>
@@ -20,6 +23,7 @@
                       <a href="{{ url }}"><h2 class="blog-title">{{ page.title }}</h2></a>
               </span>
               </div>
+	  {% if page.content %}
               <div class="page-pub-date">
               {% if page.publish_date %}
               <small class="page-date blog-date">{{ h.render_datetime(page.publish_date) }}</small>

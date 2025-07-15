@@ -73,7 +73,7 @@ def pages_edit(page=None, data=None, errors=None, error_summary=None, page_type=
         data = _parse_form_data(tk.request)
 
         # Extract default language content
-        default_language = tk.h.lang()
+        default_language = data['initial_language']
         title_data = {default_language: data.pop('title')}
         content_data = {default_language: data.pop('content')}
 
