@@ -1,10 +1,7 @@
 {% import 'macros/form.html' as form %}
-{% import 'macros/wysiwyg.html' as wysiwyg %}
 
 {% set data = data or {} %}
 {% set errors = errors or {} %}
-{% set current_lang = request.environ.CKAN_LANG %}
-{% set available_languages = h.get_available_locales() %}
 
 {% if type == 'org' %}
 {% set prefix = 'organization_pages_' %}
@@ -147,56 +144,20 @@
 
             {% endblock %}
 
-            {% set default_lang = h.get_available_locales() | selectattr("short_name", "eq", data.initial_language) | first  %}
-       	    <h3 class="title-heading">Language: {{ default_lang.display_name }}</h3>
-            {{ form.input('title', id='field-title', label=_('Title'), placeholder=title_placeholder, value=data.title,
-            error=errors.title, classes=['control-full', 'control-large'], attrs={'data-module': 'slug-preview-target', 'class':
-            'form-control'}) }}
             {% block form_content %}
-            {% set editor = h.pages_get_wysiwyg_editor() %}
-            {% if editor == 'medium' %}
-            {% asset 'pages/medium-js' %}
-            {% asset 'pages/medium-css' %}
-            {{ wysiwyg.editor('content', id='field-content', label=_('Content'), placeholder=_('Enter content here'),
-            value=data.content|safe, error=errors.content) }}
-            {% elif editor == 'ckeditor' %}
-            <p>Editor 1</p>
-            <script> window.CKEDITOR_BASEPATH = '/' </script>
-            {% asset 'pages/main-js' %}
-            {% asset 'pages/main-css' %}
-            <div class="control-group">
-                <label for="field-content-ck" class="control-label content-input">{{ _('Content') }}</label>
-            </div>
-            <textarea id="field-content-ck" name="content" placeholder="{{_('My content')}}" data-module="ckedit"
-                      style="height:400px"
-                      data-module-site_url="{{ h.dump_json(h.url_for('/', locale='default', qualified=true)) }}"
-                      data-module-superset_dashboards="{{ h.dump_json(h.pages_superset_dashboards()) }}">
-                    {{ data.content }}
-            </textarea>
-            {% else %}
-            {{ form.markdown('content', id='field-content', attrs={'class': 'form-control page-simple-form-height'},
-            label=_('Content'), placeholder=_('Enter content here'), value=data.content, error=errors.content) }}
-            {% endif %}
             <div class="">
-                {% if h.get_available_locales() %}
                 <div id="languageVariationsSection" class="new-page-lang-div">
                     {% for lang in h.get_lang_to_json() %}
-		    {% if lang.short_name != data.initial_language %} 
-		    {% set content = data.existing_languages[lang.short_name] or {} %}
-            <div id="languageVariation_{{ loop.index }}" class="language-variation">
-    	    <h3 class="title-heading">Language: {{ lang.display_name }}</h3>
-	    <input type=hidden value="{{lang.short_name}}" name="language_{{loop.index}}" >
-		<label for="title_{{ loop.index }}" class="multilingual-page-input">Title</label>
-                <input type="text" id="title_{{ loop.index }}" name="title_{{ loop.index }}" class="form-control" value="{{ content.title }}" required>
-                <label for="content_{{ loop.index }}" class="multilingual-page-input">Content</label>
-                <textarea id="content_{{ loop.index }}" name="content_{{ loop.index }}" class="form-control" data-module="ckedit" style="height:400px" required
-		      data-module-site_url="{{ h.dump_json(h.url_for('/', locale='default', qualified=true)) }}"
-                      data-module-superset_dashboards="{{ h.dump_json(h.pages_superset_dashboards()) }}">{{ content.content }}</textarea>
-            </div>
-		    {%endif%}
-            {% endfor %}
-                    {% endif %}
-            </div>
+                        {% set content = data.existing_languages[lang.short_name] or {} %}
+                        <div id="languageVariation_{{ loop.index }}" class="language-variation">
+                            <h3 class="title-heading">Language: {{ lang.display_name }}</h3>
+                            <input type=hidden value="{{lang.short_name}}" name="language_{{loop.index}}" >
+                            <label for="title_{{ loop.index }}" class="multilingual-page-input">Title</label>
+                            <input type="text" id="title_{{ loop.index }}" name="title_{{ loop.index }}" class="form-control" value="{{ content.title }}" required>
+                            {% snippet 'ckanext_pages/editor.html', name="content_" ~ loop.index, id="content_"~loop.index, content=content.content, errors }
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
 
             {% endblock %}

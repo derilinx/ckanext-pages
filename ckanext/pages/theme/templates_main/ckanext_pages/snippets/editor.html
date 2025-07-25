@@ -1,0 +1,37 @@
+{% import 'macros/form.html' as form %}
+{% import 'macros/wysiwyg.html' as wysiwyg %}
+{#
+Parameters:
+- name
+- id
+- label
+- content
+- errors
+#}
+
+{% set errors = errors or [] %}
+
+{% set editor = h.pages_get_wysiwyg_editor() %}
+{% if editor == 'medium' %}
+  {% asset 'pages/medium-js' %}
+  {% asset 'pages/medium-css' %}
+  {{ wysiwyg.editor(name, id=id, label=label, placeholder=_('Enter content here'),
+  value=content|safe, error=errors) }}
+{% elif editor == 'ckeditor' %}
+  <script> window.CKEDITOR_BASEPATH = '/' </script>
+  {% asset 'pages/main-js' %}
+  {% asset 'pages/main-css' %}
+  <div class="control-group">
+      <label for="{{ id }}" class="control-label content-input">{{ label }}</label>
+  </div>
+  <textarea id="{{ id }}" name="{{ name }}" placeholder="{{_('My content')}}" data-module="ckedit"
+            style="height:400px"
+            data-module-site_url="{{ h.dump_json(h.url_for('/', locale='default', qualified=true)) }}"
+            data-module-superset_dashboards="{{ h.dump_json(h.pages_superset_dashboards()) }}">
+          {{ content }}
+  </textarea>
+{% else %}
+  {{ form.markdown(name, id=id, attrs={'class': 'form-control page-simple-form-height'},
+  label=label, placeholder=_('Enter content here'), value=content, error=errors) }}
+{% endif %}
+

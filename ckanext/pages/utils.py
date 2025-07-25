@@ -71,13 +71,9 @@ def pages_edit(page=None, data=None, errors=None, error_summary=None, page_type=
 
     if tk.request.method == 'POST' and not data:
         data = _parse_form_data(tk.request)
+        title_data = {}
+        content_data = {}
 
-        # Extract default language content
-        default_language = data['initial_language']
-        title_data = {default_language: data.pop('title')}
-        content_data = {default_language: data.pop('content')}
-
-        # Extract additional languages
         for key, value in data.items():
             if key.startswith('language_'):
                 lang_count = key.split('_')[1]
