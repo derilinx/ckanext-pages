@@ -89,7 +89,7 @@
                 margin-top: 2em;
             }
 
-            .cke_button__link_label, .cke_button__image_label, .cke_button__table_label, .cke_button__ckanview_label, .cke_button__resourceview_label, .cke_button__dashboard_label {
+            .cke_button__link_label, .cke_button__image_label, .cke_button__table_label, .cke_button__ckanview_label, .cke_button__resourceview_label, .cke_button__dashboard_label, .cke_button__chart_label {
                 display: inline;
             }
 
@@ -147,14 +147,15 @@
             {% block form_content %}
             <div class="">
                 <div id="languageVariationsSection" class="new-page-lang-div">
+                    {% set languages = data.existing_languages or {} %}
                     {% for lang in h.get_lang_to_json() %}
-                        {% set content = data.existing_languages[lang.short_name] or {} %}
+                        {% set content = languages[lang.short_name] or {} %}
                         <div id="languageVariation_{{ loop.index }}" class="language-variation">
                             <h3 class="title-heading">Language: {{ lang.display_name }}</h3>
                             <input type=hidden value="{{lang.short_name}}" name="language_{{loop.index}}" >
                             <label for="title_{{ loop.index }}" class="multilingual-page-input">Title</label>
                             <input type="text" id="title_{{ loop.index }}" name="title_{{ loop.index }}" class="form-control" value="{{ content.title }}" required>
-                            {% snippet 'ckanext_pages/editor.html', name="content_" ~ loop.index, id="content_"~loop.index, content=content.content, errors }
+                            {% snippet 'ckanext_pages/snippets/editor.html', name="content_" ~ loop.index, id="content_"~loop.index, content=content.content, errors=[] %}
                         </div>
                     {% endfor %}
                 </div>

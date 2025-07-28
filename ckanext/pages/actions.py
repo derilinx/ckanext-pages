@@ -59,11 +59,10 @@ def _pages_show(context, data_dict):
         existing_languages = {}
         if isinstance(out['title'], dict):
             for lang in out['title'].keys():
-                if lang != initial_language:
-                    existing_languages[lang] = {
-                        'title': out['title'][lang],
-                        'content': out['content'][lang]
-                    }
+                existing_languages[lang] = {
+                    'title': out['title'][lang],
+                    'content': out['content'][lang]
+                }
         out["title"] = initial_title
         out["content"] = initial_content
         out["existing_languages"] = existing_languages

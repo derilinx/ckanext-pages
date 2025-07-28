@@ -121,6 +121,7 @@ CKEDITOR.plugins.add('resourceviewembed', {
 });
 
 CKEDITOR.dialog.add('embedDashboard', function (editor) {
+  var ckan_client = editor.config.ckan_client;
   return {
     title: 'Embed Superset Dashboard',
     contents: [{
@@ -130,9 +131,21 @@ CKEDITOR.dialog.add('embedDashboard', function (editor) {
           type: 'select',
           id: 'dashboard',
           label: 'The dashboard to embed',
-          items: editor.config.supersetDashboards.map(function (dashboard) {
-            return [dashboard.title, dashboard.url];
-          }),
+          items: [],
+          setup: function() {
+            var select = this;
+            ckan_client.call('GET', 'superset_dashboards', '', function onSuccess(result) {
+              result.result.forEach(function (dashboard) {
+                select.add(dashboard.title, dashboard.url + "?standalone=2");
+              });
+              if (result.result.length > 0) {
+                select.setValue(result.result[0].id);
+              }
+            }, function onError(error) {
+              console.error(error);
+              select.add('An error occurred fetching dashboards', 'error');
+            });
+          },
         },
         {
           type: 'text',
@@ -148,6 +161,9 @@ CKEDITOR.dialog.add('embedDashboard', function (editor) {
         },
       ],
     }],
+    onShow: function () {
+      this.setupContent();
+    },
     onOk: function() {
       var el = editor.document.createElement('iframe');
       el.setAttribute('src', this.getValueOf('dashboard-tab', 'dashboard'));
@@ -156,12 +172,71 @@ CKEDITOR.dialog.add('embedDashboard', function (editor) {
     },
   };
 });
+CKEDITOR.dialog.add('embedChart', function (editor) {
+  var ckan_client = editor.config.ckan_client;
+  return {
+    title: 'Embed Superset Chart',
+    contents: [{
+      id: 'chart-tab',
+      elements: [
+        {
+          type: 'select',
+          id: 'chart',
+          label: 'The chart to embed',
+          items: [],
+          setup: function() {
+            var select = this;
+            ckan_client.call('GET', 'superset_charts', '', function onSuccess(result) {
+              result.result.forEach(function (chart) {
+                select.add(chart.title, chart.url + "&standalone=2");
+              });
+              if (result.result.length > 0) {
+                select.setValue(result.result[0].id);
+              }
+            }, function onError(error) {
+              console.error(error);
+              select.add('An error occurred fetching charts', 'error');
+            });
+          },
+        },
+        {
+          type: 'text',
+          id: 'width',
+          label: 'Embed width',
+          default: '100%',
+        },
+        {
+          type: 'text',
+          id: 'height',
+          label: 'Embed height',
+          default: '65vh',
+        },
+      ],
+    }],
+    onShow: function () {
+      this.setupContent();
+    },
+    onOk: function() {
+      var el = editor.document.createElement('iframe');
+      el.setAttribute('src', this.getValueOf('chart-tab', 'chart'));
+      el.setAttribute('style', "width: " + this.getValueOf('chart-tab', 'width') + '; height: ' + this.getValueOf('chart-tab', 'height') + ';');
+      editor.insertElement(el);
+    },
+  };
+});
 CKEDITOR.plugins.add('supersetdashboards', {
   init: function (editor) {
     editor.addCommand('embedDashboard', new CKEDITOR.dialogCommand('embedDashboard', {allowedContent: 'iframe[src,style]'}));
+    editor.addCommand('embedChart', new CKEDITOR.dialogCommand('embedChart', {allowedContent: 'iframe[src,style]'}))
     editor.ui.addButton('Dashboard', {
       label: 'Embed Superset Dashboard',
       command: 'embedDashboard',
+      toolbar: 'insert',
+      icon: 'source',
+    });
+    editor.ui.addButton('Chart', {
+      label: 'Embed Superset Chart',
+      command: 'embedChart',
       toolbar: 'insert',
       icon: 'source',
     });
@@ -172,7 +247,6 @@ this.ckan.module("ckedit", function(jQuery, _) {
     return {
         options: {
             site_url: "",
-            superset_dashboards: "[]",
         },
 
         initialize: function() {
@@ -223,13 +297,8 @@ this.ckan.module("ckedit", function(jQuery, _) {
 
       var ckan_client = this.sandbox.client;
       config.ckan_client = ckan_client;
-      config.extraPlugins += ',resourceviewembed';
+      config.extraPlugins += ',resourceviewembed,supersetdashboards';
 
-      var supersetDashboards = this.options.superset_dashboards;
-      if (supersetDashboards.length > 0) {
-        config.supersetDashboards = supersetDashboards;        
-        config.extraPlugins += ',supersetdashboards';
-      }
       // Override default config options with ones provided by plugins
       if (window.ckan.pages && window.ckan.pages.override_config) {
         $.extend(config, window.ckan.pages.override_config);

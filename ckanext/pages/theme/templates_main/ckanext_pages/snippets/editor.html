@@ -26,8 +26,7 @@ Parameters:
   </div>
   <textarea id="{{ id }}" name="{{ name }}" placeholder="{{_('My content')}}" data-module="ckedit"
             style="height:400px"
-            data-module-site_url="{{ h.dump_json(h.url_for('/', locale='default', qualified=true)) }}"
-            data-module-superset_dashboards="{{ h.dump_json(h.pages_superset_dashboards()) }}">
+            data-module-site_url="{{ h.dump_json(h.url_for('/', locale='default', qualified=true)) }}">
           {{ content }}
   </textarea>
 {% else %}
