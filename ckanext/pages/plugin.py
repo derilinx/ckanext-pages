@@ -64,10 +64,10 @@ def build_pages_nav_main(*args):
         page_name = tk.request.path.split('/')[-1]
 
     for page in pages_list:
-        type_ = 'blog' if page['page_type'] == 'blog' else 'pages'
+        endpoint = 'pages.blog_show' if page['page_type'] == 'blog' else 'pages.show'
         name = quote(page['name'])
         title = html_escape(page['title'])
-        link = tk.h.literal(u'<a href="{}/{}/{}">{}</a>'.format(root_path, type_, name, title))
+        link = tk.h.literal(u'<a href="{}">{}</a>'.format(tk.h.url_for(endpoint, page=name), title))
         if page['name'] == page_name:
             li = tk.literal('<li class="active">') + link + tk.literal('</li>')
         else:
