@@ -3,6 +3,7 @@ from unicodedata import normalize
 from ckan.plugins import toolkit as tk
 import ckan.plugins.toolkit as toolkit
 import ckan.plugins as p
+from ckanext.pages.utils import  parse_json_or_return_original 
 
 PLACEHOLDER_IMG = tk.config.get('ckanext.pages.placeholder_img', None)
 
@@ -54,6 +55,10 @@ def get_lang_to_json():
     locales = tk.h.get_available_locales()
     languages_arr = [{'short_name': f"{locale.language}_{locale.territory}" if locale.territory else locale.language, 'display_name': f"{locale.get_display_name()}"} for locale in locales]
     return languages_arr
+
+def get_lang_from_dict_fallback(dict):
+    dict = parse_json_or_return_original(dict)
+    return dict.get(tk.h.lang()) or next((dict.get(lang["short_name"]) for lang in get_lang_to_json() if lang["short_name"] in dict), None)
 
 def superset_dashboards():
     if 'superset' in tk.aslist(tk.config.get('ckan.plugins')):

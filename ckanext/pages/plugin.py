@@ -176,6 +176,7 @@ class PagesPlugin(PagesPluginBase):
             'get_soup_text': pages_helpers.get_soup_text,
             'get_content': pages_helpers.get_content,
             'get_lang_to_json': pages_helpers.get_lang_to_json,
+            'pages_get_lang_from_dict_fallback': pages_helpers.get_lang_from_dict_fallback,
             'pages_superset_dashboards': pages_helpers.superset_dashboards,
         }
 

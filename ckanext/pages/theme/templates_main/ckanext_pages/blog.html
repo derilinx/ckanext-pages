@@ -6,15 +6,15 @@
 
 {% block breadcrumb_content %}
   <li><a href="/blog">{% trans %}Blog{% endtrans %}</a></li>
-  {% if c.page.name != "home" %}
-    <li class="active">{% link_for c.page.title|truncate(35), named_route='pages.blog_show', page=c.page.name %}</li>
+  {% if page.name != "home" %}
+    <li class="active">{% link_for h.pages_get_lang_from_dict_fallback(page.title)|truncate(35), named_route='pages.blog_show', page=page.name %}</li>
   {% endif %}
 {% endblock %}
 
 {% block bodytag %}{{ super() }} class="blog"{% endblock %}
 {% block subtitle %}
 
-    {{ c.page.title }}
+    {{ h.pages_get_lang_from_dict_fallback(page.title) }}
 
 {% endblock %}
 
@@ -50,24 +50,25 @@
     {% block ckanext_pages_actions %}
       {% if h.check_access('ckanext_pages_update') %}
         {% asset 'pages/main-css' %}
-        {% link_for _('Edit'), named_route='pages.blog_edit', page=c.page.name, class_='btn btn-primary pull-right', icon='plus-square' %}
-        {% link_for _('Revisions'), named_route='pages.blog_revisions', page=c.page.name, class_='btn btn-primary pull-right me-2', icon='eye' %}
+        {% link_for _('Edit'), named_route='pages.blog_edit', page=page.name, class_='btn btn-primary pull-right', icon='plus-square' %}
+        {% link_for _('Revisions'), named_route='pages.blog_revisions', page=page.name, class_='btn btn-primary pull-right me-2', icon='eye' %}
       {% endif %}
     {% endblock %}
-    <h1 class="page-heading pages-heading">{{ c.page.title }}</h1>
-      {% if c.page.publish_date %}
+    <h1 class="page-heading pages-heading">{{ h.pages_get_lang_from_dict_fallback(page.title) }}</h1>
+      {% if page.publish_date %}
          <span class="muted date"> {{ h.render_datetime(c.page.publish_date) }} </span>
       {% endif %}
     {% block ckanext_pages_content %}
-      {% if c.page.content %}
+      {% if page.content %}
         {% set editor = h.pages_get_wysiwyg_editor() %}
         {% if editor %}
           <div>
-            {% if c.page.image %}}<div><img src={{c.page.image}} alt=""></div>{% endif %}
-            <div>{{ h.render_content(c.page.content) | safe }}</div>
+            {% if page.image %}}<div><img src={{page.image}} alt=""></div>{% endif %}
+
+            <div>{{ h.pages_get_lang_from_dict_fallback(page.content) | safe }}</div>
           </div>
         {% else %}
-          {{ h.render_content(c.page.content) }}
+          {{ h.render_content(h.pages_get_lang_from_dict_fallback(page.content)) }}
         {% endif %}
       {% else %}
         <p class="empty">{{ _('This page currently has no content') }}</p>
@@ -77,7 +78,7 @@
 {% endblock %}
 
 {% block secondary_content %}
-{% set posts = h.get_recent_blog_posts(number=5, exclude=c.page.name) %}
+{% set posts = h.get_recent_blog_posts(number=5, exclude=page.name) %}
 
   <div class="module module-narrow module-shallow">
 
@@ -88,7 +89,7 @@
               {% for post in posts %}
                 <div class="row post">
                     <div class="post-title col-md-12">
-                        <h3><a class="pages-a" href="{{ h.url_for('pages.blog_show', page='/' + post.name) }}">{{ post.title|truncate(40, end="…") }}</a></h3>
+                        <h3><a class="pages-a" href="{{ h.url_for('pages.blog_show', page='/' + post.name) }}">{{ h.pages_get_lang_from_dict_fallback(post.title)|truncate(40, end="…") }}</a></h3>
                     </div>
                     <div class="post-meta col-md-12">
 

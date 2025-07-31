@@ -37,37 +37,6 @@ def _pages_show(context, data_dict):
     out = db.Page.get(group_id=org_id, name=page)
     if out:
         out = db.table_dictize(out, context)
-
-        print("Everything from DB")
-        print(out)
-
-        # Initialize variables for initial title and content
-        if isinstance(out['title'], dict):
-            # Preserve the insertion order of the keys
-            ordered_title = OrderedDict(out['title'])
-            initial_language = next(iter(ordered_title))
-            initial_title = ordered_title[initial_language]
-        else:
-            initial_language = tk.h.lang()
-            initial_title = out['title']
-
-        if isinstance(out['content'], dict):
-            initial_content = out['content'][initial_language]
-        else:
-            initial_content = out['content']
-
-        existing_languages = {}
-        if isinstance(out['title'], dict):
-            for lang in out['title'].keys():
-                existing_languages[lang] = {
-                    'title': out['title'][lang],
-                    'content': out['content'][lang]
-                }
-        out["title"] = initial_title
-        out["content"] = initial_content
-        out["existing_languages"] = existing_languages
-        out["initial_language"] = initial_language
-
     return out
 
 
@@ -112,20 +81,9 @@ def _pages_list(context, data_dict):
 
         title_data = parse_json_or_return_original(pg.title)
         content_data = parse_json_or_return_original(pg.content)
-        current_language = tk.h.lang()
 
-        if isinstance(title_data, dict):
-            title = title_data.get(current_language, title_data.get('en_GB', ''))
-        else:
-            title = title_data
-
-        if isinstance(content_data, dict):
-            content = content_data.get(current_language, content_data.get('en_GB', ''))
-        else:
-            content = content_data
-
-        pg_row = {'title': title,
-                  'content': content,
+        pg_row = {'title': title_data,
+                  'content': content_data,
                   'name': pg.name,
                   'publish_date': pg.publish_date.isoformat() if pg.publish_date else None,
                   'group_id': pg.group_id,
@@ -281,18 +239,12 @@ def pages_upload(context, data_dict):
 
 @tk.side_effect_free
 def pages_show(context, data_dict):
-    try:
-        p.toolkit.check_access('ckanext_pages_show', context, data_dict)
-    except p.toolkit.NotAuthorized:
-        p.toolkit.abort(401, p.toolkit._('Not authorized to see this page'))
+    p.toolkit.check_access('ckanext_pages_show', context, data_dict)
     return _pages_show(context, data_dict)
 
 
 def pages_update(context, data_dict):
-    try:
-        p.toolkit.check_access('ckanext_pages_update', context, data_dict)
-    except p.toolkit.NotAuthorized:
-        p.toolkit.abort(401, p.toolkit._('Not authorized to see this page'))
+    p.toolkit.check_access('ckanext_pages_update', context, data_dict)
     return _pages_update(context, data_dict)
 
 
@@ -316,89 +268,59 @@ def pages_revision_restore(context, data_dict):
 
 
 def pages_delete(context, data_dict):
-    try:
-        p.toolkit.check_access('ckanext_pages_delete', context, data_dict)
-    except p.toolkit.NotAuthorized:
-        p.toolkit.abort(401, p.toolkit._('Not authorized to see this page'))
+    p.toolkit.check_access('ckanext_pages_delete', context, data_dict)
     return _pages_delete(context, data_dict)
 
 
 @tk.side_effect_free
 def pages_list(context, data_dict):
-    try:
-        p.toolkit.check_access('ckanext_pages_list', context, data_dict)
-    except p.toolkit.NotAuthorized:
-        p.toolkit.abort(401, p.toolkit._('Not authorized to see this page'))
+    p.toolkit.check_access('ckanext_pages_list', context, data_dict)
     return _pages_list(context, data_dict)
 
 
 @tk.side_effect_free
 def org_pages_show(context, data_dict):
-    try:
-        p.toolkit.check_access('ckanext_org_pages_show', context, data_dict)
-    except p.toolkit.NotAuthorized:
-        p.toolkit.abort(401, p.toolkit._('Not authorized to see this page'))
+    p.toolkit.check_access('ckanext_org_pages_show', context, data_dict)
     return _pages_show(context, data_dict)
 
 
 def org_pages_update(context, data_dict):
-    try:
-        p.toolkit.check_access('ckanext_org_pages_update', context,
-                               data_dict)
-    except p.toolkit.NotAuthorized:
-        p.toolkit.abort(401, p.toolkit._('Not authorized to see this page'))
+    p.toolkit.check_access('ckanext_org_pages_update', context,
+                           data_dict)
     return _pages_update(context, data_dict)
 
 
 def org_pages_delete(context, data_dict):
-    try:
-        p.toolkit.check_access('ckanext_org_pages_delete', context,
-                               data_dict)
-    except p.toolkit.NotAuthorized:
-        p.toolkit.abort(401, p.toolkit._('Not authorized to see this page'))
+    p.toolkit.check_access('ckanext_org_pages_delete', context,
+                           data_dict)
     return _pages_delete(context, data_dict)
 
 
 @tk.side_effect_free
 def org_pages_list(context, data_dict):
-    try:
-        p.toolkit.check_access('ckanext_org_pages_list', context, data_dict)
-    except p.toolkit.NotAuthorized:
-        p.toolkit.abort(401, p.toolkit._('Not authorized to see this page'))
+    p.toolkit.check_access('ckanext_org_pages_list', context, data_dict)
     return _pages_list(context, data_dict)
 
 
 @tk.side_effect_free
 def group_pages_show(context, data_dict):
-    try:
-        p.toolkit.check_access('ckanext_group_pages_show', context, data_dict)
-    except p.toolkit.NotAuthorized:
-        p.toolkit.abort(401, p.toolkit._('Not authorized to see this page'))
+    p.toolkit.check_access('ckanext_group_pages_show', context, data_dict)
     return _pages_show(context, data_dict)
 
 
 def group_pages_update(context, data_dict):
-    try:
-        p.toolkit.check_access('ckanext_group_pages_update', context,
-                               data_dict)
-    except p.toolkit.NotAuthorized:
-        p.toolkit.abort(401, p.toolkit._('Not authorized to see this page'))
+    p.toolkit.check_access('ckanext_group_pages_update', context,
+                           data_dict)
     return _pages_update(context, data_dict)
 
 
 def group_pages_delete(context, data_dict):
-    try:
-        p.toolkit.check_access('ckanext_group_pages_delete', context,
-                               data_dict)
-    except p.toolkit.NotAuthorized:
-        p.toolkit.abort(401, p.toolkit._('Not authorized to see this page'))
+    p.toolkit.check_access('ckanext_group_pages_delete', context,
+                           data_dict)
     return _pages_delete(context, data_dict)
 
 
 @tk.side_effect_free
 def group_pages_list(context, data_dict):
-    try:
-        p.toolkit.check_access('ckanext_group_pages_list', context, data_dict)
-    except p.toolkit.NotAuthorized:
-        p.toolkit.abort(401, p.toolkit._('Not authorized to see this page'))
+    p.toolkit.check_access('ckanext_group_pages_list', context, data_dict)
     return _pages_list(context, data_dict)

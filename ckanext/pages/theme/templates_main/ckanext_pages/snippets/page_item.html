@@ -6,7 +6,7 @@
 
           <div class="page-content">
               {% if page.content %}
-              {% set img_url = h.get_post_image(page.content) %}
+              {% set img_url = h.get_post_image(h.pages_get_lang_from_dict_fallback(page.content)) %}
 	      {% if img_url %}
               <div class="page-img-box">
                   <img class="page-thumb-img" src="{{ img_url }}" alt=" image from a post"/>
@@ -20,7 +20,7 @@
               {% endif %}
               <div class="page-head  page-head-blog">
                   <span class="page-title" style="text-transform: uppercase">
-                      <a href="{{ url }}"><h2 class="blog-title">{{ page.title }}</h2></a>
+                      <a href="{{ url }}"><h2 class="blog-title">{{ h.pages_get_lang_from_dict_fallback(page.title) }}</h2></a>
               </span>
               </div>
 	  {% if page.content %}
@@ -32,14 +32,14 @@
               {% endif %}
               </div>
               <div class="page-raw">
-                  {{ page.content|striptags|truncate }}
+                  {{ h.pages_get_lang_from_dict_fallback(page.content)|striptags|truncate }}
               </div>
 
 
           </div>
 
           {% else %}
-          {{ h.markdown_extract(page.content) }}
+          {{ h.markdown_extract(h.pages_get_lang_from_dict_fallback(page.content)) }}
           {% endif %}
           {% else %}
           <p class="empty">{{ _('This page currently has no content') }}</p>

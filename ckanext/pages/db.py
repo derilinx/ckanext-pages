@@ -47,7 +47,6 @@ class Page(DomainObject, BaseModel):
     title = Column(types.JSON, default=lambda: {})
     name = Column(types.UnicodeText, default=u'')
     content = Column(types.JSON, default=lambda: {})
-    lang = Column(types.UnicodeText, default=u'')
     order = Column(types.UnicodeText, default=u'')
     private = Column(types.Boolean, default=True)
     group_id = Column(types.UnicodeText, default=None)
@@ -91,26 +90,6 @@ class Page(DomainObject, BaseModel):
                     datetime.datetime.fromisoformat(x[1]['created'])
                     )
         )))
-
-    def set_title(self, title, lang='default'):
-        '''Sets the title for the specified language.'''
-        if not self.title:
-            self.title = {}
-        self.title[lang] = title
-
-    def get_title(self, lang='default'):
-        '''Gets the title for the specified language.'''
-        return self.title.get(lang, self.title.get('default', ''))
-
-    def set_content(self, content, lang='default'):
-        '''Sets the content for the specified language.'''
-        if not self.content:
-            self.content = {}
-        self.content[lang] = content
-
-    def get_content(self, lang='default'):
-        '''Gets the content for the specified language.'''
-        return self.content.get(lang, self.content.get('default', ''))
 
 def table_dictize(obj, context, **kw):
     '''Get any model object and represent it as a dict'''

@@ -57,10 +57,10 @@
         {% endif %}
     </div>
 
-    {% snippet 'ckanext_pages/snippets/pages_list.html', pages=c.page.items, type='blog', title='Blog' %}
+    {% snippet 'ckanext_pages/snippets/pages_list.html', pages=page.items, type='blog', title='Blog' %}
 </div>
 <div class="page-pager-wrapper">
-    {{ c.page.pager() }}
+    {{ page.pager() }}
 </div>
 
 
@@ -68,7 +68,7 @@
 
 
 {% block secondary_content %}
-{% set posts = h.get_recent_blog_posts(number=5, exclude=c.page.name) %}
+{% set posts = h.get_recent_blog_posts(number=5, exclude=page.name) %}
 
 <div class="module module-narrow module-shallow">
 
