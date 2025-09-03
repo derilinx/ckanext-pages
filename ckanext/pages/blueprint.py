@@ -76,6 +76,7 @@ def sitesearch():
     get_action = tk.get_action
     errors = {}
     data = {}
+
     if request.method == "POST":
         return tk.render('site_search/site_search.html', extra_vars={
             'data': {},
@@ -84,40 +85,50 @@ def sitesearch():
 
     else:
         if request.args.get('q', None):
-            data['q'] = request.args.get('q', None)
-            data['q'] = data['q'].replace(',', ' ')
-
+            data['q'] = request.args.get('q', None).replace(',', ' ')
             log.info("Found query: {}".format(data['q']))
-    # Hit database with query here:
-            query = """select id, name, title, page_type, publish_date, private, content from ckanext_pages where private = 'False' and (content @@ '{q}' or title @@ '{q}') order by title @@ '{q}' desc;"""
+
+            # Get sorting option from query string
+            sort = request.args.get('sort', 'relevance')
+
+            # Define allowed sorting options (safe whitelist!)
+            sort_options = {
+                'relevance': "title @@ '{q}' DESC",
+                'title_asc': "title ASC",
+                'title_desc': "title DESC",
+                'date_newest': "publish_date DESC",
+                'date_oldest': "publish_date ASC"
+            }
+
+            order_clause = sort_options.get(sort, sort_options['relevance'])
+
+            query = f"""
+                SELECT id, name, title, page_type, publish_date, private, content
+                FROM ckanext_pages
+                WHERE private = 'False'
+                AND (content @@ '{{q}}' OR title @@ '{{q}}')
+                ORDER BY {order_clause};
+            """
 
             try:
                 q = model.Session.execute(query.format(q=data['q'])).fetchall()
-                # log.info(q.keys())
                 results = [list(row) for row in q]
-                results_dict = {'results': results}
-                log.info("qResults= ".format(results))
                 return tk.render('site_search/site_search.html', extra_vars={
                     'data': q,
                     'errors': {},
-                    'q': data['q']
+                    'q': data['q'],
+                    'sort': sort,
                 })
             except Exception as e:
                 log.info(e)
                 return tk.render('site_search/site_search.html', extra_vars={
                     'data': {e},
                     'errors': {e},
-            })
+                })
         return tk.render('site_search/site_search.html', extra_vars={
             'data': {},
             'errors': {},
         })
-
-
-
-
-
-
 
 
 pages.add_url_rule("/site_search/", view_func=sitesearch, methods=["GET", "POST"])

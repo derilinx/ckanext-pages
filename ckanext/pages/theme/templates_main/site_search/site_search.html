@@ -20,8 +20,23 @@
     {% endblock %}
     {% block form %}
     {% set count = data | length %}
-    {% snippet 'site_search/site_search_form.html', form_id='site_search', query=q,  placeholder= _('Search pages...'), count=count, show_empty=request.args %}
-    {% endblock %}
+{% snippet 'site_search/site_search_form.html',
+    form_id='site_search',
+    query=q,
+    sort=sort,
+    placeholder=_('Search Articles, News & Events...'),
+    count=count,
+    show_empty=request.args %}
+        {# --- Results text --- #}
+  {% if not errors %}
+    <h1 class="search-results-text pages-spacer" style="margin-bottom:20px;">
+      {% snippet 'site_search/site_search_result_text.html',
+          query=query,
+          count=count,
+          type='page' %}
+    </h1>
+  {% endif %}
+      {% endblock %}
     {% block package_search_results_list %}
     <ul class="{{ list_class or 'dataset-list list-unstyled' }}">
       {% block package_list_inner %}
@@ -39,12 +54,24 @@
 
 
 {% block secondary_content %}
-{# <div class="filters">
+
+<div class="filters">
   <div>
-    {% for facet in facet_titles %}
-    {{ h.snippet('snippets/facet_list.html', title=facet_titles[facet], name=facet, search_facets=search_facets) }}
-    {% endfor %}
-  </div>
-  <a class="close no-text hide-filters"><i class="fa fa-times-circle"></i><span class="text">close</span></a>
-</div> #}
+  <h3>You are searching for Articles, News, Events and other pages. Want to search for datasets instead?</h3>
+            <div class="panel panel-pages panel-red" style="background-color:#d65047;color: #fff;">
+        <div class="panel-heading">{% trans %}Search For Datasets{% endtrans %}</div>
+        <div class="panel-body">
+            <form class="navbar-form" role="search" action="/dataset">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="E.g. Census 2022..." name="q">
+                    <div class="input-group-btn">
+                        <button class="btn btn-default btn-search" type="submit"><i class="fa fa-search"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    </div>
+</div>
 {% endblock %}
