@@ -1,8 +1,8 @@
 {% block search_input %}
-<form action="/site_search" class="search-form" method="get">
+<form action="{{ h.url_for('pages.sitesearch') }}" class="search-form" method="get">
   <div>
     <label for="field-giant-search">
-      Search Articles, News & Events
+      {{ _('Search Articles, News & Events') }}
     </label>
   </div>
 

@@ -27,7 +27,6 @@
     placeholder=_('Search Articles, News & Events...'),
     count=count,
     show_empty=request.args %}
-        {# --- Results text --- #}
   {% if not errors %}
     <h1 class="search-results-text pages-spacer" style="margin-bottom:20px;">
       {% snippet 'site_search/site_search_result_text.html',
@@ -57,9 +56,9 @@
 
 <div class="filters">
   <div>
-  <h3>You are searching for Articles, News, Events and other pages. Want to search for datasets instead?</h3>
+  <h3>{{ _('You are searching for Articles, News, Events and other pages. Want to search for datasets instead?') }}</h3>
             <div class="panel panel-pages panel-red" style="background-color:#d65047;color: #fff;">
-        <div class="panel-heading">{% trans %}Search For Datasets{% endtrans %}</div>
+        <div class="panel-heading">{{ _('Search For Datasets') }}</div>
         <div class="panel-body">
             <form class="navbar-form" role="search" action="/dataset">
                 <div class="input-group">
