@@ -74,13 +74,17 @@ def _pages_list(context, data_dict):
             search['private'] = False
     out = db.Page.pages(**search)
     out_list = []
-    for pg in out:
-        parser = HTMLFirstImage()
-        parser.feed(pg.content)
-        img = parser.first_image
 
+    for pg in out:
         title_data = parse_json_or_return_original(pg.title)
         content_data = parse_json_or_return_original(pg.content)
+
+        parser = HTMLFirstImage()
+        if isinstance(content_data, str):
+            parser.feed(content_data)
+        else:
+            parser.feed(content_data.get(tk.h.lang(), ''))
+        img = parser.first_image
 
         pg_row = {'title': title_data,
                   'content': content_data,
