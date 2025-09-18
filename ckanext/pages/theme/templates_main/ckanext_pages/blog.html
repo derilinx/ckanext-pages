@@ -56,7 +56,7 @@
     {% endblock %}
     <h1 class="page-heading pages-heading">{{ h.pages_get_lang_from_dict_fallback(page.title) }}</h1>
       {% if page.publish_date %}
-         <span class="muted date"> {{ h.render_datetime(c.page.publish_date) }} </span>
+         <span class="muted date"> {{ h.render_datetime(page.publish_date) }} </span>
       {% endif %}
     {% block ckanext_pages_content %}
       {% if page.content %}
@@ -64,7 +64,6 @@
         {% if editor %}
           <div>
             {% if page.image %}}<div><img src={{page.image}} alt=""></div>{% endif %}
-
             <div>{{ h.pages_get_lang_from_dict_fallback(page.content) | safe }}</div>
           </div>
         {% else %}

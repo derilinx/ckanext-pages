@@ -67,3 +67,20 @@ def superset_dashboards():
             for dashboard in tk.h.superset_dashboard_list()['public']
         ]
     return []
+
+def clean_img_tags(content):
+    if not content:
+        return ''
+
+    soup = BeautifulSoup(content, 'html.parser')
+    for img in soup.find_all('img'):
+        if 'style' in img.attrs:
+            del img.attrs['style']
+
+        classes = img.get('class', [])
+        if 'img-fluid' not in classes:
+            classes.append('img-fluid')
+        img['class'] = classes
+
+    return str(soup)
+

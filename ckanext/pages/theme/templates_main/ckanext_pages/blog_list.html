@@ -57,6 +57,10 @@
         {% endif %}
     </div>
 
+    {% block intro %}{% endblock %}
+
+    {% block hero_blog %} {% endblock %}
+
     {% snippet 'ckanext_pages/snippets/pages_list.html', pages=page.items, type='blog', title='Blog' %}
 </div>
 <div class="page-pager-wrapper">
@@ -79,7 +83,7 @@
                 {% for post in posts %}
                 <div class="row post">
                     <div class="post-title col-md-12">
-                        <h3><a class="pages-a" href="{{ h.url_for('pages.blog_show', page='/' + post.name) }}">{{ post.title|truncate(40, end="…") }}</a>
+                        <h3><a class="pages-a" href="{{ h.url_for('pages.blog_show', page='/' + post.name) }}">{{ h.pages_get_lang_from_dict_fallback(post.title)|truncate(40, end="…") }}</a>
                         </h3>
                     </div>
                     <div class="post-meta col-md-12">

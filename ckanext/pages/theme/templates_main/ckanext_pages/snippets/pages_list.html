@@ -7,6 +7,7 @@
   <div class="page-list page-container">
     {% set editor = h.pages_get_wysiwyg_editor() %}
 
+{% block page_items_list %}
     {% for page in pages %}
 
       {% if ckan_29_or_higher %}
@@ -32,6 +33,7 @@
       {%- snippet 'ckanext_pages/snippets/page_item.html', url=url, page=page, featured=featured, editor=editor -%}
 
     {% endfor %}
+{% endblock %}
 
   </div>
 {% else %}

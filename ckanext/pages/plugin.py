@@ -178,6 +178,7 @@ class PagesPlugin(PagesPluginBase):
             'get_lang_to_json': pages_helpers.get_lang_to_json,
             'pages_get_lang_from_dict_fallback': pages_helpers.get_lang_from_dict_fallback,
             'pages_superset_dashboards': pages_helpers.superset_dashboards,
+            'clean_img_tags': pages_helpers.clean_img_tags,
         }
 
     def get_actions(self):
