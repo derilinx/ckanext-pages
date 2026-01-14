@@ -56,12 +56,13 @@
         page='', class_='btn btn-primary', icon='plus-square' %}
         {% endif %}
     </div>
+    {% block news_page %}
+      {% block intro %}{% endblock %}
 
-    {% block intro %}{% endblock %}
+      {% block hero_blog %} {% endblock %}
 
-    {% block hero_blog %} {% endblock %}
-
-    {% snippet 'ckanext_pages/snippets/pages_list.html', pages=page.items, type='blog', title='Blog' %}
+      {% snippet 'ckanext_pages/snippets/pages_list.html', pages=page.items, type='blog', title='Blog' %}
+    {% endblock %}
 </div>
 <div class="page-pager-wrapper">
     {{ page.pager() }}
