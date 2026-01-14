@@ -1,6 +1,12 @@
-from flask import Blueprint
+from flask import Blueprint, Response, stream_with_context, jsonify
 
 import ckanext.pages.utils as utils
+import logging
+import ckan.plugins.toolkit as tk
+from ckan import model
+from sqlalchemy import text
+
+log = logging.getLogger(__name__)
 
 pages = Blueprint('pages', __name__)
 
@@ -87,7 +93,114 @@ def group_delete(id, page):
 def group_edit(id, page=None, data=None, errors=None, error_summary=None):
     return utils.group_edit(id, 'group', page, data, errors, error_summary)
 
+# def sitesearch():
+#     request = tk.request
+#     config = tk.config
+#     get_action = tk.get_action
+#     errors = {}
+#     data = {}
+#     if request.method == "POST":
+#         return tk.render('site_search/site_search.html', extra_vars={
+#             'data': {},
+#             'errors': {},
+#         })
 
+#     else:
+#         if request.args.get('q', None):
+#             data['q'] = request.args.get('q', None)
+#             data['q'] = data['q'].replace(',', ' ')
+
+#             log.info("Found query: {}".format(data['q']))
+#     # Hit database with query here:
+#             query = """select id, name, title, page_type, publish_date, private, content from ckanext_pages where private = 'False' and (content @@ '{q}' or title @@ '{q}') order by title @@ '{q}' desc;"""
+
+#             try:
+#                 q = model.Session.execute(query.format(q=data['q'])).fetchall()
+#                 # log.info(q.keys())
+#                 results = [list(row) for row in q]
+#                 results_dict = {'results': results}
+#                 log.info("qResults= ".format(results))
+#                 return tk.render('site_search/site_search.html', extra_vars={
+#                     'data': q,
+#                     'errors': {},
+#                     'q': data['q']
+#                 })
+#             except Exception as e:
+#                 log.info(e)
+#                 return tk.render('site_search/site_search.html', extra_vars={
+#                     'data': {e},
+#                     'errors': {e},
+#             })
+#         return tk.render('site_search/site_search.html', extra_vars={
+#             'data': {},
+#             'errors': {},
+#         })
+
+
+
+from sqlalchemy.sql import text
+
+def sitesearch():
+    request = tk.request
+    config = tk.config
+    get_action = tk.get_action
+    errors = {}
+    data = {}
+
+    if request.method == "POST":
+        return tk.render('site_search/site_search.html', extra_vars={
+            'data': {},
+            'errors': {},
+        })
+
+    else:
+        search_term = request.args.get('q', None)
+        if search_term:
+            search_term = search_term.replace(',', ' ')
+            data['q'] = search_term
+            log.info("Found query: {}".format(search_term))
+
+            query = text("""
+                SELECT id, name, title, page_type, publish_date, private, content
+                FROM ckanext_pages
+                WHERE private = 'False'
+                  AND (
+                      EXISTS (
+                          SELECT 1 FROM jsonb_each_text(content::jsonb) AS kv
+                          WHERE kv.value ILIKE :pattern
+                      )
+                      OR title::text ILIKE :pattern
+                  )
+                ORDER BY title::text ILIKE :pattern DESC;
+            """)
+
+            try:
+                q = model.Session.execute(query, {'pattern': f'%{search_term}%'}).fetchall()
+                results = [list(row) for row in q]
+                log.info("qResults= {}".format(results))
+
+                return tk.render('site_search/site_search.html', extra_vars={
+                    'data': results,
+                    'errors': {},
+                    'q': search_term
+                })
+
+            except Exception as e:
+                model.Session.rollback()
+                log.exception("Search query failed")
+                return tk.render('site_search/site_search.html', extra_vars={
+                    'data': {},
+                    'errors': {'search_error': str(e)},
+                    'q': search_term
+                })
+
+        return tk.render('site_search/site_search.html', extra_vars={
+            'data': {},
+            'errors': {},
+        })
+
+
+pages.add_url_rule("/site_search/", view_func=sitesearch, methods=["GET", "POST"])
 pages.add_url_rule("/pages", view_func=index, endpoint="pages_index")
 pages.add_url_rule("/pages/<page>", view_func=show)
 pages.add_url_rule("/pages/<page>/revisions", view_func=pages_revisions)
