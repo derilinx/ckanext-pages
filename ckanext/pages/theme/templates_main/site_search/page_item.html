@@ -1,0 +1,64 @@
+{#
+Displays a single of dataset.
+
+page        - A page to display.
+item_class     - The class name to use on the list item.
+hide_resources - If true hides the resources (default: false).
+
+Example:
+
+  {% snippet 'snippets/page_item.html', page=c.datasets[0] %}
+
+#}
+{% set title = page.title or page.name %}
+{% set notes = h.markdown_extract(page.content, extract_length=180) %}
+
+
+
+{% block package_item %}
+  <li class="{{ item_class or "dataset-item" }}">
+    {% block content %}
+      <div class="dataset-content">
+        <div class="row">
+
+          <div class="col-md-12">
+  
+        {% block heading %}
+            <p class="muted date pull-right float-right post-content">{% trans %}Published on{% endtrans %} {{h.render_datetime(page.publish_date)}}</p>
+
+          <h2 class="dataset-heading">
+            {% block heading_private %}
+              {% if page.private %}
+                <span class="dataset-private badge bg-secondary">
+                    <i class="fa fa-lock"></i>
+                    {{ _('Private') }}
+                </span>
+              {% endif %}
+            {% endblock %}
+            {% block heading_title %}
+                    {% if page.page_type == 'blog' %}
+          {% set url = h.url_for('pages.blog_show', page=page.name) %}
+        {% else %}
+          {% set url = h.url_for('pages.show', page=page.name) %}
+        {% endif %}
+    <a href="{{ url }}" title="{{ title }}">
+      {{title|truncate(80)}}
+    </a>
+            {% endblock %}
+          </h2>
+        {% endblock %}
+        {% block notes %}
+          {% if notes %}
+            <div>{{ notes|urlize }}</div>
+          {% else %}
+            <p class="empty">{{ _("There is no description for this page") }}</p>
+          {% endif %}
+        {% endblock %}
+            </div>
+
+                </div>
+      </div>
+
+    {% endblock %}
+  </li>
+{% endblock %}

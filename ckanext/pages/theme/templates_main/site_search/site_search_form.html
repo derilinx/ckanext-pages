@@ -1,0 +1,30 @@
+
+{% block search_input %}
+<form action="/site_search" method="get">
+    <div>
+        <label for="field-giant-search">
+Search Pages
+        </label>
+
+    </div>
+    <div class="input-group search-input-group">
+        <input id="field-giant-search" type="text" class="form-control" name="q" value="{{ query }}" autocomplete="off" placeholder="Search pages...">
+        {% block search_input_button %}
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="submit" value="search">
+                    <i class="fa fa-search"></i>
+                </button>
+            </span>
+        {% endblock %}
+    </div>
+    </form>
+{% endblock %}
+
+
+  {% block search_title %}
+    {% if not error %}
+      <h1>{% snippet 'site_search/site_search_result_text.html', query=query, count=count, type='result' %}</h1>
+    {% else %}
+      <h2>Error</h2>
+    {% endif %}
+  {% endblock %}
