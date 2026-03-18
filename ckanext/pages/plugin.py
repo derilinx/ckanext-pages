@@ -66,7 +66,15 @@ def build_pages_nav_main(*args):
     for page in pages_list:
         endpoint = 'pages.blog_show' if page['page_type'] == 'blog' else 'pages.show'
         name = quote(page['name'])
-        title = html_escape(page['title'])
+        language = tk.h.lang()
+        raw_title = page.get('title') or ''
+
+        if isinstance(raw_title, dict):
+            title = raw_title.get(language) or pages_helpers.get_lang_from_dict_fallback(raw_title) or ''
+        else:
+            title = raw_title
+
+        title = html_escape(title)
         link = tk.h.literal(u'<a href="{}">{}</a>'.format(tk.h.url_for(endpoint, page=name), title))
         if page['name'] == page_name:
             li = tk.literal('<li class="active">') + link + tk.literal('</li>')
