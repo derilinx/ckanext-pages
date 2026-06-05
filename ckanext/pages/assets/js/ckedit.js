@@ -1,6 +1,112 @@
 CKEDITOR.dialog.add('embedResourceView', function (editor) {
   var packages = {};
   var ckan_client = editor.config.ckan_client;
+
+  function getElement(definition, tabId, elementId) {
+    var contents = definition.contents || [];
+    for (var i = 0; i < contents.length; i += 1) {
+      if (contents[i].id !== tabId) {
+        continue;
+      }
+      var elements = contents[i].elements || [];
+      for (var j = 0; j < elements.length; j += 1) {
+        if (elements[j].id === elementId) {
+          return elements[j];
+        }
+      }
+    }
+    return null;
+  }
+
+  function normalizeBaseUrl(baseUrl) {
+    var value = (baseUrl || '').replace(/\"/g, '').trim();
+    if (!value) {
+      return '/';
+    }
+    if (value.slice(-1) !== '/') {
+      value += '/';
+    }
+    return value;
+  }
+
+  function getEditorBaseUrl(editor) {
+    var config = (editor && editor.config) || {};
+
+    if (config.site_url) {
+      return normalizeBaseUrl(config.site_url);
+    }
+
+    if (config.filebrowserUploadUrl) {
+      var fromUpload = config.filebrowserUploadUrl.replace(/pages_upload\/?$/, '');
+      return normalizeBaseUrl(fromUpload);
+    }
+
+    return '/';
+  }
+
+  function resourceLabel(resource) {
+    if (!resource) {
+      return 'Unnamed resource';
+    }
+
+    var translatedName = resource.name_translated;
+    if (translatedName && typeof translatedName === 'object') {
+      for (var lang in translatedName) {
+        if (Object.prototype.hasOwnProperty.call(translatedName, lang) && translatedName[lang]) {
+          return translatedName[lang];
+        }
+      }
+    }
+
+    if (resource.name) {
+      return resource.name;
+    }
+
+    var translatedDescription = resource.description_translated;
+    if (translatedDescription && typeof translatedDescription === 'object') {
+      for (var code in translatedDescription) {
+        if (Object.prototype.hasOwnProperty.call(translatedDescription, code) && translatedDescription[code]) {
+          var td = translatedDescription[code].split('.')[0];
+          return td.length > 60 ? td.slice(0, 60) + '...' : td;
+        }
+      }
+    }
+
+    if (resource.description) {
+      var description = resource.description.split('.')[0];
+      return description.length > 60 ? description.slice(0, 60) + '...' : description;
+    }
+
+    if (resource.title) {
+      return resource.title;
+    }
+
+    return 'Unnamed resource';
+  }
+
+  function looksLikeUuid(value) {
+    return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value || '');
+  }
+
+  function setOptionText(selectWidget, optionValue, text) {
+    if (!selectWidget || !text) {
+      return;
+    }
+
+    var inputEl = selectWidget.getInputElement && selectWidget.getInputElement();
+    if (!inputEl || !inputEl.$) {
+      return;
+    }
+
+    var options = inputEl.$.options || [];
+    for (var i = 0; i < options.length; i += 1) {
+      if (options[i].value === optionValue) {
+        options[i].text = text;
+        return;
+      }
+    }
+  }
+
   return {
     title: 'Embed Resource View',
     contents: [
@@ -32,7 +138,21 @@ CKEDITOR.dialog.add('embedResourceView', function (editor) {
               var select = this.getDialog().getContentElement('resource-view-tab', 'resource');
               select.clear();
               packages[this.getValue()].resources.forEach(function (resource) {
-                select.add(resource.name, resource.id);
+                var label = resourceLabel(resource);
+                select.add(label, resource.id);
+
+                if ((label === 'Unnamed resource' || looksLikeUuid(label)) && editor && editor.config && editor.config.ckan_client) {
+                  (function (resourceId) {
+                    editor.config.ckan_client.call('GET', 'resource_show', '?id=' + resourceId, function onSuccess(resourceResult) {
+                      var result = resourceResult && resourceResult.result;
+                      var enrichedLabel = resourceLabel(result);
+                      if (enrichedLabel) {
+                        setOptionText(select, resourceId, enrichedLabel);
+                      }
+                    }, function onError() {
+                    });
+                  })(resource.id);
+                }
               });
               if (packages[this.getValue()].resources.length > 0) {
                 select.setValue(packages[this.getValue()].resources[0].id);
@@ -101,7 +221,8 @@ CKEDITOR.dialog.add('embedResourceView', function (editor) {
       var pkg = this.getValueOf('resource-view-tab', 'package');
       var resource = this.getValueOf('resource-view-tab', 'resource');
       var view = this.getValueOf('resource-view-tab', 'view');
-      el.setAttribute('src', site_url + '/dataset/' + pkg + '/resource/' + resource + '/view/' + view);
+      var site_url = getEditorBaseUrl(editor);
+      el.setAttribute('src', site_url + 'dataset/' + pkg + '/resource/' + resource + '/view/' + view);
       el.setAttribute('style', "width: " + this.getValueOf('display-tab', 'width') + '; height: ' + this.getValueOf('display-tab', 'height') + ';');
       editor.insertElement(el);
     },
@@ -293,6 +414,7 @@ this.ckan.module("ckedit", function(jQuery, _) {
         'X-CSRFToken': csrf_token
       };
       var site_url = this.options.site_url;
+      config.site_url = site_url;
       config.filebrowserUploadUrl = site_url + 'pages_upload';
 
       var ckan_client = this.sandbox.client;
