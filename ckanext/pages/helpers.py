@@ -9,7 +9,10 @@ PLACEHOLDER_IMG = tk.config.get('ckanext.pages.placeholder_img', None)
 
 
 def get_post_image(content):
-    soup = BeautifulSoup(content)
+    if not content:
+        return PLACEHOLDER_IMG
+
+    soup = BeautifulSoup(content, 'html.parser')
     if soup:
         if soup.find_all('img'):
             img_link = soup.find_all('img')[0].get('src')
@@ -56,9 +59,36 @@ def get_lang_to_json():
     languages_arr = [{'short_name': f"{locale.language}_{locale.territory}" if locale.territory else locale.language, 'display_name': f"{locale.get_display_name()}"} for locale in locales]
     return languages_arr
 
-def get_lang_from_dict_fallback(dict):
-    dict = parse_json_or_return_original(dict)
-    return dict.get(tk.h.lang()) or next((dict.get(lang["short_name"]) for lang in get_lang_to_json() if lang["short_name"] in dict), None)
+def get_lang_from_dict_fallback(value):
+    value = parse_json_or_return_original(value)
+
+    def normalize_page_text(page_text):
+        if page_text is None:
+            return ''
+
+        text = str(page_text).strip()
+        return '' if text.lower() == 'none' else text
+
+    scalar_fallback = normalize_page_text(value)
+
+    try:
+        current_lang_value = normalize_page_text(value.get(tk.h.lang()))
+        if current_lang_value:
+            return current_lang_value
+
+        for lang in get_lang_to_json():
+            localized_text = normalize_page_text(value.get(lang['short_name']))
+            if localized_text:
+                return localized_text
+
+        for fallback_text in value.values():
+            normalized_fallback_text = normalize_page_text(fallback_text)
+            if normalized_fallback_text:
+                return normalized_fallback_text
+    except AttributeError:
+        return scalar_fallback
+
+    return ''
 
 def superset_dashboards():
     if 'superset' in tk.aslist(tk.config.get('ckan.plugins')):
