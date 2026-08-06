@@ -1,5 +1,6 @@
 import six
 import json
+import datetime
 
 import ckan.lib.navl.dictization_functions as dict_fns
 import ckan.plugins as p
@@ -40,6 +41,31 @@ def pages_list_pages(page_type):
     pages_dict = tk.get_action('ckanext_pages_list')(
         context={}, data_dict=data_dict
     )
+
+    if page_type == 'blog':
+        def as_datetime(value):
+            if isinstance(value, datetime.datetime):
+                return value
+
+            if isinstance(value, datetime.date):
+                return datetime.datetime.combine(value, datetime.time.min)
+
+            if isinstance(value, str):
+                try:
+                    return datetime.datetime.fromisoformat(value.replace('Z', '+00:00'))
+                except ValueError:
+                    return datetime.datetime.min
+
+            return datetime.datetime.min
+
+        def blog_sort_key(blog):
+            featured_rank = 1 if tk.asbool(blog.get('featured')) else 0
+            publish_or_created = as_datetime(blog.get('publish_date') or blog.get('created'))
+            created = as_datetime(blog.get('created'))
+            return (featured_rank, publish_or_created, created)
+
+        pages_dict = sorted(pages_dict, key=blog_sort_key, reverse=True)
+
     page = helpers.Page(
         collection=pages_dict,
         page=tk.request.args.get('page', 1),
