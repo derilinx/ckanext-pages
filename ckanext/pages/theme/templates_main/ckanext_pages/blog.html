@@ -45,6 +45,12 @@
         [role=main] {
             background: white;
              }
+
+        .ckanext-pages-content img {
+          max-width: 100% !important;
+          width: auto !important;
+          height: auto !important;
+        }
     </style>
   <section class="module-content ckanext-pages-content">
     {% block ckanext_pages_actions %}
@@ -88,7 +94,7 @@
               {% for post in posts %}
                 <div class="row post">
                     <div class="post-title col-md-12">
-                        <h3><a class="pages-a" href="{{ h.url_for('pages.blog_show', page='/' + post.name) }}">{{ h.pages_get_lang_from_dict_fallback(post.title)|truncate(40, end="…") }}</a></h3>
+                    <h3><a class="pages-a" href="{{ h.url_for('pages.blog_show', page='/' + post.name) }}">{{ h.pages_get_lang_from_dict_fallback(post.title)|truncate(40, end="…") }}</a></h3>
                     </div>
                     <div class="post-meta col-md-12">
 
