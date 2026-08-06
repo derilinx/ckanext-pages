@@ -99,6 +99,29 @@ def get_recent_blog_posts(number=5, exclude=None):
         None, {'order_publish_date': True, 'private': False,
                'page_type': 'blog'}
     )
+
+    def as_datetime(value):
+        if isinstance(value, datetime.datetime):
+            return value
+
+        if isinstance(value, datetime.date):
+            return datetime.datetime.combine(value, datetime.time.min)
+
+        if isinstance(value, str):
+            try:
+                return datetime.datetime.fromisoformat(value.replace('Z', '+00:00'))
+            except ValueError:
+                return datetime.datetime.min
+
+        return datetime.datetime.min
+
+    def sort_key(blog):
+        publish_or_created = as_datetime(blog.get('publish_date') or blog.get('created'))
+        created = as_datetime(blog.get('created'))
+        return (publish_or_created, created)
+
+    blog_list = sorted(blog_list, key=sort_key, reverse=True)
+
     new_list = []
     for blog in blog_list:
         if exclude and blog['name'] == exclude:

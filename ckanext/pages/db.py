@@ -77,7 +77,7 @@ class Page(DomainObject, BaseModel):
         if order:
             query = query.order_by(sa.cast(cls.order, sa.Integer)).filter(cls.order != '')
         elif order_publish_date:
-            query = query.order_by(cls.publish_date.desc()).filter(cls.publish_date != None)  # noqa: E711
+            query = query.order_by(cls.publish_date.desc(), cls.created.desc()).filter(cls.publish_date != None)  # noqa: E711
         else:
             query = query.order_by(cls.created.desc())
         return query.all()
