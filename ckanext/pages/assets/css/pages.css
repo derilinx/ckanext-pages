@@ -79,6 +79,12 @@
     padding-left:100px;
 }
 
+@media only screen and (max-width: 600px) {
+  .page-container {
+    padding-left:0;
+  }
+}
+
 .page-item {
     flex: 1 0 26%;
     margin: 2%
@@ -101,7 +107,7 @@
 
 .blog-hero {
     height: 200px;
-    background-color: #00aeef;
+    background-color: #213c65;
     background-image: url(/img/heroimg.png);
     background-repeat: no-repeat;
     position: relative;
@@ -114,7 +120,7 @@
     padding-top:20px;
     background-size: cover;
     background-repeat: no-repeat;
-    background-color: #00aeef;
+    background-color: #213c65;
 }
 
 .index-hero {
@@ -179,11 +185,6 @@ bottom:4px;
     padding-top: 4em;
 }
 
-.ckanext-pages-content h1, h2, h3, h4, h5, h6 {
-    color: #00aeef;
-    text-transform: uppercase;
-    font-weight: 700;
-}
 
 .blog-title {
     color: black;
