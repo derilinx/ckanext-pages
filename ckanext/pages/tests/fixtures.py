@@ -6,13 +6,12 @@ from ckanext.pages import db
 
 
 @pytest.fixture
-def pages_setup():
-    if db.pages_table is None:
-        db.init_db()
+def clean_db(reset_db, migrate_db_for):
+    reset_db()
+    migrate_db_for("pages")
 
 
 @pytest.fixture
 def clean_pages():
-    if db.pages_table is not None:
-        model.Session.query(db.Page).delete()
-        model.Session.commit()
+    model.Session.query(db.Page).delete()
+    model.Session.commit()
