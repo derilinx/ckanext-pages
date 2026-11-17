@@ -156,6 +156,10 @@ class PagesPlugin(p.SingletonPlugin, DefaultTranslation):
         ).set_description(
             "File MIME types allowed for images uploaded from the pages editor."
         )
+        declaration.declare(key.ckanext.pages.placeholder_img).set_description(
+            "Image URL shown in page and blog listings for pages without an "
+            "image in their content. If empty, no image is shown."
+        )
 
     def update_config(self, config):
         self.organization_pages = tk.asbool(config.get('ckanext.pages.organization', False))

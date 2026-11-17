@@ -82,6 +82,23 @@ ckanext.pages.editor = ckeditor
 ```
 This enables either the [medium](https://jakiestfu.github.io/Medium.js/docs/) or [ckeditor](http://ckeditor.com/)
 
+Images uploaded from the editor are stored as the `page_images` upload type. By default only images are allowed:
+
+```
+ckan.upload.page_images.types = image
+ckan.upload.page_images.mimetypes = image/png image/gif image/jpeg
+```
+
+Set both options to empty values to disable uploads.
+
+Page and blog listings show the first image in each page's content. To show an image for pages without one, set:
+
+```
+ckanext.pages.placeholder_img = /img/placeholder.png
+```
+
+By default no image is shown for those pages.
+
 ## Extending ckanext-pages schema
 
 This extension defines an `IPagesSchema` interface that allows other extensions to update the pages schema and add custom fields.

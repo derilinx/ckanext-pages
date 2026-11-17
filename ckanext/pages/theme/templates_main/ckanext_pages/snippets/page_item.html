@@ -8,9 +8,11 @@
           {% if editor %}
 
           <div class="page-content">
+              {% if img_url %}
               <div class="page-img-box">
                   <a href="{{ url }}"><img class="page-thumb-img" src="{{ img_url }}" alt=" image from a post"/></a>
               </div>
+              {% endif %}
               {% if featured or page.featured %}
               <div class="page-featured">
                   <span class="page-label label label-success">Featured</span>
