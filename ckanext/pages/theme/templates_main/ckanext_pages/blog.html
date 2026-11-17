@@ -61,9 +61,7 @@
       {% if editor %}
         <div>
 
-<!--            <div class="test" style="border:1px solid red">{{ h.get_first_p(c.page.content) }}</div>-->
-<!--            <div class="test" style="border:1px solid red">{{ h.get_soup_text(c.page.content) }}</div>-->
-            {% if c.page.image %}}<div><img src={{c.page.image}} alt=""></div>{% endif %}
+            {% if c.page.image %}<div><img src={{c.page.image}} alt=""></div>{% endif %}
             <div>{{ h.render_content(c.page.content) | safe }}</div>
         </div>
       {% else %}
