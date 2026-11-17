@@ -114,3 +114,66 @@ class TestUpload:
 
         assert response.json["uploaded"] == 0
         assert "No uploads allowed" in response.json["error"]["message"]
+
+
+@pytest.mark.usefixtures("with_plugins", "clean_db")
+class TestSiteSearch:
+
+    @pytest.fixture
+    def pages(self, with_plugins, clean_db):
+        user = factories.Sysadmin()
+        _create_page(user, name="alpha", page="alpha", title="Alpha harbour",
+                     content="<p>Nothing to see</p>", private=False, publish_date="2024-01-01")
+        _create_page(user, name="bravo", page="bravo", title="Bravo",
+                     content="<p>Boats in the harbours</p>", private=False, publish_date="2024-03-01")
+        _create_page(user, name="secret", page="secret", title="Secret harbour",
+                     content="<p>Private</p>", private=True)
+
+    def _search(self, app, **params):
+        response = app.get(toolkit.url_for("pages.sitesearch", **params))
+        assert response.status_code == 200
+        body = response.get_data(as_text=True)
+        found = [name for name in ("alpha", "bravo", "secret") if '/{}"'.format(name) in body]
+        return sorted(found, key=lambda name: body.index('/{}"'.format(name)))
+
+    @pytest.mark.usefixtures("pages")
+    def test_matches_title_and_content(self, app):
+        # "harbours" in the content matches thanks to stemming
+        assert set(self._search(app, q="harbour")) == {"alpha", "bravo"}
+
+    @pytest.mark.usefixtures("pages")
+    @pytest.mark.parametrize("sort, expected", [
+        ("relevance", ["alpha", "bravo"]),
+        ("title_asc", ["alpha", "bravo"]),
+        ("title_desc", ["bravo", "alpha"]),
+        ("date_newest", ["bravo", "alpha"]),
+        ("date_oldest", ["alpha", "bravo"]),
+        ("title; DROP TABLE ckanext_pages", ["alpha", "bravo"]),
+    ])
+    def test_sort(self, app, sort, expected):
+        assert self._search(app, q="harbour", sort=sort) == expected
+
+    @pytest.mark.usefixtures("pages")
+    @pytest.mark.parametrize("q", ["' OR 1=1 --", "harbour' OR private = true --", "harbour's"])
+    def test_query_is_not_injectable(self, app, q):
+        assert "secret" not in self._search(app, q=q)
+        assert helpers.call_action("ckanext_pages_show", {}, page="alpha")
+
+    @pytest.mark.usefixtures("pages")
+    def test_database_error_shows_message(self, app, monkeypatch):
+        import sqlalchemy as sa
+        from ckan import model
+
+        def fail(*args, **kwargs):
+            raise sa.exc.OperationalError("SELECT", {}, Exception("boom"))
+
+        monkeypatch.setattr(model.Session, "execute", fail)
+        response = app.get(toolkit.url_for("pages.sitesearch", q="harbour"))
+
+        assert response.status_code == 200
+        body = response.get_data(as_text=True)
+        assert '<div class="alert alert-danger" role="alert">' in body
+        assert "There was an error while searching" in body
+        assert "boom" not in body
+        # The search form keeps the query
+        assert 'value="harbour"' in body

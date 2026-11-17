@@ -30,6 +30,12 @@
           count=count,
           type='page' %}
     </h1>
+  {% else %}
+    <div class="alert alert-danger" role="alert">
+      {% for messages in errors.values() %}
+        {% for message in messages %}<p>{{ message }}</p>{% endfor %}
+      {% endfor %}
+    </div>
   {% endif %}
       {% endblock %}
     {% block package_search_results_list %}

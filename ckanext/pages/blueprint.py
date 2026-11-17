@@ -4,6 +4,7 @@ import ckanext.pages.utils as utils
 import logging
 import ckan.plugins.toolkit as tk
 from ckan import model
+import sqlalchemy as sa
 
 log = logging.getLogger(__name__)
 
@@ -83,14 +84,15 @@ def sitesearch():
     else:
         if request.args.get('q', None):
             data['q'] = request.args.get('q', None).replace(',', ' ')
-            log.info("Found query: {}".format(data['q']))
 
             # Get sorting option from query string
             sort = request.args.get('sort', 'relevance')
 
-            # Define allowed sorting options (safe whitelist!)
+            # Define allowed sorting options (safe whitelist!). Only these
+            # fixed fragments are added to the SQL; the search term is
+            # always passed as the bound parameter :q
             sort_options = {
-                'relevance': "title @@ '{q}' DESC",
+                'relevance': "title @@ :q DESC",
                 'title_asc': "title ASC",
                 'title_desc': "title DESC",
                 'date_newest': "publish_date DESC",
@@ -99,27 +101,30 @@ def sitesearch():
 
             order_clause = sort_options.get(sort, sort_options['relevance'])
 
-            query = f"""
+            query = sa.text(f"""
                 SELECT id, name, title, page_type, publish_date, private, content
                 FROM ckanext_pages
                 WHERE private = 'False'
-                AND (content @@ '{{q}}' OR title @@ '{{q}}')
+                AND (content @@ :q OR title @@ :q)
                 ORDER BY {order_clause};
-            """
+            """)
 
             try:
-                q = model.Session.execute(query.format(q=data['q'])).fetchall()
+                q = model.Session.execute(query, {'q': data['q']}).fetchall()
                 return tk.render('site_search/site_search.html', extra_vars={
                     'data': q,
                     'errors': {},
                     'q': data['q'],
                     'sort': sort,
                 })
-            except Exception as e:
-                log.info(e)
+            except sa.exc.SQLAlchemyError:
+                model.Session.rollback()
+                log.exception('Site search failed')
                 return tk.render('site_search/site_search.html', extra_vars={
-                    'data': {e},
-                    'errors': {e},
+                    'data': [],
+                    'errors': {'search': [tk._('There was an error while searching')]},
+                    'q': data['q'],
+                    'sort': sort,
                 })
         return tk.render('site_search/site_search.html', extra_vars={
             'data': {},
