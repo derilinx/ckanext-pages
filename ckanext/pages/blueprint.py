@@ -1,4 +1,4 @@
-from flask import Blueprint, Response, stream_with_context, jsonify
+from flask import Blueprint
 
 import ckanext.pages.utils as utils
 import logging
@@ -12,6 +12,7 @@ pages = Blueprint('pages', __name__)
 
 def index():
     return utils.pages_list_pages('page')
+
 
 def show(page):
     return utils.pages_show(page, page_type='page')
@@ -69,12 +70,8 @@ def group_edit(id, page=None, data=None, errors=None, error_summary=None):
     return utils.group_edit(id, 'group', page, data, errors, error_summary)
 
 
-
 def sitesearch():
     request = tk.request
-    config = tk.config
-    get_action = tk.get_action
-    errors = {}
     data = {}
 
     if request.method == "POST":
@@ -112,7 +109,6 @@ def sitesearch():
 
             try:
                 q = model.Session.execute(query.format(q=data['q'])).fetchall()
-                results = [list(row) for row in q]
                 return tk.render('site_search/site_search.html', extra_vars={
                     'data': q,
                     'errors': {},

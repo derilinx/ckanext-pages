@@ -81,7 +81,7 @@ def _pages_list(context, data_dict):
                   'page_type': pg.page_type,
                   'user_id': pg.user_id,
                   'featured': pg.featured
-        }
+                  }
         if img:
             pg_row['image'] = img
         extras = pg.extras
@@ -99,6 +99,7 @@ def _pages_delete(context, data_dict):
         session = context['session']
         session.delete(out)
         session.commit()
+
 
 def _pages_update(context, data_dict):
     org_id = data_dict.get('org_id')
@@ -119,7 +120,7 @@ def _pages_update(context, data_dict):
         out.group_id = org_id
         out.name = page
     items = ['title', 'content', 'name', 'private',
-             'order', 'page_type', 'publish_date', 'featured', 'user_id'] #XXX remove user_id asap
+             'order', 'page_type', 'publish_date', 'featured', 'user_id']  # XXX remove user_id asap
 
     for item in items:
         setattr(out, item, data.get(item, 'page' if item == 'page_type' else None))
@@ -160,19 +161,20 @@ def pages_upload(context, data_dict):
         p.toolkit.abort(401, p.toolkit._('Not authorized to see this page'))
 
     upload = uploader.get_uploader('page_images')
-
-    upload.update_data_dict(data_dict, 'image_url',
-                            'upload', 'clear_upload')
-
     max_image_size = uploader.get_max_image_size()
 
     try:
+        # Both calls validate the file: update_data_dict() checks its type
+        # and upload() its size
+        upload.update_data_dict(data_dict, 'image_url',
+                                'upload', 'clear_upload')
         upload.upload(max_image_size)
-    except p.toolkit.ValidationError:
-        message = (
-            "Can't upload the file, size is too large. "
-            "(Max allowed is {0}mb)".format(max_image_size)
-        )
+    except p.toolkit.ValidationError as e:
+        errors = []
+        for value in e.error_dict.values():
+            errors.extend(value if isinstance(value, list) else [value])
+        message = "Can't upload the file: {0}".format(
+            "; ".join(str(error) for error in errors))
         return {'uploaded': 0, 'error': {'message': message}}
 
     image_url = data_dict.get('image_url')

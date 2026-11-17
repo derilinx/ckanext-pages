@@ -2,6 +2,7 @@ import ckan.plugins as p
 from ckanext.pages.validators import page_name_validator, not_empty_if_blog
 from ckanext.pages.interfaces import IPagesSchema
 
+
 def default_pages_schema():
     ignore_empty = p.toolkit.get_validator('ignore_empty')
     ignore_missing = p.toolkit.get_validator('ignore_missing')

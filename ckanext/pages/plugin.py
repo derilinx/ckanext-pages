@@ -21,7 +21,6 @@ import ckanext.pages.helpers as pages_helpers
 ignore_missing = toolkit.get_validator('ignore_missing')
 
 
-
 log = logging.getLogger(__name__)
 
 loader = jinja2.FileSystemLoader('/tmp')
@@ -30,6 +29,7 @@ env = jinja2.Environment(autoescape=True, loader=loader)
 
 def datetimeformat(value, format='%a, %B, %d'):
     return value.strftime(format)
+
 
 env.filters['datetimeformat'] = datetimeformat
 
@@ -99,6 +99,7 @@ def get_recent_blog_posts(number=5, exclude=None):
 
     return new_list
 
+
 def get_recent_pages(number=10, exclude=None):
     page_list = p.toolkit.get_action('ckanext_pages_list')(
         None, {'order_publish_date': True, 'private': False,
@@ -114,6 +115,7 @@ def get_recent_pages(number=10, exclude=None):
 
     return new_list
 
+
 def get_featured_blogs():
     page_list = p.toolkit.get_action('ckanext_pages_list')(
         None, {'featured': True, 'private': False,
@@ -121,8 +123,10 @@ def get_featured_blogs():
     )
     return page_list
 
+
 def get_today():
     return datetime.datetime.now()
+
 
 class PagesPlugin(p.SingletonPlugin, DefaultTranslation):
     p.implements(p.IConfigurer, inherit=True)
@@ -130,9 +134,28 @@ class PagesPlugin(p.SingletonPlugin, DefaultTranslation):
     p.implements(p.IActions, inherit=True)
     p.implements(p.IAuthFunctions, inherit=True)
     p.implements(p.IBlueprint)
+    p.implements(p.IConfigDeclaration)
 
     def get_blueprint(self):
         return [blueprint.pages]
+
+    # IConfigDeclaration
+
+    def declare_config_options(self, declaration, key):
+        declaration.annotate("ckanext-pages")
+        # CKAN >= 2.10 rejects uploads for object types without allowed
+        # types or mimetypes, so allow images for the editor uploads by default
+        declaration.declare_list(
+            key.ckan.upload.page_images.types, ["image"]
+        ).set_description(
+            "File types allowed for images uploaded from the pages editor."
+        )
+        declaration.declare_list(
+            key.ckan.upload.page_images.mimetypes,
+            ["image/png", "image/gif", "image/jpeg"]
+        ).set_description(
+            "File MIME types allowed for images uploaded from the pages editor."
+        )
 
     def update_config(self, config):
         self.organization_pages = tk.asbool(config.get('ckanext.pages.organization', False))

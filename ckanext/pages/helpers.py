@@ -1,5 +1,4 @@
 from bs4 import BeautifulSoup
-from unicodedata import normalize
 
 PLACEHOLDER_IMG = '/img/dgilogows.png'
 

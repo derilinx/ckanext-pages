@@ -188,14 +188,18 @@ def pages_show(page=None, page_type='page'):
 def pages_delete(page, page_type='pages'):
     if page.startswith('/'):
         page = page[1:]
+    if page_type == 'blog':
+        edit_endpoint, index_endpoint = 'pages.blog_edit', 'pages.blog_index'
+    else:
+        edit_endpoint, index_endpoint = 'pages.edit', 'pages.pages_index'
+
     if 'cancel' in tk.request.args:
-        return tk.redirect_to('pages.%s_edit' % page_type, page=page)
+        return tk.redirect_to(edit_endpoint, page=page)
 
     try:
         if tk.request.method == 'POST':
             tk.get_action('ckanext_pages_delete')({}, {'page': page})
-            endpoint = 'index' if page_type in ('pages', 'page') else '%s_index' % page_type
-            return tk.redirect_to('pages.%s' % endpoint)
+            return tk.redirect_to(index_endpoint)
         else:
             return tk.abort(404, _('Page Not Found'))
     except tk.NotAuthorized:
@@ -345,7 +349,7 @@ def group_delete(id, group_type, page):
         page = page[1:]
 
     if 'cancel' in tk.request.args:
-        return tk.redirect_to('pages.%s_edit' % group_type, id=tk.c.group_dict['name'], page=page)
+        return tk.redirect_to('pages.%s_pages_edit' % group_type, id=tk.c.group_dict['name'], page=page)
 
     try:
         if tk.request.method == 'POST':
