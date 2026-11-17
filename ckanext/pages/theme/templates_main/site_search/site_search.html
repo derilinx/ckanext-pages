@@ -11,11 +11,7 @@
   <div class="module-content">
     {% block page_primary_action %}
       {% if h.check_access('ckanext_pages_update', {}) %}
-        {% if h.ckan_version().split('.')[1] | int >= 9 %}
-          {% link_for _('Add page'), named_route='pages.new', page='', class_='btn btn-primary', icon='plus-square' %}
-        {% else %}
-          {% link_for _('Add page'), controller='ckanext.pages.controller:PagesController', action='pages_edit', page='', class_='btn btn-primary', icon='plus-square' %}
-      {% endif %}
+        {% link_for _('Add page'), named_route='pages.new', page='', class_='btn btn-primary', icon='plus-square' %}
       {% endif %}
     {% endblock %}
     {% block form %}
