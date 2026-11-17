@@ -135,7 +135,9 @@ def _pages_update(context, data_dict):
     out.modified = datetime.datetime.utcnow()
 
     if not out.user_id:
-        out.user_id = p.toolkit.c.userobj.id
+        user = model.User.get(context.get('user') or '')
+        if user:
+            out.user_id = user.id
 
     out.save()
     session = context['session']
