@@ -1,4 +1,3 @@
-import six
 
 import ckan.lib.navl.dictization_functions as dict_fns
 import ckan.plugins as p
@@ -112,10 +111,12 @@ def _inject_views_into_page(_page):
             lxml.etree.ParserError):
         return
 
-    for element in root.findall('.//iframe'):
-        embed_element = element.attrib.pop('data-ckan-view-embed', None)
-        if not embed_element:
-            continue
+    embeds = root.xpath('.//iframe[@data-ckan-view-embed]')
+    if not embeds:
+        return
+
+    for element in embeds:
+        element.attrib.pop('data-ckan-view-embed')
         element.tag = 'div'
         error = None
 
@@ -156,7 +157,7 @@ def _inject_views_into_page(_page):
         view_element = lxml.html.fromstring(resource_view_html)
         element.append(view_element)
 
-    new_content = six.ensure_text(lxml.html.tostring(root))
+    new_content = lxml.html.tostring(root, encoding='unicode')
     if new_content.startswith('<div>') and new_content.endswith('</div>'):
         # lxml will add a <div> tag to text that starts with an HTML tag,
         # which will cause the rendering to fail
