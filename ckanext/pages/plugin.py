@@ -2,19 +2,18 @@
 import logging
 from html import escape as html_escape
 
-from six.moves.urllib.parse import quote
+from urllib.parse import quote
 
 from ckan.plugins import toolkit as tk
 import datetime
 import ckan.plugins.toolkit as toolkit
 import ckan.plugins as p
+from ckan.lib.plugins import DefaultTranslation
 from ckan.lib.helpers import build_nav_main as core_build_nav_main
 
-from ckanext.pages import actions, db
+from ckanext.pages import actions
 from ckanext.pages import auth
 from ckanext.pages import blueprint
-from ckanext.pages import cli
-from ckan.lib.plugins import DefaultTranslation
 import jinja2
 
 import ckanext.pages.helpers as pages_helpers
@@ -125,29 +124,15 @@ def get_featured_blogs():
 def get_today():
     return datetime.datetime.now()
 
-if False and toolkit.check_ckan_version(min_version='2.5'):
-    from ckan.lib.plugins import DefaultTranslation
-
-    class PagesPluginBase(p.SingletonPlugin, DefaultTranslation):
-        p.implements(p.ITranslation, inherit=True)
-else:
-    class PagesPluginBase(p.SingletonPlugin):
-        pass
-
-class PagesPlugin(PagesPluginBase):
+class PagesPlugin(p.SingletonPlugin, DefaultTranslation):
     p.implements(p.IConfigurer, inherit=True)
     p.implements(p.ITemplateHelpers, inherit=True)
     p.implements(p.IActions, inherit=True)
     p.implements(p.IAuthFunctions, inherit=True)
-    p.implements(p.IConfigurable, inherit=True)
     p.implements(p.IBlueprint)
-    p.implements(p.IClick)
 
     def get_blueprint(self):
         return [blueprint.pages]
-
-    def get_commands(self):
-        return cli.get_commands()
 
     def update_config(self, config):
         self.organization_pages = tk.asbool(config.get('ckanext.pages.organization', False))
@@ -223,9 +208,6 @@ class PagesPlugin(PagesPluginBase):
             'ckanext_group_pages_delete': auth.group_pages_delete,
             'ckanext_group_pages_list': auth.group_pages_list,
         }
-
-    def configure(self, config):
-        db.init_db()
 
 
 class TextBoxView(p.SingletonPlugin):
